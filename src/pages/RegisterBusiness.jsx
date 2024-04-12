@@ -188,7 +188,9 @@ const RegisterBusiness = () => {
             </div>
 
             {/* error message */}
-            {error && <Error>{error}</Error>}
+            <div className=" flex justify-center">
+              {error && <Error>{error}</Error>}
+            </div>
             {/* Link to Register */}
             <p className="mt-5 text-sm text-gray-400 text-center">
               Having issues or questions?

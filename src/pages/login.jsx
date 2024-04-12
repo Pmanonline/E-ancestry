@@ -82,24 +82,7 @@ const LoginScreen = () => {
                 className="w-full px-3 py-2 border rounded-md pl-8 focus:outline-none focus:border-purple"
               />
             </div>
-            {/* <div className="mt-8 w-[22rem] mx-auto">
-              <label
-                htmlFor="password"
-                className="block mb-2 text-sm font-semibold"
-              >
-                Password
-              </label>
-              <input
-                placeholder="*****"
-                id="password"
-                name="password"
-                type="password"
-                {...register("password")}
-                autoComplete="current-password"
-                required
-                className="w-full px-3 py-2 border rounded-md pl-8 focus:outline-none focus:border-purple"
-              />
-            </div> */}
+
             <div className="my-8 w-[22rem] mx-auto">
               <label
                 htmlFor="password"
@@ -145,7 +128,9 @@ const LoginScreen = () => {
             </div>
 
             {/* error message */}
-            {error && <Error>{error}</Error>}
+            <div className=" flex justify-center">
+              {error && <Error>{error}</Error>}
+            </div>
 
             {/* Link to Register */}
             <p className="mt-5 text-sm  text-gray-400 text-center">
