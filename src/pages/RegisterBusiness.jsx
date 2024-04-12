@@ -74,7 +74,7 @@ const RegisterBusiness = () => {
 
               <p className="text-center w-[22rem] mx-auto text-gray-500 mb-12">
                 Please fill in your business information to start transacting
-                easily with ReKoda
+                easily with ReKoda.
               </p>
             </div>
 
