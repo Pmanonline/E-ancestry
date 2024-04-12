@@ -1,15 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-interface LoginCredentials {
-  email: string;
-  password: string;
-  firstName: string;
-}
-
 export const loginUser = createAsyncThunk(
   "auth/login",
-  async ({ email, password }: LoginCredentials, { rejectWithValue }) => {
+  async ({ email, password, firstName }, { rejectWithValue }) => {
     try {
       // Configure header's Content-Type as JSON
       const config = {
@@ -43,10 +37,7 @@ export const loginUser = createAsyncThunk(
 
 export const registerUser = createAsyncThunk(
   "auth/createPost",
-  async (
-    { firstName, email, password }: LoginCredentials,
-    { rejectWithValue }
-  ) => {
+  async ({ firstName, email, password }, { rejectWithValue }) => {
     try {
       const config = {
         headers: {
