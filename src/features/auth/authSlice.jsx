@@ -21,6 +21,7 @@ const token = localStorage.getItem("userToken");
  * @property {boolean} FPsuccess - Indicates if authentication was successful.
  * @property {boolean} OTPsuccess - Indicates if authentication was successful.
  * @property {boolean} RSTsuccess - Indicates if authentication was successful.
+ * @property {boolean} RGSsuccess - Indicates if authentication was successful.
  */
 
 /** @type {AuthState} */
@@ -33,6 +34,7 @@ const initialState = {
   FPsuccess: false,
   OTPsuccess: false,
   RSTsuccess: false,
+  RGSsuccess: false,
 };
 
 const authSlice = createSlice({
@@ -55,6 +57,7 @@ const authSlice = createSlice({
       state.FPsuccess = false; // Reset success state to false
       state.OTPsuccess = false; // Reset success state to false
       state.RSTsuccess = false; // Reset success state to false
+      state.RGSsuccess = false; // Reset success state to false
     },
   },
   extraReducers: (builder) => {
@@ -80,14 +83,13 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        // state.userInfo = action.payload;
-        state.success = true; // Set success state to true
-        // localStorage.setItem("userToken", action.payload.token);
+        state.RGSsuccess = true; // Set success state to true
+        localStorage.setItem("userToken", action.payload.token);
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.success = false; // Reset success state to false
+        state.RGSsuccess = false; // Reset success state to false
       })
 
       .addCase(registerBusiness.pending, (state) => {

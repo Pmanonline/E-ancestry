@@ -12,7 +12,7 @@ import { registerUser } from "../features/auth/authActions";
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const { loading, userInfo, error, success } = useSelector(
+  const { loading, userInfo, error, RGSsuccess } = useSelector(
     (state) => state.auth
   );
   const dispatch = useDispatch();
@@ -22,10 +22,13 @@ const Register = () => {
 
   //  Redirect authenticated user to profile screen
   useEffect(() => {
-    if (success) {
+    if (RGSsuccess) {
       navigate("/login");
     }
-  }, [navigate, success]);
+    if (userInfo) {
+      navigate("/");
+    }
+  }, [navigate, RGSsuccess, userInfo]);
 
   const submitForm = (data) => {
     data.email = data.email.toLowerCase();
