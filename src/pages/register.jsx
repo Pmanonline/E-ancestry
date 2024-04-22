@@ -30,9 +30,28 @@ const Register = () => {
     }
   }, [navigate, RGSsuccess, userInfo]);
 
+  // const submitForm = (data) => {
+  //   data.email = data.email.toLowerCase();
+  //   dispatch(registerUser(data));
+  //   navigate("/login");
+  // };
   const submitForm = (data) => {
     data.email = data.email.toLowerCase();
-    dispatch(registerUser(data));
+    dispatch(registerUser(data))
+      .then((response) => {
+        // Check if the registration request was successful
+        if (response.payload.status === 200) {
+          // Perform additional actions here
+          // For example, you can navigate the user to the login page
+          navigate("/login");
+        } else {
+          // Handle other cases if needed
+        }
+      })
+      .catch((error) => {
+        // Handle errors if the registration request fails
+        console.error("Registration error:", error);
+      });
   };
 
   const togglePasswordVisibility = () => {
