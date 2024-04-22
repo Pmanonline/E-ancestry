@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,6 +10,8 @@ import Spinner from "../components/tools/Spinner";
 import { registerUser } from "../features/auth/authActions";
 
 const Register = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
   const { loading, userInfo, error, success } = useSelector(
     (state) => state.auth
   );
@@ -19,22 +20,20 @@ const Register = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
+  //  Redirect authenticated user to profile screen
   useEffect(() => {
-    // redirect authenticated user to profile screen
-    if (userInfo) {
-      navigate("/profile");
-    }
-    // redirect user to login page if registration was successful
     if (success) {
-      console.log("Registration successful!"); // Add this line to log to the console
       navigate("/login");
     }
-  }, [navigate, userInfo, success]);
+  }, [navigate, success]);
 
   const submitForm = (data) => {
-    // transform email string to lowercase to avoid case sensitivity issues in login
     data.email = data.email.toLowerCase();
     dispatch(registerUser(data));
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -48,8 +47,6 @@ const Register = () => {
         </Link>
       </header>
       <div className="flex flex-col md:flex-row  m-[1px]">
-        {/* Image Section */}
-        {/* <div className="md:flex-1 bg-gray-200 shadow-lg "> */}
         <div className="hidden md:block md:w-[44%] bg-gray-200 shadow-lg ">
           <img
             className="object-cover w-full h-full mid:hidden"
@@ -57,8 +54,6 @@ const Register = () => {
             alt="Login Image"
           />
         </div>
-
-        {/* Login Form Section */}
 
         <div className="md:w-[56%] flex sm:p-8  shadow-lg">
           <form onSubmit={handleSubmit(submitForm)} className="w-full ">
@@ -72,7 +67,6 @@ const Register = () => {
                 easily with ReKoda
               </p>
             </div>
-            {/* Names*/}
             <div className="sm:flex gap-4 justify-between w-[22rem] mx-auto">
               <div className=" sm:w-[12rem] mod:mb-8">
                 <label
@@ -112,9 +106,6 @@ const Register = () => {
                 />
               </div>
             </div>
-            {/* Names*/}
-
-            {/* Email */}
 
             <div className="my-8 w-[22rem] mx-auto">
               <label
@@ -134,9 +125,7 @@ const Register = () => {
                 className="w-full px-3 py-2 border rounded-md pl-8 focus:outline-none focus:border-purple"
               />
             </div>
-            {/* Email */}
 
-            {/* phoneNumber */}
             <div className="mt-8 w-[22rem] mx-auto">
               <label
                 htmlFor="email"
@@ -187,8 +176,7 @@ const Register = () => {
                 </span>
               </div>
             </div>
-            {/* phoneNumber */}
-            {/* password */}
+
             <div className="my-8 w-[22rem] mx-auto">
               <label
                 htmlFor="password"
@@ -201,20 +189,21 @@ const Register = () => {
                   placeholder="*****"
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   {...register("password")}
                   autoComplete="current-password"
                   required
                   className="w-full px-3 py-2 border rounded-md pl-8 focus:outline-none focus:border-purple"
                 />
-                <span className="absolute right-3 top-[14px]">
+                <span
+                  className="absolute right-3 top-[14px] cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                >
                   <MdOutlineRemoveRedEye />
                 </span>
               </div>
             </div>
-            {/* password */}
 
-            {/* Submit Button */}
             <div className=" mx-auto text-center">
               <button
                 type="submit"
@@ -225,11 +214,10 @@ const Register = () => {
               </button>
             </div>
 
-            {/* error message */}
             <div className=" flex justify-center">
               {error && <Error>{error}</Error>}
             </div>
-            {/* Link to Register */}
+
             <p className="mt-5 text-sm text-gray-400 text-center">
               Having issues or questions?
               <Link

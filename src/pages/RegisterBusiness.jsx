@@ -1,42 +1,59 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import loginImage from "../assets/images/auth2.png";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { IoBagHandle } from "react-icons/io5";
+import loginImage from "../assets/images/auth2.png";
 
 import Error from "../components/tools/Error";
 import Spinner from "../components/tools/Spinner";
-import { registerUser } from "../features/auth/authActions";
+import { registerBusiness } from "../features/auth/authActions";
 
 const RegisterBusiness = () => {
-  const { loading, userInfo, error, success } = useSelector(
+  const { loading, error, success, userInfo } = useSelector(
     (state) => state.auth
   );
   const dispatch = useDispatch();
-
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const navigate = useNavigate();
 
+  const [selectedBusiness, setSelectedBusiness] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [selectedState, setSelectedState] = useState("");
+  const [isStateOpen, setIsStateOpen] = useState(false);
+
+  //  Redirect authenticated user to profile screen
   useEffect(() => {
-    // redirect authenticated user to profile screen
-    if (userInfo) {
-      navigate("/profile");
-    }
-    // redirect user to login page if registration was successful
     if (success) {
-      console.log("Registration successful!"); // Add this line to log to the console
-      navigate("/login");
+      navigate("/");
     }
-  }, [navigate, userInfo, success]);
+    if (userInfo) {
+      navigate("/");
+    }
+  }, [navigate, success, userInfo]);
 
   const submitForm = (data) => {
-    // transform email string to lowercase to avoid case sensitivity issues in login
-    data.email = data.email.toLowerCase();
-    dispatch(registerUser(data));
+    dispatch(registerBusiness(data));
   };
+
+  const handleBusinessClick = (business) => {
+    setSelectedBusiness(business);
+    setIsOpen(false);
+  };
+
+  const handleStateClick = (state) => {
+    setSelectedState(state);
+    setIsStateOpen(false);
+  };
+
+  const businesses = ["Business 1", "Business 2", "Business 3"];
+  const states = ["State 1", "State 2", "State 3"];
 
   return (
     <>
@@ -49,7 +66,6 @@ const RegisterBusiness = () => {
         </Link>
       </header>
       <div className="flex flex-col md:flex-row">
-        {/* Image Section */}
         <div className="hidden md:block md:w-[44%] bg-gray-200 shadow-lg ">
           <img
             className="object-cover w-full h-full"
@@ -57,9 +73,6 @@ const RegisterBusiness = () => {
             alt="Login Image"
           />
         </div>
-
-        {/* Login Form Section */}
-
         <div className="md:w-[56%] flex sm:p-8 shadow-lg">
           <form onSubmit={handleSubmit(submitForm)} className="w-full">
             <div className="flex flex-col items-center">
@@ -71,113 +84,171 @@ const RegisterBusiness = () => {
                   </div>
                 </h1>
               </div>
-
               <p className="text-center w-[22rem] mx-auto text-gray-500 mb-12">
                 Please fill in your business information to start transacting
                 easily with ReKoda.
               </p>
             </div>
 
-            {/* BusinessName */}
             <div className="my-8 w-[22rem] mx-auto">
               <label
                 htmlFor="password"
                 className="block mb-2 text-sm font-semibold"
               >
-                Bussiness Name
+                Business Name
               </label>
               <div className="relative">
                 <input
-                  placeholder="Enter Your Bussiness Name"
-                  id="bussinessName"
-                  name="bussinessName"
+                  placeholder="Enter Your Business Name"
+                  id="businessName"
+                  name="businessName"
                   type="text"
-                  {...register("bussinessName")}
-                  autoComplete="current-bussinessName"
-                  required
+                  {...register("businessName", {
+                    required: "Business Name is required",
+                  })}
+                  autoComplete="current-businessName"
                   className="w-full px-3 py-2 border rounded-md pl-8 focus:outline-none focus:border-purple"
                 />
               </div>
+              {errors.businessName && (
+                <p className="text-red-500 text-xs mt-1 ml-1">
+                  {errors.businessName.message}
+                </p>
+              )}
             </div>
-            {/* BusinessName */}
 
-            {/* BusinesState */}
-            <div className="my-8 w-[22rem] mx-auto">
+            <div className="my-8 w-[22rem] mx-auto relative">
               <label
-                htmlFor="text"
+                htmlFor="businessState"
                 className="block mb-2 text-sm font-semibold"
               >
-                Bussiness State
+                Business State
               </label>
               <div className="relative">
                 <input
+                  id="businessState"
+                  name="businessState"
+                  type="text"
                   placeholder="Select State"
-                  id="bussinessState"
-                  name="bussinessState"
-                  type="text"
-                  {...register("bussinessState")}
-                  autoComplete="current-bussinessState"
-                  required
-                  className="w-full px-3 py-2 border rounded-md pl-8 focus:outline-none focus:border-purple"
+                  autoComplete="current-businessState"
+                  {...register("businessState", {
+                    required: "businessState is required",
+                  })}
+                  value={selectedState}
+                  readOnly
+                  onClick={() => setIsStateOpen(!isStateOpen)}
+                  className={`w-full px-3 py-2 border rounded-md pl-8 focus:outline-none focus:border-purple ${
+                    errors.businessState ? "border-red-500" : ""
+                  }`}
                 />
-                <span className="absolute right-3 top-[14px]">
+                {errors.businessState && (
+                  <p className="text-red-500 text-xs mt-1 ml-1">
+                    {errors.businessState.message}
+                  </p>
+                )}
+                <span
+                  className="absolute right-3 top-[14px] cursor-pointer"
+                  onClick={() => setIsStateOpen(!isStateOpen)}
+                >
                   <IoMdArrowDropdown />
                 </span>
+                {isStateOpen && (
+                  <div className="absolute w-full mt-1 bg-white border rounded-md shadow-lg z-20">
+                    {states.map((state) => (
+                      <div
+                        key={state}
+                        className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleStateClick(state)}
+                      >
+                        {state}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
-            {/* BusinesState */}
 
-            {/* BusinesCity*/}
             <div className="my-8 w-[22rem] mx-auto">
-              <label className="block mb-2 text-sm font-semibold">
-                Bussiness State
+              <label
+                htmlFor="businessCity"
+                className="block mb-2 text-sm font-semibold"
+              >
+                Business City
               </label>
               <div className="relative">
                 <input
-                  placeholder="Select City"
-                  id="BussinessCity"
-                  name="BussinessCity"
+                  id="businessCity"
+                  name="businessCity"
                   type="text"
-                  {...register("BussinessCity")}
-                  autoComplete="current-BussinessCity"
-                  required
-                  className="w-full px-3 py-2 border rounded-md pl-8 focus:outline-none focus:border-purple"
+                  placeholder="Select City"
+                  autoComplete="current-businessCity"
+                  {...register("businessCity", {
+                    required: "Business City is required",
+                  })}
+                  value={selectedBusiness}
+                  readOnly
+                  onClick={() => setIsOpen(!isOpen)}
+                  className={`w-full px-3 py-2 border rounded-md pl-8 focus:outline-none focus:border-purple ${
+                    errors.businessCity ? "border-red-500" : ""
+                  }`}
                 />
-                <span className="absolute right-3 top-[14px]">
+                {errors.businessCity && (
+                  <p className="text-red-500 text-xs mt-1 ml-1">
+                    {errors.businessCity.message}
+                  </p>
+                )}
+                <span
+                  className="absolute right-3 top-[14px] cursor-pointer"
+                  onClick={() => setIsOpen(!isOpen)}
+                >
                   <IoMdArrowDropdown />
                 </span>
+                {isOpen && (
+                  <div className="absolute w-full mt-1 bg-white border rounded-md shadow-lg z-20">
+                    {businesses.map((business) => (
+                      <div
+                        key={business}
+                        className=" px-3 py-2 cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleBusinessClick(business)}
+                      >
+                        {business}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
-            {/* BusinessCity */}
 
-            {/* BusinesSTag */}
             <div className="my-8 w-[22rem] mx-auto">
               <label
-                htmlFor="text"
+                htmlFor="businessTag"
                 className="block mb-2 text-sm font-semibold"
               >
-                Bussiness Tag
+                Business Tag
               </label>
               <div className="relative">
                 <input
                   placeholder="@"
-                  id="BussinessTag"
-                  name="BussinessTag"
+                  id="businessTag"
+                  name="businessTag"
                   type="text"
-                  {...register("BussinessTag")}
-                  autoComplete="current-BussinessTag"
-                  required
-                  className="w-full px-3 py-2 border rounded-md pl-8 focus:outline-none focus:border-purple"
+                  {...register("businessTag", {
+                    required: "Business tag is required",
+                  })}
+                  autoComplete="current-businessTag"
+                  className={`w-full px-3 py-2 border rounded-md pl-8 focus:outline-none focus:border-purple ${
+                    errors.businessTag ? "border-red-500" : ""
+                  }`}
                 />
-                <span className="absolute right-3 top-[14px]">
-                  <IoMdArrowDropdown />
-                </span>
+                {errors.businessTag && (
+                  <p className="text-red-500 text-xs mt-1 ml-1">
+                    {errors.businessTag.message}
+                  </p>
+                )}
               </div>
             </div>
-            {/* BusinesTag */}
 
-            {/* Submit Button */}
-            <div className=" mx-auto text-center">
+            <div className="mx-auto text-center">
               <button
                 type="submit"
                 onClick={handleSubmit(submitForm)}
@@ -187,11 +258,10 @@ const RegisterBusiness = () => {
               </button>
             </div>
 
-            {/* error message */}
-            <div className=" flex justify-center">
+            <div className="flex justify-center">
               {error && <Error>{error}</Error>}
             </div>
-            {/* Link to Register */}
+
             <p className="mt-5 text-sm text-gray-400 text-center">
               Having issues or questions?
               <Link

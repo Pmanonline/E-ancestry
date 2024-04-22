@@ -20,6 +20,7 @@ function classNames(...classes) {
 export default function Navbar() {
   const { userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  console.log(userInfo);
 
   return (
     <Disclosure as="nav" className="bg-gray-800">

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/auth/authActions";
@@ -10,6 +10,8 @@ import { PiHandWavingFill } from "react-icons/pi";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 
 const LoginScreen = () => {
+  const [showPassword, setShowPassword] = useState(false); // Moved useState inside component
+
   const { loading, userInfo, error } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
@@ -24,6 +26,10 @@ const LoginScreen = () => {
 
   const submitForm = (data) => {
     dispatch(loginUser(data));
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -95,13 +101,16 @@ const LoginScreen = () => {
                   placeholder="*****"
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"} // Toggle input type based on showPassword state
                   {...register("password")}
                   autoComplete="current-password"
                   required
                   className="w-full px-3 py-2 border rounded-md pl-8 focus:outline-none focus:border-purple"
                 />
-                <span className="absolute right-3 top-[14px]">
+                <span
+                  className="absolute right-3 top-[14px] cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                >
                   <MdOutlineRemoveRedEye />
                 </span>
               </div>

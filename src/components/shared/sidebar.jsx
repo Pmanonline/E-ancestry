@@ -15,6 +15,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../features/auth/authSlice";
 import classNames from "classnames";
+import logo from "../../assets/images/logo3.png";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -40,7 +41,10 @@ const Sidebar = () => {
     <div className="lg:flex lg:flex-col lg:w-[20rem] lg:min-w-[15rem] lg:bg-purple lg:p-3  lg:text-xs  text-white mod:absolute  h-screen overflow-y-auto">
       <div className="lg:flex hidden lg:gap-0.5 lg:py-3  justify-between  h-20 px-2 2xl:px-16  flex-col flex-1 ">
         <div className="flex flex-1 flex-col">
-          <h2>R REKODA</h2>
+          <div className="flex items-center my-4">
+            <img src={logo} alt="logo" className="w-[3rem] h-[4rem] bg-whit" />
+            <span className="text-4xl mx-2"> REKODA</span>
+          </div>
           <p>Documentation, And SAAS product for your business</p>
           <Link
             to="/MyDashBoard"
@@ -55,7 +59,6 @@ const Sidebar = () => {
             <RxDashboard className="text-white w-6 h-6" />
             <span className="text-[16px] my-auto">Dashboard</span>
           </Link>
-
           {/* Links */}
           <div className="">
             <h3 className="ml-5 uppercase my-5   text-[14px] font-medium">
@@ -151,7 +154,6 @@ const Sidebar = () => {
               <span className="text-[16px] my-auto">Notifications</span>
             </Link>
           </div>
-
           {/* Links */}
         </div>
         <hr className="border-t border-gray-200 my-4" />
