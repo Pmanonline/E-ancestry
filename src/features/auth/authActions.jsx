@@ -9,7 +9,7 @@ const SEND_EMAIL_ENDPOINT = "http://localhost:8080/api/registerMail";
 const backendURL =
   process.env.NODE_ENV !== "production"
     ? "http://localhost:8080"
-    : "https://redux-blogapp-api-1.onrender.com";
+    : "https://gekoda-api.onrender.com";
 
 export const setEmail = (email) => ({
   type: SET_EMAIL,
@@ -29,7 +29,8 @@ export const loginUser = createAsyncThunk(
 
       // Make a POST request to the login endpoint with the provided credentials
       const { data } = await axios.post(
-        "http://localhost:8080/api/login",
+        `${backendURL}/api/login`,
+
         { email, password },
         config
       );
@@ -65,7 +66,7 @@ export const registerUser = createAsyncThunk(
 
       // Make the registration request
       const response = await axios.post(
-        "http://localhost:8080/api/register",
+        `${backendURL}/api/register`,
         { firstName, email, password, lastName, phoneNumber },
         config
       );
@@ -107,7 +108,7 @@ export const registerBusiness = createAsyncThunk(
       };
 
       const response = await axios.post(
-        "http://localhost:8080/api/registerBusiness",
+        `${backendURL}/api/registerBusiness`,
         { businessName, businessState, businessCity, businessTag },
         config
       );
@@ -124,36 +125,6 @@ export const registerBusiness = createAsyncThunk(
     }
   }
 );
-
-// // Async thunk for reset password action
-// export const resetPassword = createAsyncThunk(
-//   "auth/resetPassword",
-//   async ({ resetToken, newPassword }, { rejectWithValue }) => {
-//     try {
-//       const config = {
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//       };
-
-//       await axios.post(
-//         `${backendURL}/api/user/reset-password`,
-//         { resetToken, newPassword },
-//         config
-//       );
-
-//       // Return a message indicating the password was reset successfully
-//       return "Password reset successfully";
-//     } catch (error) {
-//       // Handle error and return custom error message
-//       if (error.response && error.response.data.message) {
-//         return rejectWithValue(error.response.data.message);
-//       } else {
-//         return rejectWithValue("Failed to reset password");
-//       }
-//     }
-//   }
-// );
 
 export const generateOTP = createAsyncThunk(
   "auth/generateOTP",
