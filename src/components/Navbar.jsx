@@ -1,181 +1,270 @@
-import React from "react";
-import { Fragment, useEffect } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import React, { useState, useEffect, useRef } from "react";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { IoClose } from "react-icons/io5";
+import { FaChevronDown } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
-import { NavLink, Link } from "react-router-dom";
-import { logoutUser, setCredentials } from "../features/auth/authSlice";
+import { Link } from "react-router-dom";
+import { logoutUser } from "../features/auth/authSlice";
+import { IoPersonCircleOutline } from "react-icons/io5";
 
-const navigation = [
-  { name: "Dashboard", href: "/MyDashBoard", current: true },
-  { name: "Team", href: "#", current: false },
-  { name: "Projects", href: "#", current: false },
-  { name: "Calendar", href: "#", current: false },
-];
+function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
+  const [isFamilyTreeOpen, setIsFamilyTreeOpen] = useState(false);
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+  const menuRef = useRef(null);
+  const userDropdownRef = useRef(null);
+  const familyTreeDropdownRef = useRef(null);
 
-export default function Navbar() {
   const { userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  console.log(userInfo);
+
+  const toggleMenu = () => setIsOpen(!isOpen);
+
+  const closeMenu = () => {
+    setIsOpen(false);
+    setIsFamilyTreeOpen(false);
+  };
+
+  const toggleFamilyTreeMenu = () => setIsFamilyTreeOpen(!isFamilyTreeOpen);
+
+  const toggleUserFile = () => setUserOpen(!userOpen);
+
+  const handleClickOutside = (event) => {
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(event.target) &&
+      !userDropdownRef.current.contains(event.target) &&
+      !familyTreeDropdownRef.current.contains(event.target)
+    ) {
+      closeMenu();
+      setUserOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <Disclosure as="nav" className="bg-gray-800">
-      {({ open }) => (
-        <>
-          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-            <div className="relative flex h-16 items-center justify-between">
-              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                  <span className="absolute -inset-0.5" />
-                  <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Disclosure.Button>
-              </div>
-              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex flex-shrink-0 items-center">
-                  {/* <img
-                    className="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="Your Company"
-                  /> */}
-                  <Link to={"/"}>
-                    <h1 className="text-3xl font-bold text-purple ml-5">
-                      Rekoda
-                    </h1>
-                  </Link>
-                </div>
-                <div className="hidden sm:ml-6 sm:block">
-                  <div className="flex space-x-4">
-                    {navigation.map((item) => (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        className={classNames(
-                          item.current
-                            ? "bg-gray-900 text-white"
-                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                          "rounded-md px-3 py-2 text-sm font-medium"
-                        )}
-                        aria-current={item.current ? "page" : undefined}
-                      >
-                        {item.name}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <button
-                  type="button"
-                  className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                >
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
-
-                {/* Profile dropdown */}
-                <Menu as="div" className="relative ml-3">
-                  <div>
-                    <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                      <span className="absolute -inset-1.5" />
-                      <span className="sr-only">Open user menu</span>
-                      <img
-                        className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt=""
-                      />
-                    </Menu.Button>
-                  </div>
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Your Profile
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <div className="text-center">
-                            {userInfo ? (
-                              <button
-                                onClick={() => dispatch(logoutUser())}
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                Logout
-                              </button>
-                            ) : (
-                              <NavLink className="button" to="/login">
-                                <button
-                                  className={classNames(
-                                    active ? "bg-gray-100 text-blue" : "",
-                                    "block px-4 py-2 text-sm text-gray-700"
-                                  )}
-                                >
-                                  Login
-                                </button>
-                              </NavLink>
-                            )}
-                          </div>
-                        )}
-                      </Menu.Item>
-                    </Menu.Items>
-                  </Transition>
-                </Menu>
-              </div>
-            </div>
+    <nav className="bg-white">
+      <div className="max-w-screen-xl flex-wrap items-center justify-around mx-auto p-4">
+        <button
+          type="button"
+          onClick={toggleMenu}
+          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+          aria-controls="navbar-cta"
+          aria-expanded={isOpen ? "true" : "false"}
+        >
+          <span className="sr-only">Toggle navigation</span>
+          {isOpen ? (
+            <IoClose className="w-6 h-6" />
+          ) : (
+            <GiHamburgerMenu className="w-6 h-6" />
+          )}
+        </button>
+        <div
+          className={`items-center justify-between w-full md:flex md:w-auto md:order-1 ${
+            isOpen ? "block" : "hidden"
+          }`}
+          id="navbar-cta"
+          ref={menuRef}
+        >
+          <div className="mid:hidden">
+            <Link to="/" className="flex w-[10vh]" onClick={closeMenu}>
+              <img
+                src="https://flowbite.com/docs/images/logo.svg"
+                className="h-8"
+                alt="Website-Logo"
+              />
+            </Link>
           </div>
 
-          {/* Mobile Menu */}
-          <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2">
-              {navigation.map((item) => (
-                <Disclosure.Button
-                  key={item.name}
-                  as="a"
-                  href={item.href}
-                  className={classNames(
-                    item.current
-                      ? "bg-gray-900 text-white"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                    "block rounded-md px-3 py-2 text-base font-medium"
-                  )}
-                  aria-current={item.current ? "page" : undefined}
-                >
-                  {item.name}
-                </Disclosure.Button>
-              ))}
+          <ul className="text-black flex flex-wrap font-medium p-4 mt-4 rounded-lg gap-5 rtl:space-x-reverse mid:flex-col md:mt-0 bg-NavClr md:rounded-xl md:p-5">
+            <li>
+              <Link
+                to="/"
+                className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
+                aria-current="page"
+                onClick={closeMenu}
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/about"
+                className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
+                onClick={closeMenu}
+              >
+                About
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/partners"
+                className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
+                onClick={closeMenu}
+              >
+                Our Partners
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/name-meanings"
+                className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
+                onClick={closeMenu}
+              >
+                Name Meanings
+              </Link>
+            </li>
+            <li className="relative group" ref={familyTreeDropdownRef}>
+              <button
+                type="button"
+                onClick={toggleFamilyTreeMenu}
+                className="flex items-center py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
+              >
+                Family Tree <FaChevronDown className="ml-2" />
+              </button>
+              {isFamilyTreeOpen && (
+                <ul className="absolute bg-NavClr border rounded-lg mt-2 py-2">
+                  <li>
+                    <Link
+                      to="/my-family-tree"
+                      className="block px-4 py-2 text-black hover:text-green"
+                      onClick={closeMenu}
+                    >
+                      My Family Tree
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/search-a-tree"
+                      className="block px-4 py-2 text-black hover:text-green"
+                      onClick={closeMenu}
+                    >
+                      Search a Tree
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+            <li>
+              <Link
+                to="/genealogy"
+                className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
+                onClick={closeMenu}
+              >
+                Genealogy
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/historical-search"
+                className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
+                onClick={closeMenu}
+              >
+                Historical People Search
+              </Link>
+            </li>
+          </ul>
+          <div className="flex items-center mt-4 md:mt-0">
+            <div className="text-center flex">
+              {userInfo ? (
+                <>
+                  <button
+                    onClick={() => dispatch(logoutUser())}
+                    className="block px-4 py-2 text-black rounded hover:text-green md:dark:hover:bg-transparent text-lg"
+                  >
+                    Logout
+                  </button>
+                  <div className="relative" ref={userDropdownRef}>
+                    <button
+                      onClick={toggleUserFile}
+                      className=" focus:ring- focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
+                      type="button"
+                    >
+                      <IoPersonCircleOutline size={25} />
+                      <svg
+                        className={`w-2.5 h-2.5 ms-3 ${
+                          userOpen ? "transform rotate-180" : ""
+                        }`}
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 10 6"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="m1 1 4 4 4-4"
+                        />
+                      </svg>
+                    </button>
+
+                    {userOpen && (
+                      <div
+                        id="dropdownInformation"
+                        className="absolute z-10 right-1 text-black divide-y divide-black rounded-lg shadow w-44 mt-1 bg-NavClr"
+                      >
+                        <div className="px-4 py-3 text-sm text-black">
+                          <div className="font-medium truncate">
+                            {userInfo && userInfo.user.email
+                              ? userInfo.user.email
+                              : "User email not available"}
+                          </div>
+                        </div>
+                        <ul className="py-2 text-sm text-gray-700">
+                          <li>
+                            <Link
+                              to="/profile"
+                              className="block px-4 py-2 text-black rounded hover:text-green md:dark:hover:bg-transparent font-semibold"
+                              onClick={() => setUserOpen(false)}
+                            >
+                              Profile
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/settings"
+                              className="block px-4 py-2 text-black rounded hover:text-green md:dark:hover:bg-transparent font-semibold"
+                              onClick={() => setUserOpen(false)}
+                            >
+                              Settings
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="text-black bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="text-black bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
-          </Disclosure.Panel>
-        </>
-      )}
-    </Disclosure>
+          </div>
+        </div>
+      </div>
+    </nav>
   );
 }
+
+export default Navbar;

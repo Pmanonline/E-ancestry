@@ -1,0 +1,70 @@
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchAllDetails, getProfile } from "./UserAction";
+
+const initialState = {
+  person: {},
+  mother: {},
+  father: {},
+  PGF: {},
+  PGM: {},
+  MGF: {},
+  MGM: {},
+  profile: null,
+  loading: false,
+  error: null,
+  success: false,
+};
+
+const userSlice = createSlice({
+  name: "person",
+  initialState,
+  reducers: {
+    resetSuccess: (state) => {
+      state.success = false;
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchAllDetails.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllDetails.fulfilled, (state, action) => {
+        state.person = action.payload.person || {};
+        state.mother = action.payload.mother || {};
+        state.father = action.payload.father || {};
+        state.PGF = action.payload.PGF || {};
+        state.PGM = action.payload.PGM || {};
+        state.MGF = action.payload.MGF || {};
+        state.MGM = action.payload.MGM || {};
+        state.loading = false;
+        state.success = true;
+        console.log("Updated State:", state);
+      })
+      .addCase(fetchAllDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.success = false;
+      })
+      .addCase(getProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(getProfile.fulfilled, (state, action) => {
+        state.profile = action.payload;
+        state.loading = false;
+        state.success = true;
+      })
+
+      .addCase(getProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.success = false;
+      });
+  },
+});
+
+export const { resetSuccess } = userSlice.actions;
+export default userSlice.reducer;

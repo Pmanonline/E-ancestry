@@ -17,17 +17,16 @@ module.exports = {
       colors: {
         transparent: "transparent",
         current: "currentColor",
-        dashlinkbg: "#FFFFFF66",
-        green: "#335f32",
+        NavClr: "#f2fff2",
+        green: "#00D121",
+        greenDark: "#13A52A",
         white: "#ffffff",
         lightash: "#838282",
         midnightash: "#323131",
-        purple: "#680DB3",
+        purple: "#8400AB",
         purple2: "#7402BA",
-        contactustext: "#000000",
-        borderLight: "#A1A1A1",
         dark: "#000000",
-        blue: "#3D3DE6",
+
         extend: {},
       },
       screens: {
@@ -43,15 +42,17 @@ module.exports = {
         "2xl": "1536px",
         // // => @media (min-width: 1536px) { ... }
         mod: { max: "639px" },
-        minlg: { max: "1023px" },
+        expcard: { max: "1066px" },
         minilg: { min: "850px" },
         mid: { max: "767px" },
-        contQ1: { max: "980px" },
+        Nlg: { max: "1023px" },
         // => @media (min-width: 0px and max-width: 639px) { ... }
       },
 
       fontFamily: {
-        serif: ['"Playfair Display"', "serif"],
+        montserrat: ["Montserrat", "sans-serif"],
+        "montserrat-subrayada": ["Montserrat Subrayada", "sans-serif"],
+        // Defined Montserrat and Montserrat Subrayada fonts
       },
     },
   },

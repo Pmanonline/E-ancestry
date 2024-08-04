@@ -3,32 +3,23 @@ import {
   loginUser,
   registerUser,
   generateOTP,
-  registerBusiness,
   verifyOTP,
   resetPassword,
+  GoogleSignInAction,
 } from "./authActions";
-import { SET_EMAIL } from "../types";
 
-// Check for the token in local storage
 const token = localStorage.getItem("userToken");
+let user;
+try {
+  user = JSON.parse(localStorage.getItem("userInfo"));
+} catch (e) {
+  user = null;
+}
 
-/**
- * @typedef {Object} AuthState
- * @property {boolean} loading - Indicates if authentication is in progress.
- * @property {Object | null} userInfo - User information.
- * @property {string | null} error - Error message, if any.
- * @property {boolean} success - Indicates if authentication was successful.
- * @property {boolean} FPsuccess - Indicates if authentication was successful.
- * @property {boolean} OTPsuccess - Indicates if authentication was successful.
- * @property {boolean} RSTsuccess - Indicates if authentication was successful.
- * @property {boolean} RGSsuccess - Indicates if authentication was successful.
- */
-
-/** @type {AuthState} */
 const initialState = {
   email: "",
   loading: false,
-  userInfo: token ? { token: token } : null,
+  userInfo: token && user ? { token, user } : null,
   error: null,
   success: false,
   FPsuccess: false,
@@ -44,20 +35,21 @@ const authSlice = createSlice({
     setEmail: (state, action) => {
       state.email = action.payload;
     },
-
     logoutUser: (state) => {
       state.userInfo = null;
-      localStorage.removeItem("userToken"); // Remove token from local storage
+      localStorage.removeItem("userToken");
+      localStorage.removeItem("userInfo");
     },
     setCredentials: (state, { payload }) => {
-      state.userInfo = payload;
+      const { token, user } = payload;
+      state.userInfo = { token, user };
     },
     resetSuccess: (state) => {
-      state.success = false; // Reset success state to false
-      state.FPsuccess = false; // Reset success state to false
-      state.OTPsuccess = false; // Reset success state to false
-      state.RSTsuccess = false; // Reset success state to false
-      state.RGSsuccess = false; // Reset success state to false
+      state.success = false;
+      state.FPsuccess = false;
+      state.OTPsuccess = false;
+      state.RSTsuccess = false;
+      state.RGSsuccess = false;
     },
   },
   extraReducers: (builder) => {
@@ -68,43 +60,57 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.userInfo = action.payload;
-        state.success = true; // Set success state to true
-        localStorage.setItem("userToken", action.payload.token);
+        const { userToken, ...user } = action.payload;
+        if (userToken) {
+          state.userInfo = { token: userToken, user };
+          state.success = true;
+          localStorage.setItem("userToken", userToken);
+          localStorage.setItem("userInfo", JSON.stringify(user));
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.success = false; // Reset success state to false
+        state.success = false;
       })
+
+      .addCase(GoogleSignInAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(GoogleSignInAction.fulfilled, (state, action) => {
+        state.loading = false;
+        const { token, user } = action.payload;
+        if (token) {
+          state.userInfo = { token, user };
+          state.success = true;
+          localStorage.setItem("userToken", token);
+          localStorage.setItem("userInfo", JSON.stringify(user));
+        }
+      })
+      .addCase(GoogleSignInAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.success = false;
+      })
+
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.RGSsuccess = true; // Set success state to true
-        localStorage.setItem("userToken", action.payload.token);
+        const { userToken, ...user } = action.payload;
+        if (userToken) {
+          state.RGSsuccess = true;
+          localStorage.setItem("userToken", userToken);
+          localStorage.setItem("userInfo", JSON.stringify(user));
+        }
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.RGSsuccess = false; // Reset success state to false
-      })
-
-      .addCase(registerBusiness.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(registerBusiness.fulfilled, (state, action) => {
-        state.loading = false;
-        // state.userInfo = action.payload;
-        state.success = true;
-      })
-      .addCase(registerBusiness.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-        state.success = false; // Reset success state to false
+        state.RGSsuccess = false;
       })
       .addCase(generateOTP.pending, (state) => {
         state.loading = true;
@@ -112,10 +118,8 @@ const authSlice = createSlice({
       })
       .addCase(generateOTP.fulfilled, (state, action) => {
         state.loading = false;
-        // state.userInfo = action.payload;
         state.FPsuccess = true;
       })
-
       .addCase(generateOTP.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -127,9 +131,8 @@ const authSlice = createSlice({
       })
       .addCase(verifyOTP.fulfilled, (state, action) => {
         state.loading = false;
-        state.OTPsuccess = true; // Set OTPsuccess to true
+        state.OTPsuccess = true;
       })
-
       .addCase(verifyOTP.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -141,9 +144,8 @@ const authSlice = createSlice({
       })
       .addCase(resetPassword.fulfilled, (state, action) => {
         state.loading = false;
-        state.RSTsuccess = true; // Set OTPsuccess to true
+        state.RSTsuccess = true;
       })
-
       .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -152,6 +154,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { logoutUser, setCredentials, resetSuccess } = authSlice.actions;
+export const { logoutUser, setCredentials, resetSuccess, setEmail } =
+  authSlice.actions;
 
 export default authSlice.reducer;

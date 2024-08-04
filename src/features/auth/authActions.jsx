@@ -1,16 +1,18 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-// actions.js
 import { SET_EMAIL } from "../types";
+import Cookies from "js-cookie";
 
-// Define your email sending API endpoint
-const SEND_EMAIL_ENDPOINT = "http://localhost:8080/api/registerMail";
-
+// Define your backend URL based on the environment
 const backendURL =
   process.env.NODE_ENV !== "production"
     ? "http://localhost:8080"
     : "https://gekoda-api.onrender.com";
 
+// Set up Axios to include credentials
+axios.defaults.withCredentials = true;
+
+// Action to set email
 export const setEmail = (email) => ({
   type: SET_EMAIL,
   payload: email,
@@ -20,145 +22,149 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      // Configure header's Content-Type as JSON
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
-      // Make a POST request to the login endpoint with the provided credentials
-      const { data } = await axios.post(
+      const response = await axios.post(
         `${backendURL}/api/login`,
-
         { email, password },
-        config
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
       );
 
-      // Store the user's token in local storage
-      localStorage.setItem("userToken", data.userToken);
+      // Extract the token from the response
+      const { token } = response.data;
 
-      // Return the data received from the server
-      return data;
+      // Store the token in localStorage
+      localStorage.setItem("userToken", token);
+
+      // Return the user data
+      return response.data;
     } catch (error) {
-      // Return a custom error message from the API if any
-      if (error.response && error.response.data.message) {
-        return rejectWithValue(error.response.data.message);
-      } else {
-        return rejectWithValue(error.message);
-      }
+      return rejectWithValue(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+      );
     }
   }
 );
 
-export const registerUser = createAsyncThunk(
-  "auth/registerUser",
-  async (
-    { firstName, email, password, lastName, phoneNumber },
-    { rejectWithValue }
-  ) => {
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
+// Async thunk to handle login
+// export const loginUser = createAsyncThunk(
+//   "auth/login",
+//   async ({ email, password }, { rejectWithValue }) => {
+//     try {
+//       const response = await axios.post(
+//         `${backendURL}/api/login`,
+//         { email, password },
+//         {
+//           headers: { "Content-Type": "application/json" },
+//           withCredentials: true, // Important for sending cookies
+//         }
+//       );
 
-      // Make the registration request
+//       // Store the tokens in localStorage
+//       localStorage.setItem("accessToken", response.data.accessToken);
+//       localStorage.setItem("refreshToken", response.data.refreshToken);
+
+//       // Return the user data
+//       return response.data.user;
+//     } catch (error) {
+//       return rejectWithValue(
+//         error.response && error.response.data.message
+//           ? error.response.data.message
+//           : error.message
+//       );
+//     }
+//   }
+// );
+
+export const GoogleSignInAction = createAsyncThunk(
+  "auth/googleSignIn",
+  async (token, { rejectWithValue }) => {
+    try {
       const response = await axios.post(
-        `${backendURL}/api/register`,
-        { firstName, email, password, lastName, phoneNumber },
-        config
+        `${backendURL}/api/google/callback`,
+        { token },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
       );
 
-      // Check if registration is successful (status 201)
+      Cookies.set("userToken", response.data.token, { expires: 7 });
+      Cookies.set("userInfo", JSON.stringify(response.data.user), {
+        expires: 7,
+      });
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+// Register user and send welcome email
+export const registerUser = createAsyncThunk(
+  "auth/registerUser",
+  async ({ email, password }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${backendURL}/api/register`,
+        { email, password },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
       if (response.status === 201) {
-        // Send email after successful registration
-        await axios.post(SEND_EMAIL_ENDPOINT, {
-          firstName,
+        await axios.post(`${backendURL}/api/registerMail`, {
           email,
           message: "Welcome to our platform!",
         });
       }
 
-      return response.data; // Return data from the response
+      Cookies.set("userToken", response.data.token, { expires: 7 });
+      Cookies.set("userInfo", JSON.stringify(response.data), { expires: 7 });
+
+      return response.data;
     } catch (error) {
-      if (error.response && error.response.data.message) {
-        // If there's an error response with a message, return the message
-        return rejectWithValue(error.response.data.message);
-      } else {
-        // If there's an unexpected error, return the error message
-        return rejectWithValue(error.message);
-      }
-    }
-  }
-);
-
-export const registerBusiness = createAsyncThunk(
-  "biz/registerBusiness",
-  async (
-    { businessName, businessState, businessCity, businessTag },
-    { rejectWithValue }
-  ) => {
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
-      const response = await axios.post(
-        `${backendURL}/api/registerBusiness`,
-        { businessName, businessState, businessCity, businessTag },
-        config
+      return rejectWithValue(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
       );
-
-      return response.data; // Return data from the response
-    } catch (error) {
-      if (error.response && error.response.data.message) {
-        // If there's an error response with a message, return the message
-        return rejectWithValue(error.response.data.message);
-      } else {
-        // If there's an unexpected error, return the error message
-        return rejectWithValue(error.message);
-      }
     }
   }
 );
 
+// Generate OTP
 export const generateOTP = createAsyncThunk(
   "auth/generateOTP",
   async (email, { rejectWithValue }) => {
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
       const response = await axios.post(
         `${backendURL}/api/generateOTP`,
         { email },
-        config
+        { headers: { "Content-Type": "application/json" } }
       );
 
-      // Check if OTP generation was successful
       if (response.status === 201) {
-        return "OTP sent successfully"; // Return success message
+        return "OTP sent successfully";
       } else {
         return rejectWithValue("Failed to generate OTP");
       }
     } catch (error) {
-      // Handle error and return custom error message
-      if (error.response && error.response.data.message) {
-        return rejectWithValue(error.response.data.message);
-      } else {
-        return rejectWithValue("Failed to generate OTP");
-      }
+      return rejectWithValue(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : "Failed to generate OTP"
+      );
     }
   }
 );
 
+// Verify OTP
 export const verifyOTP = createAsyncThunk(
   "auth/verifyOTP",
   async (otp, { rejectWithValue }) => {
@@ -167,102 +173,85 @@ export const verifyOTP = createAsyncThunk(
         params: { code: otp },
       });
 
-      // Check if OTP verification was successful
       if (response.status === 200) {
-        return "OTP verified successfully"; // Return success message
+        return "OTP verified successfully";
       } else {
         return rejectWithValue("Invalid OTP");
       }
     } catch (error) {
-      // Handle error and return custom error message
-      if (error.response && error.response.data.error) {
-        return rejectWithValue(error.response.data.error);
-      } else {
-        return rejectWithValue("Failed to verify OTP");
-      }
+      return rejectWithValue(
+        error.response && error.response.data.error
+          ? error.response.data.error
+          : "Failed to verify OTP"
+      );
     }
   }
 );
 
-// Action to reset the password
-
+// Reset password
 export const resetPassword = createAsyncThunk(
   "auth/resetPassword",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
       const response = await axios.post(
         `${backendURL}/api/resetPassword`,
         { email, password },
-        config
+        { headers: { "Content-Type": "application/json" } }
       );
 
       if (response.status === 201) {
-        return response.data; // Return data from the response
+        return response.data;
       } else {
         return rejectWithValue("Failed to reset password");
       }
     } catch (error) {
-      // Handle error
-      if (error.response && error.response.data.message) {
-        // If there's an error response with a message, return the message
-        return rejectWithValue(error.response.data.message);
-      } else {
-        // If there's an unexpected error, return the error message
-        return rejectWithValue(error.message);
-      }
+      return rejectWithValue(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+      );
     }
   }
 );
 
-// Action to create the reset session
+// Create reset session
 export const createResetSession = createAsyncThunk(
   "auth/createResetSession",
   async () => {
     try {
       const response = await axios.post(`${backendURL}/api/createResetSession`);
 
-      // Check if reset session creation was successful
       if (response.status === 201) {
-        return "Reset session created successfully"; // Return success message
+        return "Reset session created successfully";
       } else {
         return Promise.reject("Failed to create reset session");
       }
     } catch (error) {
-      // Handle error and return custom error message
       return Promise.reject(error.message || "Failed to create reset session");
     }
   }
 );
+
+// Resend email with OTP
 export const resendEmail = (storedEmail) => {
   return async (dispatch) => {
     try {
-      // Call the backend endpoint to resend the email
-
       const response = await fetch(`${backendURL}/api/generateOTP`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json", // Specify content type as JSON
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: storedEmail }), // Include stored email in the request body
+        body: JSON.stringify({ email: storedEmail }),
       });
 
       if (response.ok) {
-        // If the email is successfully resent, generate a new OTP
         dispatch(generateOTP(storedEmail));
-        return; // Exit early after dispatching the generateOTP action
+        return;
       }
 
-      // Handle any errors or unsuccessful responses from the backend
       throw new Error("Failed to resend email");
     } catch (error) {
       console.error("Error resending email:", error);
-      // Handle the error, possibly dispatching an action to update the state
     }
   };
 };
