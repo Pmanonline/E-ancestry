@@ -17,6 +17,7 @@ import { RiImageAddFill } from "react-icons/ri";
 import { IoClose } from "react-icons/io5";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { FaUserCircle } from "react-icons/fa";
+import { GrTreeOption } from "react-icons/gr";
 import {
   fetchAllDetails,
   deletePerson,
@@ -41,7 +42,7 @@ const style = {
   borderRadius: "4px",
 };
 
-function ChildModal({ initialState, onSubmit }) {
+function ChildModal({ initialState, onSubmit, userId }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -61,14 +62,13 @@ function ChildModal({ initialState, onSubmit }) {
     onSubmit(formDataToSubmit);
     handleClose();
   };
-
   useEffect(() => {
     if (Esuccess) {
       toast.success("Saved!!");
       dispatch(resetEditState());
-      dispatch(fetchAllDetails());
+      dispatch(fetchAllDetails(userId));
     }
-  }, [Esuccess]);
+  }, [Esuccess, dispatch, userId]);
 
   return (
     <React.Fragment>
@@ -105,17 +105,22 @@ function ChildModal({ initialState, onSubmit }) {
 
 export default ChildModal;
 
-export const NestedModal2 = React.forwardRef((props, ref) => {
+export const NestedModal2 = React.forwardRef(({ userId }, ref) => {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
   const motherData = useSelector((state) => state.person.mother);
-
-  console.log(motherData);
+  const { userInfo } = useSelector((state) => state.auth);
+  const LoggedId = userInfo?.user._id;
   const [Deleteopen, setDeleteOpen] = React.useState(false);
+  const { Dloading, Derror, Dsuccess } = useSelector(
+    (state) => state.delete.person
+  );
 
   useEffect(() => {
-    dispatch(fetchAllDetails());
-  }, [dispatch]);
+    if (userId) {
+      dispatch(fetchAllDetails(userId));
+    }
+  }, [dispatch, userId]);
 
   useEffect(() => {
     console.log("Mother Data:", motherData);
@@ -133,10 +138,6 @@ export const NestedModal2 = React.forwardRef((props, ref) => {
   const DeleteClose = () => {
     setDeleteOpen(false);
   };
-
-  useEffect(() => {
-    dispatch(fetchAllDetails());
-  }, [dispatch]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -167,6 +168,13 @@ export const NestedModal2 = React.forwardRef((props, ref) => {
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
   };
+  useEffect(() => {
+    if (Dsuccess) {
+      toast.success("Deleted!!");
+      dispatch(resetDeleteState());
+      dispatch(fetchAllDetails(userId));
+    }
+  }, [Dsuccess, dispatch, userId]);
   return (
     <div className="hidden">
       <Modal
@@ -178,93 +186,100 @@ export const NestedModal2 = React.forwardRef((props, ref) => {
         <Box sx={{ ...style, width: 400 }}>
           {motherData && Object.keys(motherData).length > 0 ? (
             <div className="w-full max-w-sm bg-white  rounded-lg shadow   relative">
-              <div className="flex justify-end px-4 pt-4">
-                <button
-                  id="dropdownButton"
-                  onClick={toggleDropdown}
-                  className="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-500 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-200 rounded-lg text-sm p-1.5"
-                  type="button"
-                >
-                  <span className="sr-only">Open dropdown</span>
-                  <svg
-                    className="w-5 h-5 text-black hover:text-white"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 16 3"
+              {LoggedId === userId ? (
+                <div className="flex justify-end px-4 pt-4">
+                  <button
+                    id="dropdownButton"
+                    onClick={toggleDropdown}
+                    className="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-500 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-200 rounded-lg text-sm p-1.5"
+                    type="button"
                   >
-                    <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
-                  </svg>
-                </button>
-                {/* Dropdown menu */}
-                {isDropdownOpen && (
-                  <div
-                    id="dropdown"
-                    className="absolute top-12 right-0 z-10 text-base list-none divide-y divide-gray-100 rounded-lg shadow w-44 bg-gray-500"
-                  >
-                    <ul className="py-2">
-                      <li>
-                        <ChildModal
-                          initialState={motherData}
-                          onSubmit={(data) => {
-                            dispatch(fetchAllDetails());
-                          }}
-                        />
-                      </li>
+                    <span className="sr-only">Open dropdown</span>
+                    <svg
+                      className="w-5 h-5 text-black hover:text-white"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 16 3"
+                    >
+                      <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+                    </svg>
+                  </button>
+                  {/* Dropdown menu */}
+                  {isDropdownOpen && (
+                    <div
+                      id="dropdown"
+                      className="absolute top-12 right-0 z-10 text-base list-none divide-y divide-gray-100 rounded-lg shadow w-44 bg-gray-500"
+                    >
+                      <ul className="py-2">
+                        <li>
+                          <ChildModal
+                            initialState={motherData}
+                            onSubmit={(data) => {
+                              dispatch(fetchAllDetails(userId));
+                            }}
+                            userId={userId}
+                          />
+                        </li>
 
-                      {/* DELETING MODAL STARTS HERE */}
-                      <Button>
-                        <React.Fragment>
+                        {/* DELETING MODAL STARTS HERE */}
+                        <Button>
+                          <React.Fragment>
+                            <a
+                              onClick={DeleteOpen}
+                              href="#"
+                              className="block px-2 lowercase py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                            >
+                              Delete
+                            </a>
+                            {/* </Button> */}
+                            <Dialog
+                              open={Deleteopen}
+                              onClose={DeleteClose}
+                              aria-labelledby="alert-dialog-title"
+                              aria-describedby="alert-dialog-description"
+                            >
+                              <DialogTitle id="alert-dialog-title">
+                                Are you sure you want to delete this item?
+                              </DialogTitle>
+                              <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                  Confirm delete or cancel
+                                </DialogContentText>
+                              </DialogContent>
+                              <DialogActions>
+                                <Button onClick={DeleteClose}>
+                                  <IoClose size={24} className="text-red-500" />
+                                </Button>
+                                <Button onClick={handleDelete}>
+                                  <AiTwotoneDelete
+                                    size={24}
+                                    className="text-red-300"
+                                  />
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </React.Fragment>
+                        </Button>
+                        {/* // DELETING MODAL ENDS HERE */}
+                        <li>
                           <a
-                            onClick={DeleteOpen}
+                            onClick={toggleDropdown}
                             href="#"
-                            className="block px-2 lowercase py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                           >
-                            Delete
+                            Close
                           </a>
-                          {/* </Button> */}
-                          <Dialog
-                            open={Deleteopen}
-                            onClose={DeleteClose}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                          >
-                            <DialogTitle id="alert-dialog-title">
-                              Are you sure you want to delete this item?
-                            </DialogTitle>
-                            <DialogContent>
-                              <DialogContentText id="alert-dialog-description">
-                                Confirm delete or cancel
-                              </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                              <Button onClick={DeleteClose}>
-                                <IoClose size={24} className="text-red-500" />
-                              </Button>
-                              <Button onClick={handleDelete}>
-                                <AiTwotoneDelete
-                                  size={24}
-                                  className="text-red-300"
-                                />
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
-                        </React.Fragment>
-                      </Button>
-                      {/* // DELETING MODAL ENDS HERE */}
-                      <li>
-                        <a
-                          onClick={toggleDropdown}
-                          href="#"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                        >
-                          Close
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </div>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="my-5 flex justify-end text-end mx-3">
+                  <GrTreeOption size={24} className="text-green" />
+                </div>
+              )}
 
               <div className="flex flex-col items-center pb-10">
                 {motherData.image ? (
@@ -312,7 +327,7 @@ export const NestedModal2 = React.forwardRef((props, ref) => {
                 </h2>
                 <p className="mb-4">Please add information to this card.</p>
                 <Button
-                  href="/layout/mothers-form"
+                  href={`/layout/mothers-form/${userId}`}
                   className="!bg-green !text-white"
                 >
                   Add Info

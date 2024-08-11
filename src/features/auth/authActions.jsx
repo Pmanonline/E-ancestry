@@ -48,61 +48,34 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
-
-// Async thunk to handle login
-// export const loginUser = createAsyncThunk(
-//   "auth/login",
-//   async ({ email, password }, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.post(
-//         `${backendURL}/api/login`,
-//         { email, password },
-//         {
-//           headers: { "Content-Type": "application/json" },
-//           withCredentials: true, // Important for sending cookies
-//         }
-//       );
-
-//       // Store the tokens in localStorage
-//       localStorage.setItem("accessToken", response.data.accessToken);
-//       localStorage.setItem("refreshToken", response.data.refreshToken);
-
-//       // Return the user data
-//       return response.data.user;
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response && error.response.data.message
-//           ? error.response.data.message
-//           : error.message
-//       );
-//     }
-//   }
-// );
-
 export const GoogleSignInAction = createAsyncThunk(
   "auth/googleSignIn",
-  async (token, { rejectWithValue }) => {
+  async (tokenId, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${backendURL}/api/google/callback`,
-        { token },
+        { tokenId },
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
         }
       );
 
-      Cookies.set("userToken", response.data.token, { expires: 7 });
-      Cookies.set("userInfo", JSON.stringify(response.data.user), {
-        expires: 7,
-      });
+      const { userToken, refreshToken, ...user } = response.data;
 
-      return response.data;
+      // Store tokens in localStorage
+      localStorage.setItem("userToken", userToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("userInfo", JSON.stringify(user));
+
+      // Return the data
+      return { userToken, refreshToken, user };
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
+
 // Register user and send welcome email
 export const registerUser = createAsyncThunk(
   "auth/registerUser",

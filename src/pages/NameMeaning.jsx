@@ -21,7 +21,9 @@ export default function NameMeaning() {
     e.preventDefault();
     console.log("Form submitted with surname:", surname);
     if (surname.trim()) {
-      const response = await fetch(`${backendURL}/api/search?query=${surname}`);
+      const response = await fetch(
+        `${backendURL}/api/searchUser?query=${surname}`
+      );
       const data = await response.json();
       setSearchResults(data.names);
     }

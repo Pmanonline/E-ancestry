@@ -35,6 +35,7 @@ import GetStartedWithFamilyTree from "./pages/GetStartedWithFamilyTree";
 import FamilyTreeFeeds from "./pages/FamilyTree-Pages/FamilyTree-Feeds";
 import Layout from "./pages/LAYOUTS/Pages/FamilyTreeSelf";
 import NotFound from "./pages/NotFound";
+import SearchUsers from "./components/tools/SearchUsers";
 
 //  all family tree forms
 import PersonalForm from "./components/Forms/personalForm";
@@ -49,6 +50,7 @@ import MaternalGrandfatherForm from "./components/Forms/MaternalGrandfatherForm"
 import Viewers from "./pages/LAYOUTS/Pages/Viewers";
 import Invites from "./pages/LAYOUTS/Pages/Invites";
 import FindInTree from "./pages/LAYOUTS/Pages/FindInTree";
+import { ViewTree } from "./pages/ViewTree";
 
 function App() {
   const location = useLocation();
@@ -100,7 +102,7 @@ function App() {
         {/* <Route path="/about-ayo" element={<AboutAyo />} /> */}
         <Route path="/names/:name" element={<NameDetails />} />
         <Route path="/get-started" element={<GetStartedWithFamilyTree />} />
-        <Route path="/FamilyTree-feeds" element={<FamilyTreeFeeds />} />
+        <Route path="/FamilyTree-feeds/:userId" element={<FamilyTreeFeeds />} />
         <Route path="/" element={<Navigate to="/genealogy/Abia State" />} />
         <Route
           path="/genealogy"
@@ -111,25 +113,29 @@ function App() {
 
         {/* Layout Protected routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="profile" element={<Profile />} />
+          {/* <Route path="profile" element={<Profile />} /> */}
+          <Route path="/search" element={<SearchUsers />} />
+          <Route path="/profile/:id" element={<Profile />} />
+          {/* <Route path="/familytree/:userId" element={<FamilyTreePage />} /> */}
+          <Route path="/view-tree/:userId" element={<ViewTree />} />
           <Route path="/layout" element={<Layout />}>
-            <Route path="personal-form" element={<PersonalForm />} />
-            <Route path="mothers-form" element={<MotherForm />} />
-            <Route path="fathers-form" element={<FatherForm />} />
+            <Route path="personal-form/:userId" element={<PersonalForm />} />
+            <Route path="mothers-form/:userId" element={<MotherForm />} />
+            <Route path="fathers-form/:userId" element={<FatherForm />} />
             <Route
-              path="paternalGrandmother-form"
+              path="paternalGrandmother-form/:userId"
               element={<PaternalGrandmotherForm />}
             />
             <Route
-              path="paternalGrandfather-form"
+              path="paternalGrandfather-form/:userId"
               element={<PaternalGrandfatherForm />}
             />
             <Route
-              path="maternalGrandmother-form"
+              path="maternalGrandmother-form/:userId"
               element={<MaternalGrandmotherForm />}
             />
             <Route
-              path="maternalGrandfather-form"
+              path="maternalGrandfather-form/:userId"
               element={<MaternalGrandfatherForm />}
             />
             <Route path="viewers" element={<Viewers />} />

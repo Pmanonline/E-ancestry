@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +14,7 @@ import { statesAndLGAs } from "../assets/json-datas/State/LGAs.json";
 import { FaTwitter } from "react-icons/fa6";
 import { FaFacebookF } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
+import { MdOutlineAddAPhoto } from "react-icons/md";
 import {
   createFamilyMember,
   getProfile,
@@ -24,16 +26,39 @@ const backendURL =
 
 export default function Profile() {
   const dispatch = useDispatch();
-  const { loading, error, profile, success } = useSelector(
-    (state) => state.person
-  );
+  const { id } = useParams();
+  const { userInfo } = useSelector((state) => state.auth);
+  const { profile, loading, error } = useSelector((state) => state.person);
+
+  const userId = userInfo?.user._id || id; // Use userInfo ID or URL param ID
+
+  console.log("Profile Data:", profile);
+  console.log("User ID:", userId);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (userId) {
+        try {
+          await dispatch(getProfile(userId)).unwrap();
+        } catch (error) {
+          console.error("Failed to fetch profile data:", error);
+          // Optionally, display a toast or some other error message here
+        }
+      }
+    };
+
+    fetchData();
+  }, [dispatch, userId]); // Use `userId` in the dependency array
+
   const fileInputRef = useRef(null);
+  const fileInputRef2 = useRef(null);
   const handleIconClick = () => {
     fileInputRef.current.click();
   };
 
   const Image = profile?.image;
-  console.log("image:", Image);
+  const Image2 = profile?.image2;
+  console.log("image:", Image, Image2);
   const initialFormData = {
     background: "",
     firstName: "",
@@ -55,23 +80,37 @@ export default function Profile() {
     instagram: "",
     about: "",
     image: "",
-    middlename: "",
+    image2: "",
   };
+
+  useEffect(() => {
+    if (!profile) {
+      localStorage.removeItem("formData");
+    }
+  }, [profile]);
 
   useEffect(() => {
     if (profile) {
       setFormData((prevState) => ({
         ...prevState,
         ...profile,
-        image: profile.image || formData.image, // Preserve existing image URL if available
+        image: profile.image || formData.image,
+        image2: profile.image2 || formData.image2, // Preserve existing image2 URL if available
       }));
       setImagePreview(profile.image ? `${backendURL}/${profile.image}` : null);
+      setImagePreview2(
+        profile.image2 ? `${backendURL}/${profile.image2}` : null
+      );
     }
   }, [profile]);
 
-  // useEffect(() => {
-  //   localStorage.setItem("formData", JSON.stringify(formData));
-  // }, [formData]);
+  const handleChange = (e) => {
+    const { name, value, type, files } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: type === "file" ? files[0] : value,
+    }));
+  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -81,13 +120,13 @@ export default function Profile() {
     }));
     setImagePreview(URL.createObjectURL(file));
   };
-
-  const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
+  const handleFileChange2 = (e) => {
+    const file = e.target.files[0];
     setFormData((prevState) => ({
       ...prevState,
-      [name]: type === "file" ? files[0] : value,
+      image2: file,
     }));
+    setImagePreview2(URL.createObjectURL(file));
   };
 
   const handleStateChange = (e) => {
@@ -142,23 +181,13 @@ export default function Profile() {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await dispatch(getProfile()).unwrap();
-      } catch (error) {
-        toast.error("Failed to fetch profile data.");
-      }
-    };
-    fetchData();
-  }, [dispatch]);
-
   const [formData, setFormData] = useState(() => {
     const savedFormData = JSON.parse(localStorage.getItem("formData"));
     return savedFormData || initialFormData;
   });
 
   const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview2, setImagePreview2] = useState(null);
 
   // Update formData with profileData when profileData is fetched
   useEffect(() => {
@@ -169,11 +198,6 @@ export default function Profile() {
       }));
     }
   }, [profile]);
-
-  // Save formData to localStorage on change
-  useEffect(() => {
-    localStorage.setItem("formData", JSON.stringify(formData));
-  }, [formData]);
 
   const states = statesAndLGAs.map((state) => (
     <option key={state.id} value={state.id}>
@@ -200,22 +224,10 @@ export default function Profile() {
     }));
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await dispatch(getProfile()).unwrap();
-      } catch (error) {
-        toast.error("Failed to fetch profile data.");
-      }
-    };
-    fetchData();
-  }, [dispatch]);
-
   return (
-    <section className="px-4">
+    <section className="px-12">
       <form onSubmit={handleSubmit} className="mb-36">
         <div className="">
-          {/* <h1>{profile.middlename}</h1> */}
           <div className="border-b border-gray-900/10 pb-12">
             <h2 className="text-base font-semibold leading-7 text-gray-900">
               Personal Information
@@ -224,11 +236,14 @@ export default function Profile() {
               Please fiil all field as accurately as possible
             </p>
           </div>
-          <div className="lg:grid grid-cols-10">
-            <div className=" col-span-4 md:pr-5">
+          <div className="md:grid grid-cols-10">
+            <div className=" col-span-3 md:pr-5">
               <div className="border-gray-900/10 pb-12">
                 <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                  <div className="col-span-full">
+                  <div
+                    className="col-span-full 
+                   mx-auto  text-center  items-center align-middle"
+                  >
                     <label
                       htmlFor="cover-photo"
                       className="block text-sm font-medium leading-6 text-gray-900"
@@ -236,17 +251,32 @@ export default function Profile() {
                       Cover photo
                     </label>
                     <div className="mt-1 flex justify-center rounded-lg px-6 py-10">
-                      <div className="text-center">
+                      <div className="relative text-center">
                         {imagePreview ? (
-                          <img
-                            src={imagePreview}
-                            alt="Image preview"
-                            className="h-[20rem] w-[20rem] rounded-full object-cover"
-                          />
+                          <>
+                            <img
+                              src={imagePreview}
+                              alt="Image preview"
+                              className="h-[15rem] w-[15rem] rounded-full object-cover"
+                            />
+                            <div
+                              onClick={() =>
+                                document.getElementById("file-upload").click()
+                              }
+                              className="absolute bottom-0 right-4 cursor-pointer h-12 w-12 bg-white rounded-full flex justify-center items-center border-2 border-white"
+                            >
+                              <MdOutlineAddAPhoto
+                                aria-hidden="true"
+                                className="h-8 w-8 text-gray-500"
+                              />
+                            </div>
+                          </>
                         ) : (
                           <div
-                            onClick={handleIconClick}
-                            className=" cursor-pointer h-40 w-40 flex flex-col justify-center items-center border-2 border-dashed border-gray-300 rounded-full"
+                            onClick={() =>
+                              document.getElementById("file-upload").click()
+                            }
+                            className="cursor-pointer h-40 w-40 flex flex-col justify-center items-center border-2 border-dashed border-gray-300 rounded-full"
                           >
                             <BsPersonBoundingBox
                               aria-hidden="true"
@@ -272,35 +302,110 @@ export default function Profile() {
                         )}
                       </div>
                     </div>
-                    <div className="mt-1 flex items-center gap-x-3">
-                      <UserCircleIcon
-                        aria-hidden="true"
-                        className="h-12 w-12 text-gray-300"
+
+                    <label
+                      htmlFor="file-upload"
+                      className=" hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer"
+                    >
+                      Change
+                      <input
+                        id="file-upload"
+                        name="image"
+                        type="file"
+                        className="sr-only"
+                        onChange={handleFileChange}
                       />
-                      <label
-                        htmlFor="file-upload"
-                        className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer"
-                      >
-                        Change
-                        <input
-                          id="file-upload"
-                          name="image"
-                          type="file"
-                          className="sr-only"
-                          onChange={handleFileChange}
-                        />
-                      </label>
+                    </label>
+                  </div>
+
+                  {/* FAmilyPictureUpload */}
+                  <div
+                    className="col-span-full 
+                   mx-auto  text-center  items-center align-middle"
+                  >
+                    <label
+                      htmlFor="cover-photo"
+                      className="block text-sm font-medium l text-gray-900"
+                    >
+                      Family picture
+                    </label>
+                    <div className="mt-1 flex justify-center rounded-lg px-6 py-10">
+                      <div className="relative text-center">
+                        {imagePreview2 ? (
+                          <>
+                            <img
+                              src={imagePreview2}
+                              alt="Image preview"
+                              className="h-[20rem] w-[20rem] rounded-md object-cover"
+                            />
+                            <div
+                              onClick={() =>
+                                document.getElementById("file-upload2").click()
+                              }
+                              className="absolute bottom-[-3rem] right-0 cursor-pointer h-12 w-12 bg-white rounded-full flex justify-center items-center border-2 border-white"
+                            >
+                              <MdOutlineAddAPhoto
+                                aria-hidden="true"
+                                className="h-8 w-8 text-gray-500"
+                              />
+                            </div>
+                          </>
+                        ) : (
+                          <div
+                            onClick={() =>
+                              document.getElementById("file-upload2").click()
+                            }
+                            className="cursor-pointer h-40 w-40 flex flex-col justify-center items-center border-2 border-dashed border-gray-300 rounded-full"
+                          >
+                            <BsPersonBoundingBox
+                              aria-hidden="true"
+                              className="h-12 w-12 text-gray-300"
+                            />
+                            <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                              <label
+                                htmlFor="file-upload2"
+                                className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                              >
+                                <span className="hidden">Upload a file</span>
+                                <input
+                                  ref={fileInputRef}
+                                  id="file-upload2"
+                                  name="image2"
+                                  type="file"
+                                  className="sr-only"
+                                  onChange={handleFileChange2}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
+
+                    <label
+                      htmlFor="file-upload2"
+                      className=" hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer"
+                    >
+                      Change
+                      <input
+                        ref={fileInputRef}
+                        id="file-upload2"
+                        name="image2"
+                        type="file"
+                        className="sr-only"
+                        onChange={handleFileChange2}
+                      />
+                    </label>
                   </div>
                 </div>
               </div>
             </div>
-            <div className=" col-span-6">
+            <div className=" col-span-7">
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="first-name"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     First name
                   </label>
@@ -312,14 +417,14 @@ export default function Profile() {
                       type="text"
                       value={formData.firstName}
                       onChange={handleChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black text-sm rounded-sm  ring-1 ring-gray-200 "
                     />
                   </div>
                 </div>
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="last-name"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     Last name
                   </label>
@@ -331,14 +436,14 @@ export default function Profile() {
                       type="text"
                       value={formData.lastName}
                       onChange={handleChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                      className="px-3 py-2 text-sm  mb-4 sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
                     />
                   </div>
                 </div>
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     Middle name
                   </label>
@@ -350,14 +455,14 @@ export default function Profile() {
                       type="text"
                       value={formData.middlename}
                       onChange={handleChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                      className="px-3 py-2 mb-4 text-sm  sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
                     />
                   </div>
                 </div>
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     Phone Number
                   </label>
@@ -369,14 +474,14 @@ export default function Profile() {
                       type="text"
                       value={formData.phoneNumber}
                       onChange={handleChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                      className="px-3 py-2 mb-4 text-sm  sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
                     />
                   </div>
                 </div>
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="state"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     State Of Origin
                   </label>
@@ -386,7 +491,7 @@ export default function Profile() {
                       name="state"
                       value={formData.state}
                       onChange={handleStateChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full focus:outline-none focus:ring-2 focus:ring-green text-black rounded-sm ring-1 ring-gray-200"
+                      className="px-3 py-2 mb-4 text-sm  sm:mb-0 sm:mr-4 w-full focus:outline-none focus:ring-2 focus:ring-green text-black rounded-sm ring-1 ring-gray-200"
                     >
                       <option value="">Select a state</option>
                       {states}
@@ -396,7 +501,7 @@ export default function Profile() {
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="state"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     Local governmental Area.
                   </label>
@@ -406,7 +511,7 @@ export default function Profile() {
                       name="lga"
                       value={formData.lga}
                       onChange={handleLGAChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full focus:outline-none focus:ring-2 focus:ring-green text-black rounded-sm ring-1 ring-gray-200"
+                      className="px-3 py-2 text-sm  mb-4 sm:mb-0 sm:mr-4 w-full focus:outline-none focus:ring-2 focus:ring-green text-black rounded-sm ring-1 ring-gray-200"
                     >
                       <option value="">Select an LGA</option>
                       {lgas}
@@ -416,7 +521,7 @@ export default function Profile() {
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="street-address"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     Email address
                   </label>
@@ -428,14 +533,14 @@ export default function Profile() {
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                      className="px-3 py-2 mb-4 text-sm  sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
                     />
                   </div>
                 </div>
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="street-address"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     Date of birth
                   </label>
@@ -447,14 +552,14 @@ export default function Profile() {
                       type="date"
                       value={formData.DOB}
                       onChange={handleChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                      className="px-3 py-2 mb-4 sm:mb-0 text-sm  sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
                     />
                   </div>
                 </div>
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="street-address"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     Street address
                   </label>
@@ -466,14 +571,14 @@ export default function Profile() {
                       type="text"
                       value={formData.streetAddress}
                       onChange={handleChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                      className="px-3 py-2 mb-4 sm:mb-0 text-sm  sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
                     />
                   </div>
                 </div>
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="postal-code"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     Vilage
                   </label>
@@ -485,14 +590,14 @@ export default function Profile() {
                       type="text"
                       value={formData.village}
                       onChange={handleChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                      className="px-3 py-2 mb-4 sm:mb-0 text-sm  sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
                     />
                   </div>
                 </div>
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="postal-code"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     Autonomous Community
                   </label>
@@ -504,14 +609,14 @@ export default function Profile() {
                       type="text"
                       value={formData.autonomous}
                       onChange={handleChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                      className="px-3 py-2 mb-4 sm:mb-0 text-sm  sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
                     />
                   </div>
                 </div>
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="postal-code"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     Kindred
                   </label>
@@ -523,14 +628,14 @@ export default function Profile() {
                       type="text"
                       value={formData.kindred}
                       onChange={handleChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                      className="px-3 py-2 mb-4 sm:mb-0 text-sm  sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
                     />
                   </div>
                 </div>{" "}
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="religion"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     Religion
                   </label>
@@ -540,7 +645,7 @@ export default function Profile() {
                       name="religion"
                       value={formData.religion}
                       onChange={handleChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 w-full focus:outline-none focus:ring-2 focus:ring-green text-black rounded-sm ring-1 ring-gray-200"
+                      className="px-3 py-2 mb-4  text-sm  sm:mb-0 w-full focus:outline-none focus:ring-2 focus:ring-green text-black rounded-sm ring-1 ring-gray-200"
                     >
                       <option value="">Select a religion</option>
                       <option value="Christianity">Christianity</option>
@@ -554,7 +659,7 @@ export default function Profile() {
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="religion"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm  leading-6 text-gray-900"
                   >
                     Tribe
                   </label>
@@ -564,7 +669,7 @@ export default function Profile() {
                       name="tribe"
                       value={formData.tribe}
                       onChange={handleChange}
-                      className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                      className="px-3 py-2 mb-4 sm:mb-0  text-sm sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
                     >
                       <option value="">Select a tribe</option>
                       <option value="Igbo">Igbo</option>
@@ -583,7 +688,7 @@ export default function Profile() {
           <div className="sm:col-span-3 mb-3">
             <label
               htmlFor="email"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-sm  leading-6 text-gray-900"
             >
               Profession
             </label>
@@ -595,7 +700,7 @@ export default function Profile() {
                 type="text"
                 value={formData.profession}
                 onChange={handleChange}
-                className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4  md:min-w-[35%]  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                className="px-3 py-2 mb-4 sm:mb-0 sm:mr-4 text-sm   md:min-w-[35%]  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
               />
             </div>
           </div>
@@ -603,7 +708,7 @@ export default function Profile() {
           <div className="mb-3">
             <label
               htmlFor="facebook"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-sm  leading-6 text-gray-900"
             >
               Facebook
             </label>
@@ -615,7 +720,7 @@ export default function Profile() {
                 placeholder="e.g https://www.facebook.com/username"
                 value={formData.facebook}
                 onChange={handleChange}
-                className="pl-9   md:min-w-[35%] mod:w-full py-2 mb-4 sm:mb-0 sm:mr-4   focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                className="pl-9   md:min-w-[35%] text-sm  mod:w-full py-2 mb-4 sm:mb-0 sm:mr-4   focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
               />
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <FaFacebookF className="w-3 h-auto" />
@@ -625,7 +730,7 @@ export default function Profile() {
           <div className="mb-3">
             <label
               htmlFor="twitter"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-sm  leading-6 text-gray-900"
             >
               Twitter
             </label>
@@ -637,7 +742,7 @@ export default function Profile() {
                 placeholder="e.g https://www.x.com/username"
                 value={formData.twitter}
                 onChange={handleChange}
-                className="pl-9  md:min-w-[35%] mod:w-full py-2 mb-4 sm:mb-0 sm:mr-4   focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                className="pl-9  md:min-w-[35%]  text-sm  mod:w-full py-2 mb-4 sm:mb-0 sm:mr-4   focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
               />
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <FaTwitter className="w-3 h-auto" />
@@ -647,7 +752,7 @@ export default function Profile() {
           <div className="mb-3">
             <label
               htmlFor="instagram"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-sm  leading-6 text-gray-900"
             >
               Instagram
             </label>
@@ -659,7 +764,7 @@ export default function Profile() {
                 placeholder="e.g https://www.instagram.com/username"
                 value={formData.instagram}
                 onChange={handleChange}
-                className="pl-9  md:min-w-[35%] mod:w-full py-2 mb-4 sm:mb-0 sm:mr-4   focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
+                className="pl-9  md:min-w-[35%] text-sm  mod:w-full py-2 mb-4 sm:mb-0 sm:mr-4   focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
               />
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <FaInstagram className="w-3 h-auto" />
@@ -670,7 +775,7 @@ export default function Profile() {
           <div className="col-span-full  mt-9">
             <label
               htmlFor="about"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-sm  leading-6 text-gray-900"
             >
               Background
             </label>

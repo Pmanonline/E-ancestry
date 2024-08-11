@@ -149,15 +149,15 @@
 //   const dispatch = useDispatch();
 //   const [surname, setSurname] = useState("");
 
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     console.log("Form submitted with surname:", surname);
-//     setSurname("");
-//   };
+// const handleSubmit = (e) => {
+//   e.preventDefault();
+//   console.log("Form submitted with surname:", surname);
+//   setSurname("");
+// };
 
-//   const handleChange = (e) => {
-//     setSurname(e.target.value);
-//   };
+// const handleChange = (e) => {
+//   setSurname(e.target.value);
+// };
 
 //   useEffect(() => {
 //     dispatch(getProfile());
@@ -1094,3 +1094,412 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
 };
 
 export default PersonalForm;
+import React, { useState, useEffect, useRef } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import Error from "../components/tools/Error";
+import Spinner from "../components/tools/Spinner";
+import { resetSuccess } from "../features/UserFeature/UserSlice";
+import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { BsPersonBoundingBox } from "react-icons/bs";
+import { statesAndLGAs } from "../assets/json-datas/State/LGAs.json";
+import { FaTwitter } from "react-icons/fa6";
+import { FaFacebookF } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
+import { createFamilyMember, getProfile } from "../features/UserFeature/UserAction";
+
+const backendURL =
+  process.env.NODE_ENV !== "production"
+    ? "http://localhost:8080"
+    : "https://gekoda-api.onrender.com";
+
+export default function Profile() {
+  const dispatch = useDispatch();
+  const { loading, error, profile, success } = useSelector((state) => state.person);
+  const fileInputRef = useRef(null);
+  const familyPictureInputRef = useRef(null);
+
+  const handleIconClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFamilyPictureClick = () => {
+    familyPictureInputRef.current.click();
+  };
+
+  const Image = profile?.image;
+  const FamilyPicture = profile?.familyPicture; // New field for family picture
+
+  const initialFormData = {
+    background: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    DOB: "",
+    phoneNumber: "",
+    streetAddress: "",
+    lga: "",
+    state: "",
+    kindred: "",
+    village: "",
+    autonomous: "",
+    tribe: "",
+    religion: "",
+    profession: "",
+    facebook: "",
+    twitter: "",
+    instagram: "",
+    about: "",
+    image: "",
+    familyPicture: "", // New field for family picture
+    middlename: "",
+  };
+
+  useEffect(() => {
+    if (profile) {
+      setFormData((prevState) => ({
+        ...prevState,
+        ...profile,
+        image: profile.image || formData.image,
+        familyPicture: profile.familyPicture || formData.familyPicture, // Preserve existing family picture URL if available
+      }));
+      setImagePreview(profile.image ? `${backendURL}/${profile.image}` : null);
+      setFamilyPicturePreview(profile.familyPicture ? `${backendURL}/${profile.familyPicture}` : null);
+    }
+  }, [profile]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prevState) => ({
+      ...prevState,
+      image: file,
+    }));
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleFamilyPictureChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prevState) => ({
+      ...prevState,
+      familyPicture: file,
+    }));
+    setFamilyPicturePreview(URL.createObjectURL(file));
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type, files } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: type === "file" ? files[0] : value,
+    }));
+  };
+
+  const handleStateChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      state: value,
+      lga: "",
+    }));
+  };
+
+  const handleLGAChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      lga: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const selectedState = statesAndLGAs.find(
+      (state) => state.id === formData.state
+    )?.name;
+    const selectedLGA = statesAndLGAs
+      .find((state) => state.id === formData.state)
+      ?.local_governments.find((lga) => lga.id === formData.lga)?.name;
+
+    const data = new FormData();
+    for (const key in formData) {
+      if (key === "state" && selectedState) {
+        data.append(key, selectedState);
+      } else if (key === "lga" && selectedLGA) {
+        data.append(key, selectedLGA);
+      } else {
+        data.append(key, formData[key]);
+      }
+    }
+
+    try {
+      await dispatch(
+        createFamilyMember({
+          memberType: "profile",
+          formData: data,
+        })
+      ).unwrap();
+      toast.success("Updated! 👍");
+      dispatch(resetSuccess());
+    } catch (error) {
+      toast.error("Failed to create profile. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await dispatch(getProfile()).unwrap();
+      } catch (error) {
+        toast.error("Failed to fetch profile data.");
+      }
+    };
+    fetchData();
+  }, [dispatch]);
+
+  const [formData, setFormData] = useState(() => {
+    const savedFormData = JSON.parse(localStorage.getItem("formData"));
+    return savedFormData || initialFormData;
+  });
+
+  const [imagePreview, setImagePreview] = useState(null);
+  const [familyPicturePreview, setFamilyPicturePreview] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem("formData", JSON.stringify(formData));
+  }, [formData]);
+
+  const states = statesAndLGAs.map((state) => (
+    <option key={state.id} value={state.id}>
+      {state.name}
+    </option>
+  ));
+
+  const selectedState = statesAndLGAs.find(
+    (state) => state.id === formData.state
+  );
+
+  const lgas = selectedState
+    ? selectedState.local_governments.map((lga) => (
+        <option key={lga.id} value={lga.id}>
+          {lga.name}
+        </option>
+      ))
+    : [];
+
+  const handleQuillChange = (value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      about: value,
+    }));
+  };
+
+  return (
+    <section className="px-4">
+      <form onSubmit={handleSubmit} className="mb-36">
+        <div className="">
+          <div className="border-b border-gray-900/10 pb-12">
+            <h2 className="text-base font-semibold leading-7 text-gray-900">
+              Personal Information
+            </h2>
+            <p className="mt-1 text-sm leading-6 text-gray-600">
+              Please fill all fields as accurately as possible
+            </p>
+          </div>
+          <div className="lg:grid grid-cols-10">
+            <div className="col-span-4 md:pr-5">
+              <div className="border-gray-900/10 pb-12">
+                <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div className="col-span-full">
+                    <label
+                      htmlFor="cover-photo"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      Profile Picture
+                    </label>
+                    <div className="mt-1 flex justify-center rounded-lg px-6 py-10">
+                      <div className="text-center">
+                        {imagePreview ? (
+                          <img
+                            src={imagePreview}
+                            alt="Profile picture preview"
+                            className="h-[20rem] w-[20rem] rounded-full object-cover"
+                          />
+                        ) : (
+                          <div
+                            onClick={handleIconClick}
+                            className="cursor-pointer h-40 w-40 flex flex-col justify-center items-center border-2 border-dashed border-gray-300 rounded-full"
+                          >
+                            <BsPersonBoundingBox
+                              aria-hidden="true"
+                              className="h-12 w-12 text-gray-300"
+                            />
+                            <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                              <label
+                                htmlFor="file-upload"
+                                className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                              >
+                                <span className="hidden">Upload a file</span>
+                                <input
+                                  ref={fileInputRef}
+                                  id="file-upload"
+                                  name="image"
+                                  type="file"
+                                  className="sr-only"
+                                  onChange={handleFileChange}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                 
+                  {/* Other fields in the form */}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          type="submit"
+          className="mt-6 bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700"
+        >
+          Save
+        </button>
+      </form>
+    </section>
+  );
+}
+
+
+
+
+ <section className="px-4">
+      <form onSubmit={handleSubmit} className="mb-36">
+        <div className="">
+          <div className="border-b border-gray-900/10 pb-12">
+            <h2 className="text-base font-semibold leading-7 text-gray-900">
+              Personal Information
+            </h2>
+            <p className="mt-1 text-sm leading-6 text-gray-600">
+              Please fill all fields as accurately as possible
+            </p>
+          </div>
+          <div className="lg:grid grid-cols-10">
+            <div className="col-span-4 md:pr-5">
+              <div className="border-gray-900/10 pb-12">
+                <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div className="col-span-full">
+                    <label
+                      htmlFor="cover-photo"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      Cover photo
+                    </label>
+                    <div className="mt-1 flex justify-center rounded-lg px-6 py-10">
+                      <div className="text-center">
+                        {imagePreview ? (
+                          <img
+                            src={imagePreview}
+                            alt="Image preview"
+                            className="h-[20rem] w-[20rem] rounded-full object-cover"
+                          />
+                        ) : (
+                          <div
+                            onClick={() => fileInputRef.current.click()}
+                            className="cursor-pointer h-40 w-40 flex flex-col justify-center items-center border-2 border-dashed border-gray-300 rounded-full"
+                          >
+                            <BsPersonBoundingBox
+                              aria-hidden="true"
+                              className="h-12 w-12 text-gray-300"
+                            />
+                            <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                              <label
+                                htmlFor="file-upload"
+                                className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                              >
+                                <span className="hidden">Upload a file</span>
+                                <input
+                                  ref={fileInputRef}
+                                  id="file-upload"
+                                  name="image"
+                                  type="file"
+                                  className="sr-only"
+                                  onChange={handleFileChange}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-span-full">
+                    <label
+                      htmlFor="cover-photo2"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      Additional Image
+                    </label>
+                    <div className="mt-1 flex justify-center rounded-lg px-6 py-10">
+                      <div className="text-center">
+                        {imagePreview2 ? (
+                          <img
+                            src={imagePreview2}
+                            alt="Additional image preview"
+                            className="h-[20rem] w-[20rem] rounded-full object-cover"
+                          />
+                        ) : (
+                          <div
+                            onClick={() => fileInputRef2.current.click()}
+                            className="cursor-pointer h-40 w-40 flex flex-col justify-center items-center border-2 border-dashed border-gray-300 rounded-full"
+                          >
+                            <PhotoIcon
+                              aria-hidden="true"
+                              className="h-12 w-12 text-gray-300"
+                            />
+                            <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                              <label
+                                htmlFor="file-upload2"
+                                className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                              >
+                                <span className="hidden">Upload an additional file</span>
+                                <input
+                                  ref={fileInputRef2}
+                                  id="file-upload2"
+                                  name="image2"
+                                  type="file"
+                                  className="sr-only"
+                                  onChange={handleFileChange2}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Existing fields here */}
+                  {/* ... */}
+                </div>
+              </div>
+            </div>
+
+            {/* Additional form fields */}
+            {/* ... */}
+          </div>
+        </div>
+        <button
+          type="submit"
+          className="rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+        >
+          Save Changes
+        </button>
+      </form>
+    </section>
+  );

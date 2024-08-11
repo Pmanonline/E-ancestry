@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import backgroundImage from "../../assets/images/backgroundImage.png";
 import LayoutNAv from "../../components/layoutNAv";
@@ -34,14 +35,17 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
       ? `${backendURL}/${initialState.image}`
       : null,
   });
-
+  // const { userId } = useParams();
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error, success } = useSelector((state) => state.form.person);
+  const { userInfo } = useSelector((state) => state.auth);
   const { Eloading, Eerror, Esuccess } = useSelector(
     (state) => state.edit.person
   );
-
+  const userId = userInfo?.user._id || id;
+  console.log(userId);
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -81,7 +85,7 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
         })
       );
 
-      dispatch(fetchAllDetails());
+      dispatch(fetchAllDetails(userId));
       dispatch(resetEditState());
     } else {
       dispatch(
@@ -90,7 +94,6 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
           formData: formDataToSubmit,
         })
       );
-      dispatch(fetchAllDetails());
     }
   };
 
@@ -121,8 +124,9 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
   useEffect(() => {
     if (success) {
       toast.success("Created!!");
+      dispatch(fetchAllDetails(userId));
       dispatch(resetSuccess());
-      setTimeout(() => navigate("/layout/mothers-form"), 2000);
+      setTimeout(() => navigate(`/layout/fathers-form/${userId}`), 2000);
     }
   }, [success, dispatch, navigate]);
 
@@ -284,7 +288,7 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
             ) : (
               <div className="w-full text-end items-end flex justify-end">
                 <Link
-                  to="/layout/mothers-form"
+                  to={`/layout/fathers-form/${userId}`}
                   className="w-full flex justify-start font-medium"
                 >
                   <button className="underline w-full flex items-center bg-green-500 px-4 py-2 transition ease-in-out duration-200 transform hover:scale-105 rounded-3xl">

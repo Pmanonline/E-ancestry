@@ -2,11 +2,16 @@ import React from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
 const GoogleSignInButton = ({ onSignIn }) => {
-  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID; // Use environment variable for client ID
 
-  const handleSuccess = async (credentialResponse) => {
+  const handleSuccess = async (response) => {
     try {
-      await onSignIn(credentialResponse.credential);
+      const { credential } = response;
+      if (credential) {
+        await onSignIn(credential); // Pass credential to the onSignIn handler
+      } else {
+        throw new Error("No credential received");
+      }
     } catch (error) {
       console.error("Google sign-in failed", error);
     }

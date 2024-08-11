@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import backgroundImage from "../../assets/images/backgroundImage.png";
 import LayoutNAv from "../../components/layoutNAv";
@@ -38,6 +39,8 @@ const FatherForm = ({ initialState = {}, isEdit = false }) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { userId } = useParams();
+  const location = useLocation();
   const { loading, error, success } = useSelector((state) => state.form.person);
   const { Eloading, Eerror, Esuccess } = useSelector(
     (state) => state.edit.person
@@ -122,9 +125,9 @@ const FatherForm = ({ initialState = {}, isEdit = false }) => {
   useEffect(() => {
     if (success) {
       toast.success("Created!!");
+      dispatch(fetchAllDetails(userId));
       dispatch(resetSuccess());
-      setTimeout(() => navigate("/layout/mothers-form"), 2000);
-      dispatch(fetchAllDetails());
+      setTimeout(() => navigate(`/layout/mothers-form/${userId}`), 2000);
     }
   }, [success, dispatch, navigate]);
 
@@ -306,7 +309,7 @@ const FatherForm = ({ initialState = {}, isEdit = false }) => {
             ) : (
               <div className="w-full text-end items-end flex justify-end">
                 <Link
-                  to="/layout/mothers-form"
+                  to={`/layout/mothers-form/${userId}`}
                   className="w-full flex justify-start font-medium"
                 >
                   <button className="underline w-full flex items-center bg-green-500 px-4 py-2 transition ease-in-out duration-200 transform hover:scale-105 rounded-3xl">

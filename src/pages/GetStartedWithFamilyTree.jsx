@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { GetstartedCard1 } from "../components/Cards/GetstartedCard";
 import { GetstartedCard2 } from "../components/Cards/GetstartedCard";
 import { Number3 } from "../components/d-button";
@@ -10,6 +11,9 @@ import { HomeCard3 } from "../components/Cards/Cards";
 import FamilyImage from "../assets/images/familyTree2.png";
 
 function GetStartedWithFamilyTree() {
+  const { userInfo } = useSelector((state) => state.auth);
+  const userId = userInfo?.user._id || id;
+  console.log(userId);
   return (
     <>
       <section>
@@ -35,7 +39,7 @@ function GetStartedWithFamilyTree() {
 
             <div className="absolute bottom-[9rem]  w-full h-full flex items-end justify-center bg-opacity-50">
               <Link
-                to="/layout/personal-form"
+                to={`/layout/personal-form/${userId}`}
                 className="bg-green text-white font-bold  py-2 px-3 rounded-2xl mt-5 transition ease-in-out duration-200 transform hover:scale-105"
               >
                 Build your tree

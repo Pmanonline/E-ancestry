@@ -41,8 +41,8 @@ const authSlice = createSlice({
       localStorage.removeItem("userInfo");
     },
     setCredentials: (state, { payload }) => {
-      const { token, user } = payload;
-      state.userInfo = { token, user };
+      const { userToken, refreshToken, user } = payload;
+      state.userInfo = { token: userToken, refreshToken, user };
     },
     resetSuccess: (state) => {
       state.success = false;
@@ -60,9 +60,9 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        const { userToken, ...user } = action.payload;
+        const { userToken, refreshToken, ...user } = action.payload;
         if (userToken) {
-          state.userInfo = { token: userToken, user };
+          state.userInfo = { token: userToken, refreshToken, user };
           state.success = true;
           localStorage.setItem("userToken", userToken);
           localStorage.setItem("userInfo", JSON.stringify(user));
@@ -80,11 +80,11 @@ const authSlice = createSlice({
       })
       .addCase(GoogleSignInAction.fulfilled, (state, action) => {
         state.loading = false;
-        const { token, user } = action.payload;
-        if (token) {
-          state.userInfo = { token, user };
+        const { userToken, refreshToken, user } = action.payload;
+        if (userToken) {
+          state.userInfo = { token: userToken, refreshToken, user };
           state.success = true;
-          localStorage.setItem("userToken", token);
+          localStorage.setItem("userToken", userToken);
           localStorage.setItem("userInfo", JSON.stringify(user));
         }
       })
@@ -100,13 +100,14 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        const { userToken, ...user } = action.payload;
+        const { userToken, refreshToken, ...user } = action.payload;
         if (userToken) {
           state.RGSsuccess = true;
           localStorage.setItem("userToken", userToken);
           localStorage.setItem("userInfo", JSON.stringify(user));
         }
       })
+
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

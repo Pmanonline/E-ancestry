@@ -6,6 +6,7 @@ import editReducer from "./features/UserFeature/EditSlice";
 import deleteReducer from "./features/UserFeature/deleteUserSlice";
 import stateReducer from "./features/Statefeature/stateSlice";
 import nameReducer from "./features/nameFeature/nameSlice";
+import userSearchReducer from "./features/UserFeature/SearchSlice";
 import { authApi } from "./features/auth/authServive";
 
 const store = configureStore({
@@ -17,6 +18,7 @@ const store = configureStore({
     delete: deleteReducer,
     state: stateReducer,
     name: nameReducer,
+    userSearch: userSearchReducer,
     [authApi.reducerPath]: authApi.reducer, // Ensure this path is used correctly
   },
   middleware: (getDefaultMiddleware) =>

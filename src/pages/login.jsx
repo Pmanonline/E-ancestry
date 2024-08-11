@@ -42,13 +42,15 @@ const Login = () => {
   };
 
   const handleGoogleSignIn = async (credential) => {
+    console.log("Google sign-in credential:", credential); // Debugging line
     try {
       const resultAction = await dispatch(
         GoogleSignInAction(credential)
       ).unwrap();
+      console.log("Google sign-in result:", resultAction); // Debugging line
       localStorage.setItem("userToken", resultAction.userToken);
       localStorage.setItem("user", JSON.stringify(resultAction));
-      navigate("/");
+      // navigate("/");
     } catch (error) {
       console.error("Google sign-in failed", error);
     }

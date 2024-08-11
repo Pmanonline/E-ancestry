@@ -6,8 +6,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { logoutUser } from "../features/auth/authSlice";
 import { IoPersonCircleOutline } from "react-icons/io5";
+import {
+  createFamilyMember,
+  getProfile,
+} from "../features/UserFeature/UserAction";
 
 function Navbar() {
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
   const [isFamilyTreeOpen, setIsFamilyTreeOpen] = useState(false);
@@ -15,9 +20,15 @@ function Navbar() {
   const menuRef = useRef(null);
   const userDropdownRef = useRef(null);
   const familyTreeDropdownRef = useRef(null);
-
   const { userInfo } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const userId = userInfo?.user._id;
+  console.log(userId);
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(getProfile(userId)); // Call thunk with userId
+    }
+  }, [userId, dispatch]);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -222,7 +233,7 @@ function Navbar() {
                         <ul className="py-2 text-sm text-gray-700">
                           <li>
                             <Link
-                              to="/profile"
+                              to={`/profile/${userId}`}
                               className="block px-4 py-2 text-black rounded hover:text-green md:dark:hover:bg-transparent font-semibold"
                               onClick={() => setUserOpen(false)}
                             >

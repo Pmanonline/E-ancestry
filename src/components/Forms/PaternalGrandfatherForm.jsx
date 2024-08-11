@@ -280,6 +280,7 @@
 // export default PaternalGrandfatherForm;
 
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import backgroundImage from "../../assets/images/backgroundImage.png";
 import LayoutNAv from "../../components/layoutNAv";
@@ -319,6 +320,8 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { userId } = useParams();
+  const location = useLocation();
   const { loading, error, success } = useSelector((state) => state.form.person);
   const { Eloading, Eerror, Esuccess } = useSelector(
     (state) => state.edit.person
@@ -403,9 +406,12 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
   useEffect(() => {
     if (success) {
       toast.success("Created!!");
+      dispatch(fetchAllDetails(userId));
       dispatch(resetSuccess());
-      setTimeout(() => navigate("/layout/paternalGrandmother-form"), 2000);
-      dispatch(fetchAllDetails());
+      setTimeout(
+        () => navigate(`/layout/paternalGrandmother-form/${userId}`),
+        2000
+      );
     }
   }, [success, dispatch, navigate]);
 
@@ -588,7 +594,7 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
             ) : (
               <div className="w-full text-end items-end flex justify-end">
                 <Link
-                  to="/layout/paternalGrandmother-form"
+                  to={`/layout/paternalGrandmother-form/${userId}`}
                   className="w-full flex justify-start font-medium"
                 >
                   <button className="underline w-full flex items-center bg-green-500 px-4 py-2 transition ease-in-out duration-200 transform hover:scale-105 rounded-3xl">
