@@ -167,6 +167,10 @@ export const PGMModal = React.forwardRef(({ userId }, ref3) => {
   }, [Dsuccess, dispatch, userId]);
   const yearOfBirth = PGMData?.DOB ? PGMData.DOB.split("-")[0] : "Unknown";
 
+  const yearOfDeath = PGMData?.yearDeceased
+    ? PGMData.yearDeceased.split("-")[0]
+    : "Unknown";
+
   React.useImperativeHandle(ref3, () => ({
     openModal: handleOpen,
   }));
@@ -280,7 +284,6 @@ export const PGMModal = React.forwardRef(({ userId }, ref3) => {
                   <GrTreeOption size={24} className="text-green" />
                 </div>
               )}
-
               <div className="flex flex-col items-center pb-10">
                 {PGMData.image ? (
                   <img
@@ -297,12 +300,25 @@ export const PGMModal = React.forwardRef(({ userId }, ref3) => {
                   {PGMData.firstName} {PGMData.lastName}
                 </h5>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                  Born on:
-                  <span className=" mx-2 font-medium">{yearOfBirth}</span>
+                  {PGMData.Lstatus !== "Deceased" ? (
+                    <>
+                      Born on:
+                      <span className="mx-2 font-medium">{yearOfBirth}</span>
+                    </>
+                  ) : null}
                 </span>
+
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {PGMData.Lstatus}
                 </span>
+                <span className="text-sm mt-1 text-gray-500 dark:text-gray-400">
+                  {PGMData.Lstatus === "Deceased" ? (
+                    <>
+                      {yearOfBirth} to {yearOfDeath}
+                    </>
+                  ) : null}
+                </span>
+
                 <div className="flex mt-4 md:mt-6 gap-5">
                   <a
                     href="#"

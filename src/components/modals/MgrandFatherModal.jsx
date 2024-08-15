@@ -170,6 +170,10 @@ export const MGFModal = React.forwardRef(({ userId }, ref3) => {
   };
   const yearOfBirth = MGFData?.DOB ? MGFData.DOB.split("-")[0] : "Unknown";
 
+  const yearOfDeath = MGFData?.yearDeceased
+    ? MGFData.yearDeceased.split("-")[0]
+    : "Unknown";
+
   React.useImperativeHandle(ref3, () => ({
     openModal: handleOpen,
   }));
@@ -283,9 +287,7 @@ export const MGFModal = React.forwardRef(({ userId }, ref3) => {
                   <GrTreeOption size={24} className="text-green" />
                 </div>
               )}
-
               {/* Auth */}
-
               <div className="flex flex-col items-center pb-10">
                 {MGFData.image ? (
                   <img
@@ -302,12 +304,25 @@ export const MGFModal = React.forwardRef(({ userId }, ref3) => {
                   {MGFData.firstName} {MGFData.lastName}
                 </h5>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                  Born on:
-                  <span className=" mx-2 font-medium">{yearOfBirth}</span>
+                  {MGFData.Lstatus !== "Deceased" ? (
+                    <>
+                      Born on:
+                      <span className="mx-2 font-medium">{yearOfBirth}</span>
+                    </>
+                  ) : null}
                 </span>
+
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {MGFData.Lstatus}
                 </span>
+                <span className="text-sm mt-1 text-gray-500 dark:text-gray-400">
+                  {MGFData.Lstatus === "Deceased" ? (
+                    <>
+                      {yearOfBirth} to {yearOfDeath}
+                    </>
+                  ) : null}
+                </span>
+
                 <div className="flex mt-4 md:mt-6 gap-5">
                   <a
                     href="#"
@@ -323,6 +338,7 @@ export const MGFModal = React.forwardRef(({ userId }, ref3) => {
                   </a>
                 </div>
               </div>
+              ;
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full">

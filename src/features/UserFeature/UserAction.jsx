@@ -62,12 +62,6 @@ export const fetchAllDetails = createAsyncThunk(
       console.log(`Fetching details for userId: ${userId}`);
       // Array of fetch requests
       const fetchRequests = [
-        // axios.get(`${backendURL}/api/GetMother/${userId}`, {
-        //   headers: { Authorization: `Bearer ${token}` },
-        // }),
-        // axios.get(`${backendURL}/api/GetPerson/${userId}`, {
-        //   headers: { Authorization: `Bearer ${token}` },
-        // }),
         axios.get(`${backendURL}/api/GetMother/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
@@ -87,6 +81,18 @@ export const fetchAllDetails = createAsyncThunk(
           headers: { Authorization: `Bearer ${token}` },
         }),
         axios.get(`${backendURL}/api/GetMGMother/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${backendURL}/api/get_MGrtGrandFather/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${backendURL}/api/get_MGrtGrandMother/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${backendURL}/api/get_PGrtGrandMother/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${backendURL}/api/get_PGrtGrandFather/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ];
@@ -121,6 +127,18 @@ export const fetchAllDetails = createAsyncThunk(
               case 6:
                 acc.MGM = response.value.data;
                 break;
+              case 7:
+                acc.MGGF = response.value.data;
+                break;
+              case 8:
+                acc.MGGM = response.value.data;
+                break;
+              case 9:
+                acc.PGGM = response.value.data;
+                break;
+              case 10:
+                acc.PGGF = response.value.data;
+                break;
               default:
                 break;
             }
@@ -138,6 +156,10 @@ export const fetchAllDetails = createAsyncThunk(
           MGF: null,
           PGM: null,
           MGM: null,
+          MGGF: null,
+          MGGM: null,
+          PGGM: null,
+          PGGF: null,
         }
       );
 
@@ -147,60 +169,6 @@ export const fetchAllDetails = createAsyncThunk(
     }
   }
 );
-
-// export const fetchAllDetails = createAsyncThunk(
-//   "person/fetchAllDetails",
-//   async (userId, { rejectWithValue }) => {
-//     console.log(`Person_User ID: ${userId}`);
-//     const token = localStorage.getItem("userToken");
-//     if (!token) {
-//       return rejectWithValue("No token found");
-//     }
-
-//     try {
-//       const fetchRequests = {
-//         mother: axios.get(`${backendURL}/api/GetMother/${userId}`, {
-//           headers: { Authorization: `Bearer ${token}` },
-//         }),
-//         person: axios.get(`${backendURL}/api/GetPerson/${userId}`, {
-//           headers: { Authorization: `Bearer ${token}` },
-//         }),
-//         father: axios.get(`${backendURL}/api/GetFather/${userId}`, {
-//           headers: { Authorization: `Bearer ${token}` },
-//         }),
-//         PGF: axios.get(`${backendURL}/api/GetPGFather/${userId}`, {
-//           headers: { Authorization: `Bearer ${token}` },
-//         }),
-//         PGM: axios.get(`${backendURL}/api/GetPGMother/${userId}`, {
-//           headers: { Authorization: `Bearer ${token}` },
-//         }),
-//         MGF: axios.get(`${backendURL}/api/GetMGFather/${userId}`, {
-//           headers: { Authorization: `Bearer ${token}` },
-//         }),
-//         MGM: axios.get(`${backendURL}/api/GetMGMother/${userId}`, {
-//           headers: { Authorization: `Bearer ${token}` },
-//         }),
-//       };
-
-//       const responses = await Promise.allSettled(Object.values(fetchRequests));
-
-//       const result = Object.keys(fetchRequests).reduce((acc, key, index) => {
-//         const response = responses[index];
-//         if (response.status === "fulfilled") {
-//           acc[key] = response.value.data;
-//         } else {
-//           console.error(`Fetch error for ${key}:`, response.reason);
-//           acc[key] = null;
-//         }
-//         return acc;
-//       }, {});
-
-//       return result;
-//     } catch (error) {
-//       return rejectWithValue(error.message || "An error occurred");
-//     }
-//   }
-// );
 
 export const editPerson = createAsyncThunk(
   "person/editPerson",
@@ -316,33 +284,131 @@ export const getProfile = createAsyncThunk(
   }
 );
 
+// export const fetchUsers = createAsyncThunk(
+//   "userSearch/fetchUsers",
+//   async (surname, { rejectWithValue }) => {
+//     try {
+//       const token = localStorage.getItem("userToken");
+
+//       if (!token) {
+//         throw new Error("No token found.");
+//       }
+
+// const response = await axios.get(
+//   `${backendURL}/api/search?query=${surname}`,
+//   {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   }
+// );
+
+//       return response.data;
+//     } catch (error) {
+//       console.error("Error fetching users:", error);
+//       return rejectWithValue(
+//         error.response && error.response.data.message
+//           ? error.response.data.message
+//           : error.message
+//       );
+//     }
+//   }
+// );
+
+// export const fetchUsers = createAsyncThunk(
+//   "users/fetchUsers",
+//   async (searchParams, { rejectWithValue }) => {
+//     try {
+//       const token = localStorage.getItem("userToken");
+
+//       // Filter out empty values from searchParams
+//       const filteredParams = Object.fromEntries(
+//         Object.entries(searchParams).filter(
+//           ([key, value]) => value.trim() !== ""
+//         )
+//       );
+
+//       // Construct the query string from filteredParams
+//       const query = new URLSearchParams(filteredParams).toString();
+
+//       // Make the GET request using axios
+//       const response = await axios.get(`${backendURL}/api/search?${query}`, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+
+//       console.log("API Response Data:", response.data);
+//       return response.data;
+//     } catch (error) {
+//       console.error("Fetch Error:", error);
+//       return rejectWithValue(error.message);
+//     }
+//   }
+// );
+// export const fetchUsers = createAsyncThunk(
+//   "users/fetchUsers",
+//   async (searchParams, { rejectWithValue }) => {
+//     try {
+//       const token = localStorage.getItem("userToken");
+
+//       // Filter out empty values from searchParams
+//       const filteredParams = Object.fromEntries(
+//         Object.entries(searchParams).filter(
+//           ([key, value]) => value.trim() !== ""
+//         )
+//       );
+
+//       // Construct the query string from filteredParams
+//       const query = new URLSearchParams(filteredParams).toString();
+
+//       console.log("Constructed query string:", query);
+
+//       // Make the GET request using axios
+//       const response = await axios.get(`${backendURL}/api/search?${query}`, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+
+//       console.log("API Response Data:", response.data);
+//       return response.data;
+//     } catch (error) {
+//       console.error("Fetch Error:", error);
+//       return rejectWithValue(error.message);
+//     }
+//   }
+// );
 export const fetchUsers = createAsyncThunk(
-  "userSearch/fetchUsers",
-  async (surname, { rejectWithValue }) => {
+  "users/fetchUsers",
+  async (searchParams, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("userToken");
 
-      if (!token) {
-        throw new Error("No token found.");
-      }
-
-      const response = await axios.get(
-        `${backendURL}/api/search?query=${surname}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      // Filter out empty values from searchParams
+      const filteredParams = Object.fromEntries(
+        Object.entries(searchParams).filter(
+          ([key, value]) => value.trim() !== ""
+        )
       );
 
+      // Construct the query string from filteredParams
+      const query = new URLSearchParams(filteredParams).toString();
+
+      console.log("Constructed query string:", query);
+
+      // Make the GET request using axios
+      const response = await axios.get(`${backendURL}/api/search?${query}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("API Response Data:", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error fetching users:", error);
-      return rejectWithValue(
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-      );
+      console.error("Fetch Error:", error);
+      return rejectWithValue(error.message);
     }
   }
 );

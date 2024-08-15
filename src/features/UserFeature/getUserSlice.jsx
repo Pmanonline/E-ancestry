@@ -9,6 +9,10 @@ const initialState = {
   PGM: {},
   MGF: {},
   MGM: {},
+  MGGF: {},
+  MGGM: {},
+  PGGM: {},
+  PGGF: {},
   profile: null,
   loading: false,
   error: null,
@@ -30,6 +34,7 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+
       .addCase(fetchAllDetails.fulfilled, (state, action) => {
         state.person = action.payload.person || {};
         state.mother = action.payload.mother || {};
@@ -38,6 +43,11 @@ const userSlice = createSlice({
         state.PGM = action.payload.PGM || {};
         state.MGF = action.payload.MGF || {};
         state.MGM = action.payload.MGM || {};
+        state.MGGF = action.payload.MGGF || {};
+        state.MGGM = action.payload.MGGM || {};
+        state.PGGM = action.payload.PGGM || {};
+        state.PGGF = action.payload.PGGF || {};
+
         state.loading = false;
         state.success = true;
         console.log("Updated State:", state);

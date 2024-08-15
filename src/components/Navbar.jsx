@@ -25,6 +25,13 @@ function Navbar() {
   console.log(userId);
 
   useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+    console.log("Access Token:", accessToken);
+    console.log("Refresh Token:", refreshToken);
+  }, []);
+
+  useEffect(() => {
     if (userId) {
       dispatch(getProfile(userId)); // Call thunk with userId
     }

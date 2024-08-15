@@ -9,7 +9,7 @@ import {
   editPerson,
   fetchAllDetails,
 } from "../../features/UserFeature/UserAction";
-import { resetSuccess } from "../../features/UserFeature/UserSlice";
+import { resetSuccess, resetError } from "../../features/UserFeature/UserSlice";
 import { resetEditState } from "../../features/UserFeature/EditSlice";
 import { resetDeleteState } from "../../features/UserFeature/deleteUserSlice";
 import { DirectionButton1 } from "../d-button";
@@ -128,7 +128,13 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
       dispatch(resetSuccess());
       setTimeout(() => navigate(`/layout/fathers-form/${userId}`), 2000);
     }
-  }, [success, dispatch, navigate]);
+
+    if (error) {
+      toast.error(error);
+      dispatch(resetError());
+      dispatch(fetchAllDetails(userId));
+    }
+  }, [success, error, dispatch, navigate, userId]);
 
   const formRef = useRef(); // Create a ref for the form
   const fileInputRef = useRef();

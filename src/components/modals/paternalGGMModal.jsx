@@ -22,7 +22,7 @@ import {
   fetchAllDetails,
   deletePerson,
 } from "../../features/UserFeature/UserAction";
-import FatherForm from "../../components/Forms/FathersForm";
+import PaternalGGMform from "../../components/Forms/paternalGGMform";
 
 const backendURL =
   process.env.NODE_ENV !== "production"
@@ -41,6 +41,7 @@ const style = {
   padding: "10",
   borderRadius: "4px",
 };
+
 function ChildModal({ initialState, onSubmit, userId }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
@@ -54,9 +55,8 @@ function ChildModal({ initialState, onSubmit, userId }) {
   const { Eloading, Eerror, Esuccess } = useSelector(
     (state) => state.edit.person
   );
-
-  const fatherData = useSelector((state) => state.person.father);
-  console.log(fatherData);
+  const PGGMData = useSelector((state) => state.person.PGGM);
+  console.log("paternal great grand fathers details.", PGGMData);
 
   const handleSubmit = (formDataToSubmit) => {
     onSubmit(formDataToSubmit);
@@ -92,8 +92,8 @@ function ChildModal({ initialState, onSubmit, userId }) {
           {loading ? (
             <Spinner />
           ) : (
-            <FatherForm
-              initialState={fatherData}
+            <PaternalGGMform
+              initialState={PGGMData}
               isEdit={true}
               onSubmit={handleSubmit}
             />
@@ -106,18 +106,16 @@ function ChildModal({ initialState, onSubmit, userId }) {
 
 export default ChildModal;
 
-export const FatherModal = React.forwardRef(({ userId }, ref2) => {
+export const PGGMModal = React.forwardRef(({ userId }, ref3) => {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
-  const fatherData = useSelector((state) => state.person.father);
+  const PGGMData = useSelector((state) => state.person.PGGM);
   const { userInfo } = useSelector((state) => state.auth);
   const LoggedId = userInfo?.user._id;
-  const [imagePreview, setImagePreview] = useState(null);
   const { Dloading, Derror, Dsuccess } = useSelector(
     (state) => state.delete.person
   );
 
-  console.log(fatherData);
   const [Deleteopen, setDeleteOpen] = React.useState(false);
 
   useEffect(() => {
@@ -126,9 +124,6 @@ export const FatherModal = React.forwardRef(({ userId }, ref2) => {
     }
   }, [dispatch, userId]);
 
-  useEffect(() => {
-    console.log("Father Data:", fatherData);
-  }, [fatherData]);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -145,9 +140,9 @@ export const FatherModal = React.forwardRef(({ userId }, ref2) => {
 
   useEffect(() => {
     if (Dsuccess) {
-      toast.success("Deleted!!");
-      dispatch(resetDeleteState());
+      // toast.success("Deleted!!");
       dispatch(fetchAllDetails(userId));
+      dispatch(resetDeleteState());
     }
   }, [Dsuccess, dispatch, userId]);
 
@@ -162,45 +157,25 @@ export const FatherModal = React.forwardRef(({ userId }, ref2) => {
   };
 
   const handleDelete = () => {
-    if (fatherData._id) {
-      dispatch(deletePerson(fatherData._id));
+    if (PGGMData._id) {
+      dispatch(deletePerson(PGGMData._id));
       setOpen(false);
     } else {
       console.error("Invalid person ID");
     }
   };
-  const yearOfBirth = fatherData?.DOB
-    ? fatherData.DOB.split("-")[0]
-    : "Unknown";
-  const yearOfDeath = fatherData?.yearDeceased
-    ? fatherData.yearDeceased.split("-")[0]
+  const yearOfBirth = PGGMData?.DOB ? PGGMData.DOB.split("-")[0] : "Unknown";
+  const yearOfDeath = PGGMData?.yearDeceased
+    ? PGGMData.yearDeceased.split("-")[0]
     : "Unknown";
 
-  React.useImperativeHandle(ref2, () => ({
+  React.useImperativeHandle(ref3, () => ({
     openModal: handleOpen,
   }));
-  const handleUpload = async () => {
-    if (!selectedFile || !fatherData._id) return;
-
-    const formData = new FormData();
-    formData.append("image", selectedFile);
-    formData.append("personId", fatherData._id);
-
-    try {
-      dispatch(editPerson(formData));
-      toast.success("Image uploaded successfully!");
-      setImagePreview(null);
-      setSelectedFile(null);
-      dispatch(fetchAllDetails());
-    } catch (error) {
-      toast.error("Failed to upload image");
-    }
-  };
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
   };
-
   return (
     <div className="hidden">
       <Modal
@@ -210,7 +185,7 @@ export const FatherModal = React.forwardRef(({ userId }, ref2) => {
         aria-describedby="parent-modal-description"
       >
         <Box sx={{ ...style, width: 400 }}>
-          {fatherData && Object.keys(fatherData).length > 0 ? (
+          {PGGMData && Object.keys(PGGMData).length > 0 ? (
             <div className="w-full max-w-sm bg-white  rounded-lg shadow   relative">
               {LoggedId === userId ? (
                 <div className="flex justify-end px-4 pt-4">
@@ -240,7 +215,7 @@ export const FatherModal = React.forwardRef(({ userId }, ref2) => {
                       <ul className="py-2">
                         <li>
                           <ChildModal
-                            initialState={fatherData}
+                            initialState={PGGMData}
                             onSubmit={(data) => {
                               dispatch(fetchAllDetails(userId));
                             }}
@@ -308,22 +283,22 @@ export const FatherModal = React.forwardRef(({ userId }, ref2) => {
               )}
 
               <div className="flex flex-col items-center pb-10">
-                {fatherData.image ? (
+                {PGGMData.image ? (
                   <img
                     src={`${backendURL}/${
-                      fatherData.image
+                      PGGMData.image
                     }?${new Date().getTime()}`}
-                    alt={fatherData.firstName}
+                    alt={PGGMData.firstName}
                     className="w-[10rem] h-[10rem] rounded-full"
                   />
                 ) : (
                   <FaUserCircle className="w-[10rem] h-[10rem] text-gray-400" />
                 )}
                 <h5 className="mb-1 text-xl font-medium text-gray-500 ">
-                  {fatherData.firstName} {fatherData.lastName}
+                  {PGGMData.firstName} {PGGMData.lastName}
                 </h5>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {fatherData.Lstatus !== "Deceased" ? (
+                  {PGGMData.Lstatus !== "Deceased" ? (
                     <>
                       Born on:
                       <span className="mx-2 font-medium">{yearOfBirth}</span>
@@ -332,10 +307,10 @@ export const FatherModal = React.forwardRef(({ userId }, ref2) => {
                 </span>
 
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {fatherData.Lstatus}
+                  {PGGMData.Lstatus}
                 </span>
                 <span className="text-sm mt-1 text-gray-500 dark:text-gray-400">
-                  {fatherData.Lstatus === "Deceased" ? (
+                  {PGGMData.Lstatus === "Deceased" ? (
                     <>
                       {yearOfBirth} to {yearOfDeath}
                     </>
@@ -366,7 +341,7 @@ export const FatherModal = React.forwardRef(({ userId }, ref2) => {
                 </h2>
                 <p className="mb-4">Please add information to this card.</p>
                 <Button
-                  href={`/layout/fathers-form/${userId}`}
+                  href={`/layout/paternalGGMother-form/${userId}`}
                   className="!bg-green !text-white"
                 >
                   Add Info

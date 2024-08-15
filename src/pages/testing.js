@@ -1,1505 +1,791 @@
-// import React from "react";
-// import { FaTwitter } from "react-icons/fa6";
-// import { BsWhatsapp } from "react-icons/bs";
-// import { FaFacebookF } from "react-icons/fa";
-// import { FaInstagram } from "react-icons/fa";
-// import FeedImage from "../../assets/images/feedImage.png";
+import React, { useState } from "react";
+import { RiArrowDropDownLine } from "react-icons/ri";
+import { DirectionButton1 } from "../components/d-button";
+import { NameMeaningCard1 } from "../components/Cards/NameMeaningCards";
+import { NameMeaningCard2 } from "../components/Cards/NameMeaningCards";
+import { DirectionButton2 } from "../components/d-button";
+import { RiFilter2Line } from "react-icons/ri";
 
-// function FamilyTreeFeeds() {
-//   return (
-//     <>
-//       <section className="mx-auto px-4 py-8 ">
-//         <h2 className="text-black mb-9 text-2xl mod:text-xl font-bold uppercase font-Montserrat text-center">
-//           ABOUT ANIMS JOHNSON JAMES
-//         </h2>
+export function SearchTree() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [viewMore, setviewMore] = useState(false);
+  const [category, setCategory] = useState(false);
 
-//         <div className="lg:flex flex-row">
-//           {/* Image div */}
-//           <div className="p-6">
-//             <img
-//               src={FeedImage}
-//               alt="Profile"
-//               className="rounded-lg shadow-md"
-//             />
-//           </div>
-//           <div className="w-full">
-//             {/* name */}
-//             <div className="text-start mr-auto">
-//               <h2 className="text-lg mb-2 px-6">ANIMS JOHNSON JAMES</h2>
-//             </div>
-//             <div className="flex mb-2 px-6">
-//               <div className="space-x-3 ">
-//                 <button className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm">
-//                   An enterpreneur
-//                 </button>
-//                 <button className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm">
-//                   Classic
-//                 </button>
-//               </div>
-
-//               <div>
-//                 {/* Social Media Icons and Website Logo */}
-//                 <div className="flex flex-col md:flex-row items-center mb-6 md:mb-0 mx-3">
-//                   <div className="flex space-x-4 mt-2">
-//                     <a
-//                       href="https://twitter.com"
-//                       target="blank"
-//                       aria-label="twitter"
-//                     >
-//                       <FaTwitter className="w-4 h-auto text-[#A60505]" />
-//                     </a>
-//                     <a
-//                       href="https://wa.me/+2347062916027"
-//                       target="blank"
-//                       aria-label="whatsapp"
-//                     >
-//                       <BsWhatsapp className="w-4 h-auto text-[#A60505]" />
-//                     </a>
-//                     <a
-//                       href="https://facebook.com"
-//                       target="blank"
-//                       aria-label="facebook"
-//                     >
-//                       <FaFacebookF className="w-4 h-auto text-[#A60505]" />
-//                     </a>
-//                     <a
-//                       href="https://instagram.com"
-//                       target="blank"
-//                       aria-label="instagram"
-//                     >
-//                       <FaInstagram className="w-4 h-auto text-[#A60505]" />
-//                     </a>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-
-//             {/* Data */}
-//             <div className="lg:flex lg:flex-row items-center space-x-4 ">
-//               <div className=" p-6 rounded-lg  max-w-md w-full">
-//                 <div className="mb-4 flex justify-between">
-//                   <h3 className="text-sm font-bold">Home Address:</h3>
-//                   <p className="text-gray-700 text-sm">558 Ikorodu Road</p>
-//                 </div>
-//                 <div className="mb-4 flex justify-between">
-//                   <h3 className="text-sm font-bold">Phone No:</h3>
-//                   <p className="text-gray-700 text-sm">+234701234567</p>
-//                 </div>
-//                 <div className="mb-4 flex justify-between">
-//                   <h3 className="text-sm font-bold">Email:</h3>
-//                   <p className="text-gray-700 text-sm">@gmail.com</p>
-//                 </div>
-//                 <div className="mb-4 flex justify-between">
-//                   <h3 className="text-sm font-bold">DOB:</h3>
-//                   <p className="text-gray-700 text-sm">23/09/1980</p>
-//                 </div>
-//               </div>
-
-//               {/* Second column */}
-//               <div className="rounded-lg  max-w-md w-full">
-//                 <div className="mb-4 flex justify-between">
-//                   <h3 className="text-sm font-bold">State of Origin:</h3>
-//                   <p className="text-gray-700 text-sm">Lagos State</p>
-//                 </div>
-//                 <div className="mb-4 flex justify-between">
-//                   <h3 className="text-sm font-bold">Local Government:</h3>
-//                   <p className="text-gray-700 text-sm">Ikorodu</p>
-//                 </div>
-//                 <div className="mb-4 flex justify-between">
-//                   <h3 className="text-sm font-bold">Autonomous Community:</h3>
-//                   <p className="text-gray-700 text-sm">Igbogbo</p>
-//                 </div>
-//                 <div className="mb-4 flex justify-between">
-//                   <h3 className="text-sm font-bold">Kindred:</h3>
-//                   <p className="text-gray-700 text-sm">Iyawowo</p>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-//     </>
-//   );
-// }
-
-// export default FamilyTreeFeeds;
-
-// import React, { useState, useEffect } from "react";
-// import { FaTwitter } from "react-icons/fa6";
-// import { BsWhatsapp } from "react-icons/bs";
-// import { FaFacebookF } from "react-icons/fa";
-// import { FaInstagram } from "react-icons/fa";
-// import FeedImage from "../../assets/images/feedImage.png";
-// import { DirectionButton2 } from "../../components/d-button";
-// import BirtdayFrame from "../../assets/images/birthdayFrame.png";
-// import birthdayframeM1 from "../../assets/images/birthdayframeM1.png";
-// import birthdayframeM2 from "../../assets/images/birthdayframeM2.png";
-// import FamilyImage from "../../assets/images/FamilyImage.png";
-// import { NameProfileCard } from "../../components/Cards/NameProfileCard";
-// import { useSelector, useDispatch } from "react-redux";
-// import { resetSuccess } from "../../features/UserFeature/getUserSlice";
-// import { getProfile } from "../../features/UserFeature/UserAction";
-// import moment from "moment";
-// const backendURL =
-//   process.env.NODE_ENV !== "production"
-//     ? "http://localhost:8080"
-//     : "https://gekoda-api.onrender.com";
-
-// function FamilyTreeFeeds() {
-//   const dispatch = useDispatch();
-//   const [surname, setSurname] = useState("");
-
-// const handleSubmit = (e) => {
-//   e.preventDefault();
-//   console.log("Form submitted with surname:", surname);
-//   setSurname("");
-// };
-
-// const handleChange = (e) => {
-//   setSurname(e.target.value);
-// };
-
-//   useEffect(() => {
-//     dispatch(getProfile());
-//   }, [dispatch]);
-
-//   const { loading, error, profile, success } = useSelector(
-//     (state) => state.person
-//   );
-//   useEffect(() => {
-//     console.log("Profile:", profile);
-//   }, [profile]);
-
-//   useEffect(() => {
-//     dispatch(getProfile());
-//   }, [dispatch]);
-
-//   if (loading) {
-//     return <div>Loading...</div>;
-//   }
-
-//   if (error) {
-//     return <div>Error: {error}</div>;
-//   }
-
-//   if (!profile) {
-//     return <div>No profile data available.</div>;
-//   }
-//   const formattedDate = profile.DOB
-//     ? moment(profile.DOB).format("DD MMMM YYYY")
-//     : "Date not available";
-//   const Image = profile?.image;
-//   return (
-//     <section className="mx-auto px-4 py-8">
-//       <h2 className="text-black mb-9 text-2xl md:text-xl font-bold uppercase font-Montserrat text-center">
-//         ABOUT {profile.lastName} {profile.firstName} {profile.middlename}
-//       </h2>
-
-//       <div className="lg:flex flex-row Nlg:mx-auto Nlg:flex-col Nlg:justify-center">
-//         {/* Image div */}
-//         <div className="mb-6 lg:mr-6 lg:mb-0 lg:w-[45rem]">
-//           <img
-//             // src={FeedImage}
-//             src={`${backendURL}/${Image}`}
-//             alt="Profile"
-//             className="rounded-lg shadow-md w-full h-auto"
-//           />
-//         </div>
-//         <div className="w-full ">
-//           {/* Name */}
-//           <div className="text-start  text-black">
-//             <h2 className="text-lg mb-2 px-6">
-//               {profile.lastName} {profile.firstName} {profile.middlename}
-//             </h2>
-//           </div>
-//           <div className="flex mb-2 px-6">
-//             <div className="space-x-3">
-//               <button className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm">
-//                 {profile.profession}
-//               </button>
-//               <button className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm">
-//                 Classic
-//               </button>
-//             </div>
-//             {/* Social Media Icons and Website Logo */}
-//             <div className="flex flex-col md:flex-row items-center mb-6 md:mb-0 mx-3">
-//               <div className="flex space-x-4 mt-2">
-//                 <a
-//                   href={profile.twitter}
-//                   target="_blank"
-//                   aria-label="twitter"
-//                   rel="noopener noreferrer"
-//                 >
-//                   <FaTwitter className="w-4 h-auto text-[#A60505]" />
-//                 </a>
-//                 <a
-//                   href={`https://wa.me/ ${profile.phoneNumber}`}
-//                   target="_blank"
-//                   aria-label="whatsapp"
-//                   rel="noopener noreferrer"
-//                 >
-//                   <BsWhatsapp className="w-4 h-auto text-[#A60505]" />
-//                 </a>
-//                 <a
-//                   href={profile.facebook}
-//                   target="_blank"
-//                   aria-label="facebook"
-//                   rel="noopener noreferrer"
-//                 >
-//                   <FaFacebookF className="w-4 h-auto text-[#A60505]" />
-//                 </a>
-//                 <a
-//                   href={profile.instagram}
-//                   target="_blank"
-//                   aria-label="instagram"
-//                   rel="noopener noreferrer"
-//                 >
-//                   <FaInstagram className="w-4 h-auto text-[#A60505]" />
-//                 </a>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* Data */}
-//           <div className="lg:flex lg:flex-row items-center">
-//             <div className="p-6 rounded-lg max-w-md w-full">
-//               <div className="mb-4 flex justify-between">
-//                 <h3 className="text-sm font-bold">Home Address:</h3>
-//                 <p className="text-gray-700 text-sm whitespace-normal text-end">
-//                   {profile.streetAddress}
-//                 </p>
-//               </div>
-//               <div className="mb-4 flex justify-between">
-//                 <h3 className="text-sm font-bold">Phone No:</h3>
-//                 <p className="text-gray-700 text-sm">{profile.phoneNumber}</p>
-//               </div>
-//               <div className="mb-4 flex justify-between">
-//                 <h3 className="text-sm font-bold">Email:</h3>
-//                 <p className="text-gray-700 text-sm">{profile.email}</p>
-//               </div>
-//               <div className="mb-4 flex justify-between">
-//                 <h3 className="text-sm font-bold">DOB:</h3>
-//                 <p className="text-gray-700 text-sm">{formattedDate}</p>
-//               </div>
-//             </div>
-
-//             {/* Second column */}
-//             <div className="p-6 rounded-lg max-w-md w-full">
-//               <div className="mb-4 flex justify-between">
-//                 <h3 className="text-sm font-bold">State of Origin:</h3>
-//                 <p className="text-gray-700 text-sm">{profile.state}</p>
-//               </div>
-//               <div className="mb-4 flex justify-between">
-//                 <h3 className="text-sm font-bold">Local Government:</h3>
-//                 <p className="text-gray-700 text-sm">{profile.lga}</p>
-//               </div>
-//               <div className="mb-4 flex justify-between">
-//                 <h3 className="text-sm font-bold">Autonomous Community:</h3>
-//                 <p className="text-gray-700 text-sm">{profile.autonomous}</p>
-//               </div>
-//               <div className="mb-4 flex justify-between">
-//                 <h3 className="text-sm font-bold">Kindred:</h3>
-//                 <p className="text-gray-700 text-sm">{profile.kindred}</p>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//         {/* button */}
-//         <div className="ml-2">
-//           <button className="bg-green text-white rounded-2xl w-[9rem] py-2 flex items-center justify-center transition ease-in-out duration-200 transform hover:scale-105">
-//             Go to Tree
-//             <span className="ml-2">
-//               <DirectionButton2 />
-//             </span>
-//           </button>
-//         </div>
-//       </div>
-//       {/* NextSection */}
-//       <div className="mt-10">
-//         <h3 className="text-black  text-lg mod:text-sm font-bold uppercase  text-start mb-2">
-//           Background
-//         </h3>
-//         <div className="">
-//           <p className="text-black text-sm font-normal">{profile.about}</p>
-//         </div>
-//       </div>
-//       {/* NextSection */}
-//       <div className="mt-10">
-//         <h3 className="text-black  text-lg font-bold uppercase  text-start mb-2">
-//           State of origin
-//         </h3>
-//         <div className="">
-//           <p className="text-black text-sm font-normal">
-//             AYO is an onvallis. Sed ut vulputate nisi. Integer in felis sed leo
-//             vestibulum venenatis. Curabitur tempor quis eros tempus lacinia. Nam
-//             bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-//             vestibulum venenatis. Curabitur tempor quis eros tempus lacinia. Nam
-//             bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-//             vestibulum venenatis. Curabitur tempor quis eros tempus lacinia. Nam
-//             bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-//             vestibulum venenatis. Curabitur tempor quis eros tempus lacinia. Nam
-//             bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-//             vestibulum venenatis. Curabitur tempor quis eros tempus lacinia. Nam
-//             b.
-//           </p>
-//         </div>
-//       </div>
-//       {/* viewMore-button */}
-//       {/* button */}
-//       <div className="flex justify-center my-7">
-//         <button className="bg-green text-white rounded-2xl w-auto py-2 px-3 flex items-center justify-center transition ease-in-out duration-200 transform hover:scale-105">
-//           view more on state & culture
-//           <span className="ml-2">
-//             <DirectionButton2 />
-//           </span>
-//         </button>
-//       </div>
-//       {/* birthdayFrame */}
-//       {/* largescreen */}
-//       <div className="relative Nlg:hidden">
-//         <img src={BirtdayFrame} alt="birthdayframe" className="h-[15rem]" />
-//         <p className="absolute top-0 left-0 w-full h-full flex items-start mt-[3.5rem] justify-center text-black text-lg font-bold">
-//           Anims Johnson James’ birthday is in 3 days
-//         </p>
-//         <p className="absolute top-[2rem] lg:px-24 left-0 w-full h-full flex items-start mt-[3.5rem] justify-center text-black text-sm font-normal">
-//           On days like this Essential Groups advices visitors like yourself to
-//           find a way to wish this personnel a happy birthday. You can maximize
-//           our social media handle keys we provided, and if this personnel is
-//           deceased you can still get through to any of the family member through
-//           our platform here
-//         </p>
-//       </div>
-//       {/* mobile */}
-//       <div className="bg-[#F8D9D9] lg:hidden py-2">
-//         <div className="p-3">
-//           <img src={birthdayframeM1} alt="" className="h-auto w-[45vw] mb-3" />
-//           <img src={birthdayframeM2} alt="" className="h-auto w-[35vw]" />
-//         </div>
-//         <p className="w-full h-full flex items-start px-5  text-black text-lg mb-3 font-bold">
-//           Anims Johnson James’ birthday is in 3 days
-//         </p>
-
-//         <p className="w-full h-full flex items-start px-5  text-black text-sm font-normal">
-//           On days like this Essential Groups advices visitors like yourself to
-//           find a way to wish this personnel a happy birthday. You can maximize
-//           our social media handle keys we provided, and if this personnel is
-//           deceased you can still get through to any of the family member through
-//           our platform here
-//         </p>
-//       </div>
-
-//       {/* familyDetails? */}
-//       <div className="lg:grid grid-cols-10 my-6">
-//         <div className=" col-span-4">
-//           <img src={FamilyImage} alt="" className="w-full" />
-//         </div>
-//         <div className="flex mx-3 flex-col justify-center items-center col-span-6">
-//           <div className="">
-//             {/* childrensCard */}
-//             <div className="flex flex-wrap space-x-2 Nlg:my-3 gap-2 mb-9">
-//               <button className="text-black  bg-[#d9f8de] text-sm  p-2 rounded-sm">
-//                 child1
-//               </button>
-//               <button className="text-black  bg-[#d9f8de] text-sm  p-2 rounded-sm">
-//                 Child2
-//               </button>
-//               <button className="text-black  bg-[#d9f8de] text-sm  p-2 rounded-sm">
-//                 Child3
-//               </button>
-//               <button className="text-black  bg-[#d9f8de] text-sm  p-2 rounded-sm">
-//                 Child4
-//               </button>
-//               <button className="text-black  bg-[#d9f8de] text-sm  p-2 rounded-sm">
-//                 Chid5
-//               </button>
-//             </div>
-//             <h3 className="text-black text-lg font-bold uppercase mb-3">
-//               State religion
-//             </h3>
-//             <button className="text-white bg-green text-lg font-bold uppercase mb-1 p-1 rounded-xs">
-//               Christianity
-//             </button>
-//             <div className="">
-//               <p className="text-black text-sm font-normal">
-//                 AYO is an onvallis. Sed ut vulputate nisi. Integer in felis sed
-//                 leo vestibulum venenatis. Curabitur tempor quis eros tempus
-//                 lacinia. Nam bionvallis. Sed ut vulputate nisi. Integer in felis
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//       {/* Tribe */}
-
-//       <div className="mt-10">
-//         <h3 className="text-black  text-lg font-bold uppercase  text-start mb-4">
-//           Tribe
-//         </h3>
-//         <button className="text-white bg-green text-lg font-bold uppercase mb-1 p-1 rounded-xs">
-//           Igala
-//         </button>
-//         <div className="">
-//           <p className="text-black text-sm font-normal">
-//             AYO is an onvallis. Sed ut vulputate nisi. Integer in felis sed leo
-//             vestibulum venenatis. Curabitur tempor quis eros tempus lacinia. Nam
-//             bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-//             vestibulum venenatis. Curabitur tempor quis eros tempus lacinia. Nam
-//             bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-//             vestibulum venenatis. Curabitur tempor quis eros tempus lacinia. Nam
-//             bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-//             vestibulum venenatis. Curabitur tempor quis eros tempus lacinia. Nam
-//             bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-//             vestibulum venenatis. Curabitur tempor quis eros tempus lacinia. Nam
-//             b.
-//           </p>
-//         </div>
-//       </div>
-
-//       {/* immediates family members */}
-//       <div className="mt-10">
-//         <h3 className="text-black text-lg font-bold text-start mb-4">
-//           Immediate Family Members
-//         </h3>
-//         {/* Cards */}
-//         <div className="flex flex-wrap gap-4 max-w-full lg:items-start mod:justify-center">
-//           <div className="flex items-center bg-white rounded-full shadow-xl min-w-[15rem]  border border-gray-100 h-[4rem] p-2">
-//             <div className="w-[4rem] h-[4rem] flex-shrink-0">
-//               <img
-//                 src={FamilyImage}
-//                 alt="Card Image"
-//                 className="w-full h-full object-cover rounded-full"
-//               />
-//             </div>
-//             <div className="ml-2 flex flex-col justify-center">
-//               <p className="text-sm font-bold mb-2">John Paul</p>
-//               <p className="text-xs">Father</p>
-//             </div>
-//           </div>
-//           <div className="flex items-center bg-white rounded-full shadow-xl min-w-[15rem]  border border-gray-100 h-[4rem] p-2">
-//             <div className="w-[4rem] h-[4rem] flex-shrink-0">
-//               <img
-//                 src={FamilyImage}
-//                 alt="Card Image"
-//                 className="w-full h-full object-cover rounded-full"
-//               />
-//             </div>
-//             <div className="ml-2 flex flex-col justify-center">
-//               <p className="text-sm font-bold mb-2">Jane Doe</p>
-//               <p className="text-xs">Mother</p>
-//             </div>
-//           </div>
-//           <div className="flex items-center bg-white rounded-full shadow-xl min-w-[15rem]  border border-gray-100 h-[4rem] p-2">
-//             <div className="w-[4rem] h-[4rem] flex-shrink-0">
-//               <img
-//                 src={FamilyImage}
-//                 alt="Card Image"
-//                 className="w-full h-full object-cover rounded-full"
-//               />
-//             </div>
-//             <div className="ml-2 flex flex-col justify-center">
-//               <p className="text-sm font-bold mb-2">Sam Paul</p>
-//               <p className="text-xs">Brother</p>
-//             </div>
-//           </div>
-//           <div className="flex items-center bg-white rounded-full shadow-xl min-w-[15rem]  border border-gray-100 h-[4rem] p-2">
-//             <div className="w-[4rem] h-[4rem] flex-shrink-0">
-//               <img
-//                 src={FamilyImage}
-//                 alt="Card Image"
-//                 className="w-full h-full object-cover rounded-full"
-//               />
-//             </div>
-//             <div className="ml-2 flex flex-col justify-center">
-//               <p className="text-sm font-bold mb-2">Anna Paul</p>
-//               <p className="text-xs">Sister</p>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Greate people bearing this name */}
-//       <div className="mt-10">
-//         <div className="mt-24">
-//           <h3 className="text-black  text-lg font-bold  text-start mb-4">
-//             Greate people bearing this name
-//           </h3>
-
-//           {/* Cards */}
-//           <NameProfileCard />
-//         </div>
-
-//         {/* search */}
-//         <div className="mt-24">
-//           <h4 className="text-black my-4 text-sm  font-bold   text-center">
-//             Dont Find What You Are Looking For?
-//           </h4>
-//           <p className="mt-4 text-center lg:max-w-[35rem] mx-auto">
-//             should lead to more on culture and town, religion, tribe family
-//             photograph, highlight position of people on the photo
-//           </p>
-
-//           {/* form */}
-//           <div className="flex justify-center my-3">
-//             <form
-//               onSubmit={handleSubmit}
-//               className="flex flex-col sm:flex-row items-center w-full sm:w-auto"
-//             >
-//               <input
-//                 type="surname"
-//                 placeholder="Customize your search more"
-//                 value={surname}
-//                 onChange={handleChange}
-//                 className="px-6 py-2 mb-4 sm:mb-0 sm:mr-4 w-full sm:w-[26rem] focus:outline-none focus:ring-2 focus:ring-green text-black bg-NavClr rounded-xl rounded-bl-xl"
-//               />
-//               <button className="text-white flex items-center justify-center bg-green-500 px-4 py-2 bg-green hover:bg-green-600 rounded-xl rounded-br-xl  sm:w-auto">
-//                 <span className="mr-2">Search</span>
-//                 <DirectionButton2 className="ml-2" />
-//               </button>
-//             </form>
-//           </div>
-//           {/* form */}
-
-//           {/* related searches */}
-//           <div className="mt-24 mx-4">
-//             <h3 className="text-black my-4 text-lg mod:text-sm font-bold   text-start mb-3">
-//               Related searches
-//             </h3>
-//             <ul className=" list-disc">
-//               <li>Jame John</li>
-//               <li>Jame John</li>
-//               <li>Jame John</li>
-//               <li>Jame John</li>
-//             </ul>
-//           </div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-// export default FamilyTreeFeeds;
-
-//  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
-<div className="flex justify-center my-7">
-  <button className="bg-green text-white rounded-2xl w-auto py-2 px-3 flex items-center justify-center transition ease-in-out duration-200 transform hover:scale-105">
-    view more on state & culture
-    <span className="ml-2">
-      <DirectionButton2 />
-    </span>
-  </button>
-</div>;
-
-/* birthdayFrame */
-
-/* largescreen */
-
-<div className="relative Nlg:hidden">
-  <img src={BirtdayFrame} alt="birthdayframe" className="h-[15rem]" />
-  <p className="absolute top-0 left-0 w-full h-full flex items-start mt-[3.5rem] justify-center text-black text-lg font-bold">
-    Anims Johnson James’ birthday is in 3 days
-  </p>
-  <p className="absolute top-[2rem] lg:px-24 left-0 w-full h-full flex items-start mt-[3.5rem] justify-center text-black text-sm font-normal">
-    On days like this Essential Groups advices visitors like yourself to find a
-    way to wish this personnel a happy birthday. You can maximize our social
-    media handle keys we provided, and if this personnel is deceased you can
-    still get through to any of the family member through our platform here
-  </p>
-</div>;
-
-/* mobile */
-
-<div className="bg-[#F8D9D9] lg:hidden py-2">
-  <div className="p-3">
-    <img src={birthdayframeM1} alt="" className="h-auto w-[45vw] mb-3" />
-    <img src={birthdayframeM2} alt="" className="h-auto w-[35vw]" />
-  </div>
-  <p className="w-full h-full flex items-start px-5  text-black text-lg mb-3 font-bold">
-    Anims Johnson James’ birthday is in 3 days
-  </p>
-
-  <p className="w-full h-full flex items-start px-5  text-black text-sm font-normal">
-    On days like this Essential Groups advices visitors like yourself to find a
-    way to wish this personnel a happy birthday. You can maximize our social
-    media handle keys we provided, and if this personnel is deceased you can
-    still get through to any of the family member through our platform here
-  </p>
-</div>;
-
-/* familyDetails? */
-
-<div className="lg:grid grid-cols-10 my-6">
-  <div className=" col-span-4">
-    <img src={FamilyImage} alt="" className="w-full" />
-  </div>
-  <div className="flex mx-3 flex-col justify-center items-center col-span-6">
-    <div className="">
-      {/* childrensCard */}
-      <div className="flex flex-wrap space-x-2 Nlg:my-3 gap-2 mb-9">
-        <button className="text-black  bg-[#d9f8de] text-sm  p-2 rounded-sm">
-          child1
-        </button>
-        <button className="text-black  bg-[#d9f8de] text-sm  p-2 rounded-sm">
-          Child2
-        </button>
-        <button className="text-black  bg-[#d9f8de] text-sm  p-2 rounded-sm">
-          Child3
-        </button>
-        <button className="text-black  bg-[#d9f8de] text-sm  p-2 rounded-sm">
-          Child4
-        </button>
-        <button className="text-black  bg-[#d9f8de] text-sm  p-2 rounded-sm">
-          Chid5
-        </button>
-      </div>
-      <h3 className="text-black text-lg font-bold uppercase mb-3">
-        State religion
-      </h3>
-      <button className="text-white bg-green text-lg font-bold uppercase mb-1 p-1 rounded-xs">
-        Christianity
-      </button>
-      <div className="">
-        <p className="text-black text-sm font-normal">
-          AYO is an onvallis. Sed ut vulputate nisi. Integer in felis sed leo
-          vestibulum venenatis. Curabitur tempor quis eros tempus lacinia. Nam
-          bionvallis. Sed ut vulputate nisi. Integer in felis
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+  const toggleView = () => {
+    setviewMore(!viewMore);
+  };
+  const toggleCategory = () => {
+    setCategory(!category);
+  };
+  return (
+    <section className="my-[3rem]">
+      <div className="text-center">
+        <h1 className="text-3xl mod:text-lg font-bold mb-6  font-Montserrat  text-center ">
+          Family tree Family tree Family tree Family tree
+        </h1>
+        <p className="text-lg mb-4  mod:text-sm text-center">
+          Corem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu
+          turpis molestie, dictum est a, Corem ipsum dolor
         </p>
       </div>
-    </div>
-  </div>
-</div>;
+      <p className="text-center mt-5">Or browse surnames alphabetically:</p>
 
-/* Tribe */
-
-<div className="mt-10">
-  <h3 className="text-black  text-lg font-bold uppercase  text-start mb-4">
-    Tribe
-  </h3>
-  <button className="text-white bg-green text-lg font-bold uppercase mb-1 p-1 rounded-xs">
-    Igala
-  </button>
-  <div className="">
-    <p className="text-black text-sm font-normal">
-      AYO is an onvallis. Sed ut vulputate nisi. Integer in felis sed leo
-      vestibulum venenatis. Curabitur tempor quis eros tempus lacinia. Nam
-      bionvallis. Sed ut vulputate nisi. Integer in felis sed leo vestibulum
-      venenatis. Curabitur tempor quis eros tempus lacinia. Nam bionvallis. Sed
-      ut vulputate nisi. Integer in felis sed leo vestibulum venenatis.
-      Curabitur tempor quis eros tempus lacinia. Nam bionvallis. Sed ut
-      vulputate nisi. Integer in felis sed leo vestibulum venenatis. Curabitur
-      tempor quis eros tempus lacinia. Nam bionvallis. Sed ut vulputate nisi.
-      Integer in felis sed leo vestibulum venenatis. Curabitur tempor quis eros
-      tempus lacinia. Nam b.
-    </p>
-  </div>
-</div>;
-
-/* immediates family members */
-
-<div className="mt-10">
-  <h3 className="text-black text-lg font-bold text-start mb-4">
-    Immediate Family Members
-  </h3>
-  {/* Cards */}
-  <div className="flex flex-wrap gap-4 max-w-full lg:items-start mod:justify-center">
-    <div className="flex items-center bg-white rounded-full shadow-xl min-w-[15rem]  border border-gray-100 h-[4rem] p-2">
-      <div className="w-[4rem] h-[4rem] flex-shrink-0">
-        <img
-          src={FamilyImage}
-          alt="Card Image"
-          className="w-full h-full object-cover rounded-full"
-        />
+      <div className="flex justify-center mb-[5rem]">
+        <AlphabeticalSearchButton />
       </div>
-      <div className="ml-2 flex flex-col justify-center">
-        <p className="text-sm font-bold mb-2">John Paul</p>
-        <p className="text-xs">Father</p>
-      </div>
-    </div>
-    <div className="flex items-center bg-white rounded-full shadow-xl min-w-[15rem]  border border-gray-100 h-[4rem] p-2">
-      <div className="w-[4rem] h-[4rem] flex-shrink-0">
-        <img
-          src={FamilyImage}
-          alt="Card Image"
-          className="w-full h-full object-cover rounded-full"
-        />
-      </div>
-      <div className="ml-2 flex flex-col justify-center">
-        <p className="text-sm font-bold mb-2">Jane Doe</p>
-        <p className="text-xs">Mother</p>
-      </div>
-    </div>
-    <div className="flex items-center bg-white rounded-full shadow-xl min-w-[15rem]  border border-gray-100 h-[4rem] p-2">
-      <div className="w-[4rem] h-[4rem] flex-shrink-0">
-        <img
-          src={FamilyImage}
-          alt="Card Image"
-          className="w-full h-full object-cover rounded-full"
-        />
-      </div>
-      <div className="ml-2 flex flex-col justify-center">
-        <p className="text-sm font-bold mb-2">Sam Paul</p>
-        <p className="text-xs">Brother</p>
-      </div>
-    </div>
-    <div className="flex items-center bg-white rounded-full shadow-xl min-w-[15rem]  border border-gray-100 h-[4rem] p-2">
-      <div className="w-[4rem] h-[4rem] flex-shrink-0">
-        <img
-          src={FamilyImage}
-          alt="Card Image"
-          className="w-full h-full object-cover rounded-full"
-        />
-      </div>
-      <div className="ml-2 flex flex-col justify-center">
-        <p className="text-sm font-bold mb-2">Anna Paul</p>
-        <p className="text-xs">Sister</p>
-      </div>
-    </div>
-  </div>
-</div>;
+      <div className="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <div className="lg:col-span-3">
+          <FormMain />
+        </div>
 
-/* Greate people bearing this name */
-
-<div className="mt-10">
-  <div className="mt-24">
-    <h3 className="text-black  text-lg font-bold  text-start mb-4">
-      Greate people bearing this name
-    </h3>
-
-    {/* Cards */}
-    <NameProfileCard />
-  </div>
-
-  {/* search */}
-  <div className="mt-24">
-    <h4 className="text-black my-4 text-sm  font-bold   text-center">
-      Dont Find What You Are Looking For?
-    </h4>
-    <p className="mt-4 text-center lg:max-w-[35rem] mx-auto">
-      should lead to more on culture and town, religion, tribe family
-      photograph, highlight position of people on the photo
-    </p>
-
-    {/* form */}
-    <div className="flex justify-center my-3">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col sm:flex-row items-center w-full sm:w-auto"
-      >
-        <input
-          type="surname"
-          placeholder="Customize your search more"
-          value={surname}
-          onChange={handleChange}
-          className="px-6 py-2 mb-4 sm:mb-0 sm:mr-4 w-full sm:w-[26rem] focus:outline-none focus:ring-2 focus:ring-green text-black bg-NavClr rounded-xl rounded-bl-xl"
-        />
-        <button className="text-white flex items-center justify-center bg-green-500 px-4 py-2 bg-green hover:bg-green-600 rounded-xl rounded-br-xl  sm:w-auto">
-          <span className="mr-2">Search</span>
-          <DirectionButton2 className="ml-2" />
-        </button>
-      </form>
-    </div>
-    {/* form */}
-
-    {/* related searches */}
-    <div className="mt-24 mx-4">
-      <h3 className="text-black my-4 text-lg mod:text-sm font-bold   text-start mb-3">
-        Related searches
-      </h3>
-      <ul className=" list-disc">
-        <li>Jame John</li>
-        <li>Jame John</li>
-        <li>Jame John</li>
-        <li>Jame John</li>
-      </ul>
-    </div>
-  </div>
-</div>;
-
-import React, { useState, useEffect, useRef } from "react";
-import { IoPersonCircleOutline } from "react-icons/io5";
-import backgroundImage from "../../assets/images/backgroundImage.png";
-import LayoutNAv from "../../components/layoutNAv";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  createFamilyMember,
-  editPerson,
-  fetchAllDetails,
-} from "../../features/UserFeature/UserAction";
-import { resetSuccess } from "../../features/UserFeature/UserSlice";
-import { resetEditState } from "../../features/UserFeature/EditSlice";
-import { resetDeleteState } from "../../features/UserFeature/deleteUserSlice";
-import { DirectionButton1 } from "../d-button";
-import Error from "../../components/tools/Error";
-import Spinner from "../../components/tools/Spinner";
-import { useNavigate, Link } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { MdOutlineAddAPhoto } from "react-icons/md";
-
-const PersonalForm = ({ initialState = {}, isEdit = false }) => {
-  const [formData, setFormData] = useState({
-    firstName: initialState.firstName || "",
-    lastName: initialState.lastName || "",
-    gender: initialState.gender || "",
-    DOB: initialState.DOB || "",
-    image: null,
-    imagePreview: initialState.image
-      ? `${backendURL}/${initialState.image}`
-      : null,
-  });
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { loading, error, success } = useSelector((state) => state.form.person);
-  const { Eloading, Eerror, Esuccess } = useSelector(
-    (state) => state.edit.person
-  );
-
-  const formRef = useRef(); // Create a ref for the form
-  const fileInputRef = useRef(); // Create a ref for the file input
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Basic validation
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.DOB ||
-      !formData.gender
-    ) {
-      toast.error("Please fill in all required fields.");
-      return;
-    }
-
-    const formDataToSubmit = new FormData();
-    if (isEdit && initialState._id) {
-      formDataToSubmit.append("_id", initialState._id);
-    }
-    formDataToSubmit.append("firstName", formData.firstName);
-    formDataToSubmit.append("lastName", formData.lastName);
-    formDataToSubmit.append("gender", formData.gender);
-    formDataToSubmit.append("DOB", formData.DOB);
-
-    if (formData.image) {
-      formDataToSubmit.append("image", formData.image);
-    }
-
-    if (isEdit && initialState._id) {
-      dispatch(
-        editPerson({
-          _id: initialState._id,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          gender: formData.gender,
-          DOB: formData.DOB,
-          image: formData.image,
-        })
-      );
-
-      dispatch(fetchAllDetails());
-      dispatch(resetEditState());
-    } else {
-      dispatch(
-        createFamilyMember({
-          memberType: "createPerson",
-          formData: formDataToSubmit,
-        })
-      );
-      dispatch(fetchAllDetails());
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleGenderSelect = (selectedGender) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      gender: selectedGender,
-    }));
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setFormData((prevData) => ({
-      ...prevData,
-      image: file,
-      imagePreview: URL.createObjectURL(file),
-    }));
-  };
-
-  useEffect(() => {
-    if (success) {
-      toast.success("Created!!");
-      dispatch(resetSuccess());
-      setTimeout(() => navigate("/layout/mothers-form"), 2000);
-    }
-  }, [success, dispatch, navigate]);
-
-  // Function to handle modal submit
-  const handleModalSubmit = () => {
-    formRef.current.requestSubmit(); // Trigger form submission
-  };
-
-  return (
-    <>
-      <section
-        className="relative bg-cover bg-center bg-no-repeat h-full w-full Nlg:max-w-[40rem] Nlg:mx-auto"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
-      >
-        <div className="absolute inset-0 bg-opacity-50 pointer-events-none"></div>
-        <div className="relative p-8 flex flex-col items-center lg:items-start lg:flex-row">
-          <span className="lg:hidden w-full flex justify-center">
-            <LayoutNAv />
-          </span>
-          <form
-            onSubmit={handleSubmit}
-            ref={formRef} // Attach ref to form
-            className="space-y-4 flex flex-col items-center lg:items-start w-full"
-          >
-            <div className="mb-5">
-              <h3 className="text-2xl text-black mb-2">
-                {isEdit ? "Edit here" : "Start with yourself"}
-              </h3>
-              <p>
-                Nam bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-                vestibulum
-              </p>
-            </div>
-            <div className="flex items-center space-x-2 mb-3 w-full justify-center lg:justify-start">
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                onChange={handleInputChange}
-                value={formData.firstName}
-                className="py-2 mt-1 block w-full lg:w-[66%] border-b-2 border-gray-500 focus:ring-green focus:border-green bg-opacity-90 text-black placeholder-black sm:text-md focus:outline-none bg-transparent"
-                placeholder="Your first name"
-              />
-              <IoPersonCircleOutline size={28} className="mt-6" />
-            </div>
-            <div className="w-full flex justify-center lg:justify-start">
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                onChange={handleInputChange}
-                value={formData.lastName}
-                className="py-2 mt-1 block w-full lg:w-[70%] border-b-2 border-gray-500 focus:ring-green focus:border-green bg-opacity-90 text-black placeholder-black sm:text-md focus:outline-none bg-transparent"
-                placeholder="Your last name"
-              />
-            </div>
-            <div className="w-full flex flex-col items-center lg:items-start">
-              <label
-                htmlFor="gender"
-                className="block text-sm font-bold text-black"
-              >
-                Gender
-              </label>
-              <div className="flex space-x-4 mt-1">
-                <button
-                  type="button"
-                  onClick={() => handleGenderSelect("male")}
-                  className={`py-2 px-4 border-2 rounded-lg focus:outline-none ${
-                    formData.gender === "male"
-                      ? "bg-green text-white"
-                      : "bg-transparent text-black border-gray-500"
-                  }`}
-                >
-                  Male
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleGenderSelect("female")}
-                  className={`py-2 px-4 border-2 rounded-lg focus:outline-none ${
-                    formData.gender === "female"
-                      ? "bg-green text-white"
-                      : "bg-transparent text-black border-gray-500"
-                  }`}
-                >
-                  Female
-                </button>
+        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-1 gap-4">
+          <div className="bg-NavClr p-4 rounded-lg">
+            <div className="flex justify-between">
+              <div className="block text-sm font-bold text-black">
+                Explore by collection
+              </div>
+              <div className="flex">
+                Filter <RiFilter2Line className="mt-1 w-5 h-5" />
               </div>
             </div>
-            <div className="flex-col pt-3 pb-7 w-full flex justify-center lg:justify-start">
-              <label
-                htmlFor="DOB"
-                className="block text-sm font-bold text-black"
-              >
-                DOB
-              </label>
-              <input
-                type="date"
-                id="DOB"
-                name="DOB"
-                onChange={handleInputChange}
-                value={formData.DOB}
-                className="shadow px-3 mt-1 block w-full lg:w-[50%] py-3 rounded-xl focus:ring-green focus:border-green bg-opacity-90 bg-[#e7fae7] text-black placeholder-black sm:text-sm focus:outline-none"
-              />
-            </div>
-            {isEdit && (
-              <div className="w-full flex flex-col items-center lg:items-start">
-                <input
-                  type="file"
-                  id="image"
-                  name="image"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  ref={fileInputRef} // Attach ref to file input
-                />
-                <MdOutlineAddAPhoto
-                  size={28}
-                  className="cursor-pointer"
-                  onClick={() => fileInputRef.current.click()} // Trigger file input click
-                />
-                {formData.imagePreview && (
-                  <img
-                    src={formData.imagePreview}
-                    alt="Preview"
-                    className="mt-2 w-20 h-20 object-cover rounded-full"
+
+            {/* dropdown 1*/}
+
+            <div className="flex justify-center mb-5">
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={toggleCategory}
+                  className="flex  justify-between px-5 w-[19rem] py-3 mt-1  rounded-full bg-opacity-90 bg-[#e7fae7]  sm:text-sm "
+                >
+                  Sort by categories
+                  <RiArrowDropDownLine
+                    className={`h-5 w-5 ml-2 ${
+                      category ? "transform rotate-180" : ""
+                    }`}
                   />
+                </button>
+
+                {/* Dropdown content */}
+                {category && (
+                  <div className="absolute right-0 mt-1 w-full max-w-[12rem] bg-white rounded-md shadow-lg z-10">
+                    <ul className="py-1">
+                      <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                        Option 1
+                      </li>
+                      <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                        Option 2
+                      </li>
+                      <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                        Option 3
+                      </li>
+                    </ul>
+                  </div>
                 )}
               </div>
-            )}
-            <div className="flex items-center justify-center w-full mt-8">
-              <button
-                type="submit"
-                className="bg-green text-white py-2 px-4 rounded-lg hover:bg-opacity-75"
-              >
-                {isEdit ? "Update" : "Save"}
-              </button>
-              {!isEdit && (
-                <Link to="/layout/mothers-form">
-                  <DirectionButton1 />
-                </Link>
-              )}
             </div>
-            {loading || Eloading ? (
-              <Spinner message="Sending request..." />
-            ) : error || Eerror ? (
-              <Error error={error || Eerror} visible={true} />
-            ) : null}
-          </form>
-        </div>
-      </section>
-      <ToastContainer />
-    </>
-  );
-};
 
-export default PersonalForm;
-import React, { useState, useEffect, useRef } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import Error from "../components/tools/Error";
-import Spinner from "../components/tools/Spinner";
-import { resetSuccess } from "../features/UserFeature/UserSlice";
-import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
-import { BsPersonBoundingBox } from "react-icons/bs";
-import { statesAndLGAs } from "../assets/json-datas/State/LGAs.json";
-import { FaTwitter } from "react-icons/fa6";
-import { FaFacebookF } from "react-icons/fa";
-import { FaInstagram } from "react-icons/fa";
-import { createFamilyMember, getProfile } from "../features/UserFeature/UserAction";
+            {/* dropdown 2*/}
+            <div className="flex justify-center">
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={toggleDropdown}
+                  className="flex  justify-between px-5 w-[19rem] py-3 mt-1  rounded-full bg-opacity-90 bg-[#e7fae7]  sm:text-sm "
+                >
+                  subcategories
+                  <RiArrowDropDownLine
+                    className={`h-5 w-5 ml-2 ${
+                      isOpen ? "transform rotate-180" : ""
+                    }`}
+                  />
+                </button>
 
-const backendURL =
-  process.env.NODE_ENV !== "production"
-    ? "http://localhost:8080"
-    : "https://gekoda-api.onrender.com";
-
-export default function Profile() {
-  const dispatch = useDispatch();
-  const { loading, error, profile, success } = useSelector((state) => state.person);
-  const fileInputRef = useRef(null);
-  const familyPictureInputRef = useRef(null);
-
-  const handleIconClick = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleFamilyPictureClick = () => {
-    familyPictureInputRef.current.click();
-  };
-
-  const Image = profile?.image;
-  const FamilyPicture = profile?.familyPicture; // New field for family picture
-
-  const initialFormData = {
-    background: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    DOB: "",
-    phoneNumber: "",
-    streetAddress: "",
-    lga: "",
-    state: "",
-    kindred: "",
-    village: "",
-    autonomous: "",
-    tribe: "",
-    religion: "",
-    profession: "",
-    facebook: "",
-    twitter: "",
-    instagram: "",
-    about: "",
-    image: "",
-    familyPicture: "", // New field for family picture
-    middlename: "",
-  };
-
-  useEffect(() => {
-    if (profile) {
-      setFormData((prevState) => ({
-        ...prevState,
-        ...profile,
-        image: profile.image || formData.image,
-        familyPicture: profile.familyPicture || formData.familyPicture, // Preserve existing family picture URL if available
-      }));
-      setImagePreview(profile.image ? `${backendURL}/${profile.image}` : null);
-      setFamilyPicturePreview(profile.familyPicture ? `${backendURL}/${profile.familyPicture}` : null);
-    }
-  }, [profile]);
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setFormData((prevState) => ({
-      ...prevState,
-      image: file,
-    }));
-    setImagePreview(URL.createObjectURL(file));
-  };
-
-  const handleFamilyPictureChange = (e) => {
-    const file = e.target.files[0];
-    setFormData((prevState) => ({
-      ...prevState,
-      familyPicture: file,
-    }));
-    setFamilyPicturePreview(URL.createObjectURL(file));
-  };
-
-  const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: type === "file" ? files[0] : value,
-    }));
-  };
-
-  const handleStateChange = (e) => {
-    const { value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      state: value,
-      lga: "",
-    }));
-  };
-
-  const handleLGAChange = (e) => {
-    const { value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      lga: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const selectedState = statesAndLGAs.find(
-      (state) => state.id === formData.state
-    )?.name;
-    const selectedLGA = statesAndLGAs
-      .find((state) => state.id === formData.state)
-      ?.local_governments.find((lga) => lga.id === formData.lga)?.name;
-
-    const data = new FormData();
-    for (const key in formData) {
-      if (key === "state" && selectedState) {
-        data.append(key, selectedState);
-      } else if (key === "lga" && selectedLGA) {
-        data.append(key, selectedLGA);
-      } else {
-        data.append(key, formData[key]);
-      }
-    }
-
-    try {
-      await dispatch(
-        createFamilyMember({
-          memberType: "profile",
-          formData: data,
-        })
-      ).unwrap();
-      toast.success("Updated! 👍");
-      dispatch(resetSuccess());
-    } catch (error) {
-      toast.error("Failed to create profile. Please try again.");
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await dispatch(getProfile()).unwrap();
-      } catch (error) {
-        toast.error("Failed to fetch profile data.");
-      }
-    };
-    fetchData();
-  }, [dispatch]);
-
-  const [formData, setFormData] = useState(() => {
-    const savedFormData = JSON.parse(localStorage.getItem("formData"));
-    return savedFormData || initialFormData;
-  });
-
-  const [imagePreview, setImagePreview] = useState(null);
-  const [familyPicturePreview, setFamilyPicturePreview] = useState(null);
-
-  useEffect(() => {
-    localStorage.setItem("formData", JSON.stringify(formData));
-  }, [formData]);
-
-  const states = statesAndLGAs.map((state) => (
-    <option key={state.id} value={state.id}>
-      {state.name}
-    </option>
-  ));
-
-  const selectedState = statesAndLGAs.find(
-    (state) => state.id === formData.state
-  );
-
-  const lgas = selectedState
-    ? selectedState.local_governments.map((lga) => (
-        <option key={lga.id} value={lga.id}>
-          {lga.name}
-        </option>
-      ))
-    : [];
-
-  const handleQuillChange = (value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      about: value,
-    }));
-  };
-
-  return (
-    <section className="px-4">
-      <form onSubmit={handleSubmit} className="mb-36">
-        <div className="">
-          <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-base font-semibold leading-7 text-gray-900">
-              Personal Information
-            </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
-              Please fill all fields as accurately as possible
-            </p>
-          </div>
-          <div className="lg:grid grid-cols-10">
-            <div className="col-span-4 md:pr-5">
-              <div className="border-gray-900/10 pb-12">
-                <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                  <div className="col-span-full">
-                    <label
-                      htmlFor="cover-photo"
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Profile Picture
-                    </label>
-                    <div className="mt-1 flex justify-center rounded-lg px-6 py-10">
-                      <div className="text-center">
-                        {imagePreview ? (
-                          <img
-                            src={imagePreview}
-                            alt="Profile picture preview"
-                            className="h-[20rem] w-[20rem] rounded-full object-cover"
-                          />
-                        ) : (
-                          <div
-                            onClick={handleIconClick}
-                            className="cursor-pointer h-40 w-40 flex flex-col justify-center items-center border-2 border-dashed border-gray-300 rounded-full"
-                          >
-                            <BsPersonBoundingBox
-                              aria-hidden="true"
-                              className="h-12 w-12 text-gray-300"
-                            />
-                            <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                              <label
-                                htmlFor="file-upload"
-                                className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                              >
-                                <span className="hidden">Upload a file</span>
-                                <input
-                                  ref={fileInputRef}
-                                  id="file-upload"
-                                  name="image"
-                                  type="file"
-                                  className="sr-only"
-                                  onChange={handleFileChange}
-                                />
-                              </label>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                {/* Dropdown content */}
+                {isOpen && (
+                  <div className="absolute right-0 mt-1 w-full max-w-[12rem] bg-white rounded-md shadow-lg z-10">
+                    <ul className="py-1">
+                      <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                        Option 1
+                      </li>
+                      <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                        Option 2
+                      </li>
+                      <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                        Option 3
+                      </li>
+                    </ul>
                   </div>
-                 
-                  {/* Other fields in the form */}
-                </div>
+                )}
+              </div>
+            </div>
+          </div>
+          {/* Last section */}
+
+          <div className="bg-NavClr p-4 rounded-lg">
+            <div className="flex justify-start">
+              <p className="block text-sm font-bold text-black">
+                Recently searched
+              </p>
+            </div>
+            <div>
+              <ul className="gap-3 my-3">
+                <li>John James </li>
+                <li>John James John</li>
+                <li>James John</li>
+              </ul>
+            </div>
+
+            {/* dropdown 1*/}
+
+            <div className="flex justify-end mb-5">
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={toggleView}
+                  className="flex  justify-between px-3 w-[10rem] py-3 mt-1  rounded-full bg-opacity-90 bg-[#e7fae7]  sm:text-sm "
+                >
+                  View more
+                  <RiArrowDropDownLine
+                    className={`h-5 w-5 ml-2 ${
+                      isOpen ? "transform rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* Dropdown content */}
+                {viewMore && (
+                  <div className="absolute  right-[1rem] bottom-[3rem] mt-1 w-full max-w-[12rem] bg-white rounded-md shadow-lg z-10">
+                    <ul className="py-1">
+                      <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                        Option 1
+                      </li>
+                      <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                        Option 2
+                      </li>
+                      <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                        Option 3
+                      </li>
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
-        <button
-          type="submit"
-          className="mt-6 bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700"
-        >
-          Save
-        </button>
-      </form>
+      </div>
     </section>
   );
 }
 
+function FormMain() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [place, setPlace] = useState("");
+  const [date, setDate] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
 
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+  return (
+    <>
+      {/* Form */}
+      <div className="max-w-screen-lg mx-auto bg-NavClr bg-opacity-9 px-3 py-3 rounded-lg">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* First Name */}
+            <div>
+              <label
+                htmlFor="firstName"
+                className="block text-sm font-bold text-black"
+              >
+                First Name
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                onChange={(e) => setFirstName(e.target.value)}
+                value={firstName}
+                className="px-3 py-2 mt-1 block w-full rounded-full  focus:ring-green focus:border-green  bg-opacity-90 bg-[#e7fae7] text-black placeholder-black sm:text-sm focus:outline-none"
+                placeholder="Enter First Name"
+              />
+              {/* checkBox */}
+              <div className="mt-2">
+                <label
+                  htmlFor="firstNameCheckbox"
+                  className="inline-flex items-center"
+                >
+                  <input
+                    type="checkbox"
+                    id="firstNameCheckbox"
+                    name="firstNameCheckbox"
+                    className="form-checkbox h-4 w-4 text-green-500"
+                  />
+                  <span className="ml-2 text-sm font-medium text-black">
+                    Exact word
+                  </span>
+                </label>
+              </div>
+              {/* checkBox */}
+            </div>
 
- <section className="px-4">
-      <form onSubmit={handleSubmit} className="mb-36">
-        <div className="">
-          <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-base font-semibold leading-7 text-gray-900">
-              Personal Information
-            </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
-              Please fill all fields as accurately as possible
-            </p>
+            {/* Last Name */}
+            <div>
+              <label
+                htmlFor="lastName"
+                className="block text-sm font-bold text-black"
+              >
+                Last Name
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                onChange={(e) => setLastName(e.target.value)}
+                className="px-3 py-2 mt-1 block w-full rounded-full  focus:ring-green focus:border-green bg-opacity-90 bg-[#e7fae7] text-black placeholder-black sm:text-sm focus:outline-none"
+                placeholder="Enter Last Name"
+              />
+              {/* checkBox */}
+              <div className="mt-2">
+                <label
+                  htmlFor="firstNameCheckbox"
+                  className="inline-flex items-center"
+                >
+                  <input
+                    type="checkbox"
+                    id="firstNameCheckbox"
+                    name="firstNameCheckbox"
+                    className="form-checkbox h-4 w-4 text-green-500"
+                  />
+                  <span className="ml-2 text-sm font-medium text-black">
+                    Exact word
+                  </span>
+                </label>
+              </div>
+              {/* checkBox */}
+            </div>
           </div>
-          <div className="lg:grid grid-cols-10">
-            <div className="col-span-4 md:pr-5">
-              <div className="border-gray-900/10 pb-12">
-                <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                  <div className="col-span-full">
-                    <label
-                      htmlFor="cover-photo"
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Cover photo
-                    </label>
-                    <div className="mt-1 flex justify-center rounded-lg px-6 py-10">
-                      <div className="text-center">
-                        {imagePreview ? (
-                          <img
-                            src={imagePreview}
-                            alt="Image preview"
-                            className="h-[20rem] w-[20rem] rounded-full object-cover"
-                          />
-                        ) : (
-                          <div
-                            onClick={() => fileInputRef.current.click()}
-                            className="cursor-pointer h-40 w-40 flex flex-col justify-center items-center border-2 border-dashed border-gray-300 rounded-full"
-                          >
-                            <BsPersonBoundingBox
-                              aria-hidden="true"
-                              className="h-12 w-12 text-gray-300"
-                            />
-                            <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                              <label
-                                htmlFor="file-upload"
-                                className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                              >
-                                <span className="hidden">Upload a file</span>
-                                <input
-                                  ref={fileInputRef}
-                                  id="file-upload"
-                                  name="image"
-                                  type="file"
-                                  className="sr-only"
-                                  onChange={handleFileChange}
-                                />
-                              </label>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-span-full">
-                    <label
-                      htmlFor="cover-photo2"
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Additional Image
-                    </label>
-                    <div className="mt-1 flex justify-center rounded-lg px-6 py-10">
-                      <div className="text-center">
-                        {imagePreview2 ? (
-                          <img
-                            src={imagePreview2}
-                            alt="Additional image preview"
-                            className="h-[20rem] w-[20rem] rounded-full object-cover"
-                          />
-                        ) : (
-                          <div
-                            onClick={() => fileInputRef2.current.click()}
-                            className="cursor-pointer h-40 w-40 flex flex-col justify-center items-center border-2 border-dashed border-gray-300 rounded-full"
-                          >
-                            <PhotoIcon
-                              aria-hidden="true"
-                              className="h-12 w-12 text-gray-300"
-                            />
-                            <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                              <label
-                                htmlFor="file-upload2"
-                                className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                              >
-                                <span className="hidden">Upload an additional file</span>
-                                <input
-                                  ref={fileInputRef2}
-                                  id="file-upload2"
-                                  name="image2"
-                                  type="file"
-                                  className="sr-only"
-                                  onChange={handleFileChange2}
-                                />
-                              </label>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Existing fields here */}
-                  {/* ... */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Place Ancestor Lived */}
+            <div>
+              <label
+                htmlFor="placeLived"
+                className="block text-sm font-bold text-black"
+              >
+                Place Your Ancestor Might Have Lived
+              </label>
+              <input
+                type="text"
+                id="placeLived"
+                name="placeLived"
+                onChange={(e) => setPlace(e.target.value)}
+                value={place}
+                className="px-3 py-2 mt-1 block w-full rounded-full  focus:ring-green focus:border-green bg-opacity-90 bg-[#e7fae7] text-black placeholder-black sm:text-sm focus:outline-none"
+                placeholder="Enter Place"
+              />
+              {/* checkBox */}
+              <div className="mt-2">
+                <label
+                  htmlFor="firstNameCheckbox"
+                  className="inline-flex items-center"
+                >
+                  <input
+                    type="checkbox"
+                    id="firstNameCheckbox"
+                    name="firstNameCheckbox"
+                    className="form-checkbox h-4 w-4 text-green-500"
+                  />
+                  <span className="ml-2 text-sm font-medium text-black">
+                    Exact word
+                  </span>
+                </label>
+              </div>
+              {/* checkBox */}
+            </div>
+
+            {/* Date of Birth */}
+            <div>
+              <label
+                htmlFor="dob"
+                className="block text-sm font-bold text-black"
+              >
+                Date of Birth
+              </label>
+              <input
+                type="date"
+                id="dob"
+                name="dob"
+                onChange={(e) => setDate(e.target.value)}
+                value={date}
+                className="px-3 py-2 mt-1 block w-full rounded-full  focus:ring-green focus:border-green bg-opacity-90 bg-[#e7fae7] text-black placeholder-black sm:text-sm focus:outline-none"
+                placeholder="Select Date"
+              />
+              {/* checkBox */}
+              <div className="mt-2">
+                <label
+                  htmlFor="firstNameCheckbox"
+                  className="inline-flex items-center"
+                >
+                  <input
+                    type="checkbox"
+                    id="firstNameCheckbox"
+                    name="firstNameCheckbox"
+                    className="form-checkbox h-4 w-4 text-green-500"
+                  />
+                  <span className="ml-2 text-sm font-medium text-black">
+                    Exact word
+                  </span>
+                </label>
+              </div>
+              {/* checkBox */}
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-between">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={toggleDropdown}
+                className="flex items-center justify-between px-3 py-2 w-full   text-black sm:text-sm focus:outline-none"
+              >
+                Show More Options
+                <RiArrowDropDownLine
+                  className={`h-5 w-5 ml-2 ${
+                    isOpen ? "transform rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {/* Dropdown content */}
+              {isOpen && (
+                <div className="absolute right-0 mt-1 w-full max-w-[12rem] bg-white rounded-md shadow-lg z-10">
+                  <ul className="py-1">
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                      Option 1
+                    </li>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                      Option 2
+                    </li>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                      Option 3
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            <button className="bg-green text-white  py-2 px-6  hover:bg-green-600 flex rounded-2xl transition ease-in-out duration-200 transform hover:scale-105">
+              Search
+              <span className="mx-2">
+                <DirectionButton2 />
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+      {/* End of Form */}
+    </>
+  );
+}
+
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { fetchUsers } from "../features/UserFeature/UserAction";
+import { GrChapterNext, GrChapterPrevious } from "react-icons/gr";
+import { Box, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import NoResult from "../assets/images/noResult.png";
+import Search from "../assets/images/Search.gif";
+
+const backendURL =
+  process.env.NODE_ENV !== "production"
+    ? "http://localhost:8080"
+    : "https://your-backend-url";
+
+export function SearchTree() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [placeLived, setPlaceLived] = useState("");
+  const [dob, setDob] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [spinnerVisible, setSpinnerVisible] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [viewMore, setViewMore] = useState(false);
+  const [category, setCategory] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = React.useState("");
+  const [selectedSubCategory, setSelectedSubCategory] = React.useState("");
+
+  const resultsPerPage = 6;
+
+  const {
+    users = [], // Updated to default to an empty array
+    loading,
+    error,
+  } = useSelector((state) => state.userSearch);
+
+  const indexOfLastResult = currentPage * resultsPerPage;
+  const indexOfFirstResult = indexOfLastResult - resultsPerPage;
+  const currentResults = users.length
+    ? users.slice(indexOfFirstResult, indexOfLastResult)
+    : [];
+  console.log("Current Results:", currentResults); // Ensure results are logged here
+
+  const totalPages = Math.ceil(users.length / resultsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const [modalType, setModalType] = useState(null); // 'results' or 'noResults'
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const toggleDropdown = () => setIsOpen(!isOpen);
+  const toggleView = () => setViewMore(!viewMore);
+  const toggleCategory = () => setCategory(!category);
+  const closeModal = () => {
+    setModalType(null); // Reset modalType to close any open modals
+  };
+
+  useEffect(() => {
+    let spinnerTimer;
+
+    if (loading) {
+      setShowOverlay(true);
+      spinnerTimer = setTimeout(() => {
+        setSpinnerVisible(true);
+      }, 1000);
+    } else {
+      setSpinnerVisible(false);
+      setShowOverlay(false);
+      clearTimeout(spinnerTimer);
+    }
+
+    return () => clearTimeout(spinnerTimer);
+  }, [loading]);
+
+  useEffect(() => {
+    if (loading && submitted) {
+      setSpinnerVisible(true);
+      setModalType(null); // Hide modals while loading
+    } else if (!loading && submitted) {
+      setSpinnerVisible(false);
+      if (users.length > 0) {
+        setModalType("results");
+        setFirstName("");
+        setLastName("");
+        setPlaceLived("");
+        setDob("");
+      } else {
+        setModalType("noResults");
+      }
+    }
+  }, [loading, submitted, users]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (firstName.trim() || lastName.trim() || placeLived.trim() || dob) {
+      const searchParams = {
+        firstName,
+        lastName,
+        placeLived,
+        dob,
+      };
+
+      dispatch(fetchUsers(searchParams));
+      console.log("Submitted Search with:", searchParams); // Log the search params
+      setSubmitted(true);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "firstName") setFirstName(value);
+    if (name === "lastName") setLastName(value);
+    if (name === "placeLived") setPlaceLived(value);
+    if (name === "dob") setDob(value);
+    setSubmitted(false);
+  };
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+
+  const handleSubCategoryChange = (event) => {
+    setSelectedSubCategory(event.target.value);
+  };
+
+  const handleResultClick = (userId) => {
+    navigate(`/FamilyTree-feeds/${userId}`);
+  };
+
+  const hasResults = users.length > 0;
+  const noResults = submitted && !hasResults;
+
+  useEffect(() => {
+    if (submitted) {
+      if (hasResults) {
+        setModalType("results");
+      } else if (noResults) {
+        setModalType("noResults");
+      }
+    }
+  }, [hasResults, noResults, submitted]);
+
+  useEffect(() => {
+    console.log("Fetched Users:", users); // Ensure users are logged when fetched
+  }, [users]);
+
+  return (
+    <section className="my-[3rem]">
+      <div className="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <div className="lg:col-span-3">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* First Name */}
+              <div>
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-bold text-black"
+                >
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  onChange={handleChange}
+                  value={firstName}
+                  className="px-6 py-4 focus:outline-none focus:ring-1 focus:ring-green text-black bg-[#e7fae7] rounded-lg text-sm w-full hover:ring-1 hover:ring-green"
+                  placeholder="Enter First Name"
+                />
+                {/* checkBox */}
+                <div className="mt-2">
+                  <label
+                    htmlFor="firstNameCheckbox"
+                    className="inline-flex items-center"
+                  >
+                    <input
+                      type="checkbox"
+                      id="firstNameCheckbox"
+                      name="firstNameCheckbox"
+                      className="form-checkbox h-4 w-4 text-green-500"
+                    />
+                    <span className="ml-2 text-sm font-medium text-black">
+                      Exact word
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Last Name */}
+              <div>
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-bold text-black"
+                >
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  onChange={handleChange}
+                  value={lastName}
+                  className="px-6 py-4 focus:outline-none focus:ring-1 focus:ring-green text-black bg-[#e7fae7] rounded-lg text-sm w-full hover:ring-1 hover:ring-green"
+                  placeholder="Enter Last Name"
+                />
+                {/* checkBox */}
+                <div className="mt-2">
+                  <label
+                    htmlFor="lastNameCheckbox"
+                    className="inline-flex items-center"
+                  >
+                    <input
+                      type="checkbox"
+                      id="lastNameCheckbox"
+                      name="lastNameCheckbox"
+                      className="form-checkbox h-4 w-4 text-green-500"
+                    />
+                    <span className="ml-2 text-sm font-medium text-black">
+                      Exact word
+                    </span>
+                  </label>
                 </div>
               </div>
             </div>
 
-            {/* Additional form fields */}
-            {/* ... */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Place Lived */}
+              <div>
+                <label
+                  htmlFor="placeLived"
+                  className="block text-sm font-bold text-black"
+                >
+                  Place Lived
+                </label>
+                <input
+                  type="text"
+                  id="placeLived"
+                  name="placeLived"
+                  onChange={handleChange}
+                  value={placeLived}
+                  className="px-6 py-4 focus:outline-none focus:ring-1 focus:ring-green text-black bg-[#e7fae7] rounded-lg text-sm w-full hover:ring-1 hover:ring-green"
+                  placeholder="Enter Place Lived"
+                />
+              </div>
+
+              {/* Date of Birth */}
+              <div>
+                <label
+                  htmlFor="dob"
+                  className="block text-sm font-bold text-black"
+                >
+                  Date of Birth
+                </label>
+                <input
+                  type="date"
+                  id="dob"
+                  name="dob"
+                  onChange={handleChange}
+                  value={dob}
+                  className="px-6 py-4 focus:outline-none focus:ring-1 focus:ring-green text-black bg-[#e7fae7] rounded-lg text-sm w-full hover:ring-1 hover:ring-green"
+                />
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <button
+                type="submit"
+                className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none"
+              >
+                Search
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div className="lg:col-span-2">
+          <div className="bg-[#e7fae7] rounded-lg p-4">
+            {spinnerVisible && (
+              <div className="flex justify-center items-center">
+                <img src={Search} alt="Loading..." className="w-12 h-12" />
+              </div>
+            )}
+
+            {modalType === "results" && (
+              <>
+                <h2 className="text-xl font-bold mb-4 text-green-600">
+                  Search Results
+                </h2>
+
+                <div className="flex justify-between mt-4">
+                  <button
+                    onClick={handlePreviousPage}
+                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
+                    disabled={currentPage === 1}
+                  >
+                    <GrChapterPrevious />
+                  </button>
+                  <span>
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    onClick={handleNextPage}
+                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
+                    disabled={currentPage === totalPages}
+                  >
+                    <GrChapterNext />
+                  </button>
+                </div>
+              </>
+            )}
+
+            {modalType === "noResults" && (
+              <div className="text-center">
+                <img
+                  src={NoResult}
+                  alt="No Results"
+                  className="w-24 h-24 mx-auto"
+                />
+                <p className="text-lg font-semibold mt-4">No Results Found</p>
+                <p className="text-sm text-gray-600 mt-2">
+                  Try adjusting your search criteria.
+                </p>
+              </div>
+            )}
           </div>
         </div>
-        <button
-          type="submit"
-          className="rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
-        >
-          Save Changes
-        </button>
-      </form>
+      </div>
     </section>
   );
+}
+
+<div className="bg-NavClr p-4 rounded-lg">
+  <div className="flex justify-start">
+    <p className="block text-sm font-bold text-black">Recently Searched</p>
+  </div>
+  <div>
+    <ul className="gap-3 my-3">
+      {recentSearches.length > 0 ? (
+        recentSearches.map((search, index) => (
+          <li key={index} className="my-1 text-black">
+            {search}
+          </li>
+        ))
+      ) : (
+        <li>No recent searches</li>
+      )}
+    </ul>
+  </div>
+  <div className="flex justify-end mb-5">
+    <div className="relative">
+      <button
+        type="button"
+        onClick={toggleView}
+        className="flex justify-between px-3 w-[10rem] py-3 mt-1 rounded-full bg-opacity-90 bg-[#e7fae7] sm:text-sm"
+      >
+        View more
+        <RiArrowDropDownLine
+          className={`h-5 w-5 ml-2 ${isOpen ? "transform rotate-180" : ""}`}
+        />
+      </button>
+      {viewMore && (
+        <div className="absolute right-[1rem] bottom-[3rem] mt-1 w-full max-w-[12rem] bg-white rounded-md shadow-lg z-10">
+          <ul className="py-1">
+            {recentSearches.map((search, index) => (
+              <li
+                key={index}
+                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+              >
+                {search}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  </div>
+</div>;

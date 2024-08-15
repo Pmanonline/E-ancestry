@@ -45,6 +45,10 @@ import PaternalGrandmotherForm from "./components/Forms/PaternalGrandmotherForm"
 import PaternalGrandfatherForm from "./components/Forms/PaternalGrandfatherForm";
 import MaternalGrandmotherForm from "./components/Forms/MaternalGrandmotherForm";
 import MaternalGrandfatherForm from "./components/Forms/MaternalGrandfatherForm";
+import MaternalGGMform from "./components/Forms/maternalGGMform";
+import MaternalGGFform from "./components/Forms/maternalGGFform";
+import PaternalGGMform from "./components/Forms/paternalGGMform";
+import PaternalGGFform from "./components/Forms/paternalGGFform";
 
 // Other pages in Layout
 import Viewers from "./pages/LAYOUTS/Pages/Viewers";
@@ -137,6 +141,22 @@ function App() {
             <Route
               path="maternalGrandfather-form/:userId"
               element={<MaternalGrandfatherForm />}
+            />
+            <Route
+              path="maternalGGMother-form/:userId"
+              element={<MaternalGGMform />}
+            />
+            <Route
+              path="maternalGGFather-form/:userId"
+              element={<MaternalGGFform />}
+            />
+            <Route
+              path="paternalGGMother-form/:userId"
+              element={<PaternalGGMform />}
+            />
+            <Route
+              path="paternalGGFather-form/:userId"
+              element={<PaternalGGFform />}
             />
             <Route path="viewers" element={<Viewers />} />
             <Route path="invites" element={<Invites />} />

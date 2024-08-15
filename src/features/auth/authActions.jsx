@@ -48,15 +48,19 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+
 export const GoogleSignInAction = createAsyncThunk(
   "auth/googleSignIn",
   async (tokenId, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${backendURL}/api/google/callback`,
-        { tokenId },
+        `${backendURL}/api/auth/google/callback`,
+        {},
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenId}`,
+          },
           withCredentials: true,
         }
       );

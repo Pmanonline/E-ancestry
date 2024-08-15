@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import heroImage2 from "../assets/images/heroImage2.png";
+import heroImage2 from "../assets/images/heroImage3.png";
 import section7backgroundImage from "../assets/images/s7backgroundImage.png";
 import s4Image from "../assets/images/s4Image.png";
 import hero2 from "../assets/images/hero2.jpg";
@@ -33,11 +33,12 @@ function Home() {
     <>
       {/* section1 Hero starts */}
       <section className="mt-24 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center mx-4">
-        <div className="relative rounded-3xl bg-green h-full flex items-center justify-center lg:order-2">
+        <div className="relative rounded-3xl bg-green h-[80%] flex items-center justify-center lg:order-2">
           <img
             src={heroImage2}
             alt="Family Tree"
-            className="w-[99%] relative z-10"
+            sizes="50"
+            className="w-[35vw] relative  top-[-3rem] left-[3rem]"
           />
           <h4 className="absolute top-4 left-4 text-black text-xl z-20 bg-green bg-opacity-50 px-4 py-2 rounded-md">
             Know the truth about <br /> your heritage and <br />

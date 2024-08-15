@@ -14,6 +14,9 @@ import { DirectionButton2 } from "../components/d-button";
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { loading, error, success } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth);
+  const userId = userInfo?.user._id;
+  console.log(userId);
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();

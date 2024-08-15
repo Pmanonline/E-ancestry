@@ -161,6 +161,10 @@ export const NestedModal2 = React.forwardRef(({ userId }, ref) => {
     ? motherData.DOB.split("-")[0]
     : "Unknown";
 
+  const yearOfDeath = motherData?.yearDeceased
+    ? motherData.yearDeceased.split("-")[0]
+    : "Unknown";
+
   React.useImperativeHandle(ref, () => ({
     openModal: handleOpen,
   }));
@@ -297,12 +301,25 @@ export const NestedModal2 = React.forwardRef(({ userId }, ref) => {
                   {motherData.firstName} {motherData.lastName}
                 </h5>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                  Born on:
-                  <span className=" mx-2 font-medium">{yearOfBirth}</span>
+                  {motherData.Lstatus !== "Deceased" ? (
+                    <>
+                      Born on:
+                      <span className="mx-2 font-medium">{yearOfBirth}</span>
+                    </>
+                  ) : null}
                 </span>
+
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {motherData.Lstatus}
                 </span>
+                <span className="text-sm mt-1 text-gray-500 dark:text-gray-400">
+                  {motherData.Lstatus === "Deceased" ? (
+                    <>
+                      {yearOfBirth} to {yearOfDeath}
+                    </>
+                  ) : null}
+                </span>
+
                 <div className="flex mt-4 md:mt-6 gap-5">
                   <a
                     href="#"

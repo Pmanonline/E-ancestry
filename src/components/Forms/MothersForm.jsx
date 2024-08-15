@@ -9,7 +9,7 @@ import {
   editPerson,
   fetchAllDetails,
 } from "../../features/UserFeature/UserAction";
-import { resetSuccess } from "../../features/UserFeature/UserSlice";
+import { resetSuccess, resetError } from "../../features/UserFeature/UserSlice";
 import { resetEditState } from "../../features/UserFeature/EditSlice";
 import { resetDeleteState } from "../../features/UserFeature/deleteUserSlice";
 import { DirectionButton1 } from "../d-button";
@@ -26,11 +26,13 @@ const backendURL =
     : "https://gekoda-api.onrender.com";
 
 const MotherForm = ({ initialState = {}, isEdit = false }) => {
+  const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     firstName: initialState.firstName || "",
     lastName: initialState.lastName || "",
     Lstatus: initialState.Lstatus || "",
     DOB: initialState.DOB || "",
+    yearDeceased: initialState.yearDeceased || "",
     image: null,
     imagePreview: initialState.image
       ? `${backendURL}/${initialState.image}`
@@ -68,6 +70,7 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
     formDataToSubmit.append("lastName", formData.lastName);
     formDataToSubmit.append("Lstatus", formData.Lstatus);
     formDataToSubmit.append("DOB", formData.DOB);
+    formDataToSubmit.append("yearDeceased", formData.yearDeceased);
 
     if (formData.image) {
       formDataToSubmit.append("image", formData.image);
@@ -82,6 +85,7 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
           Lstatus: formData.Lstatus,
           DOB: formData.DOB,
           image: formData.image,
+          yearDeceased: formData.yearDeceased,
         })
       );
 
@@ -98,6 +102,14 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
     }
   };
 
+  const handleModalConfirm = () => {
+    setFormData({
+      ...formData,
+      yearDeceased: formData.yearDeceased, // Ensure the yearDeceased is captured in formData
+    });
+    setShowModal(false);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -106,11 +118,11 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
     }));
   };
 
-  const handleLstatusChange = (value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      Lstatus: value,
-    }));
+  const handleLstatusChange = (status) => {
+    setFormData({ ...formData, Lstatus: status });
+    if (status === "Deceased") {
+      setShowModal(true);
+    }
   };
 
   const handleFileChange = (e) => {
@@ -131,9 +143,14 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
         () => navigate(`/layout/paternalGrandfather-form/${userId}`),
         2000
       );
-      dispatch(fetchAllDetails());
     }
-  }, [success, dispatch, navigate]);
+
+    if (error) {
+      toast.error(error);
+      dispatch(resetError());
+      dispatch(fetchAllDetails(userId));
+    }
+  }, [success, error, dispatch, navigate, userId]);
 
   const formRef = useRef(); // Create a ref for the form
   const fileInputRef = useRef();
@@ -229,15 +246,15 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
             <div className="flex items-center w-full lg:w-[50%]">
               <input
                 type="radio"
-                id=" Still-Living"
+                id="Still-Living"
                 name="Lstatus"
                 value=" Still-Living"
-                checked={formData.Lstatus === " Still-Living"}
-                onChange={() => handleLstatusChange("stillLiving")}
+                checked={formData.Lstatus === "Still-Living"}
+                onChange={() => handleLstatusChange("Still-Living")}
                 className="h-4 w-4 text-green-600 focus:ring-green border-gray-300 rounded mr-2"
               />
               <label
-                htmlFor=" Still-Living"
+                htmlFor="Still-Living"
                 className="block text-sm text-black"
               >
                 Still Living
@@ -325,6 +342,38 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
             )}
           </form>
         </div>
+        {showModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-4 rounded-lg shadow-lg">
+              <h3 className="text-lg font-semibold mb-4">
+                Please enter the year of death:
+              </h3>
+              <input
+                id="yearDeceased"
+                name="yearDeceased"
+                type="number"
+                placeholder="Year of Death"
+                value={formData.yearDeceased}
+                onChange={handleInputChange}
+                className="border p-2 rounded w-full"
+              />
+              <div className="flex justify-end space-x-4 mt-4">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="bg-gray-500 text-white py-2 px-4 rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleModalConfirm}
+                  className="bg-gray-500 text-white py-2 px-4 rounded"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </>
   );

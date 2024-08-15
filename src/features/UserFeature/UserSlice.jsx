@@ -17,6 +17,9 @@ const formSlice = createSlice({
     resetSuccess: (state) => {
       state.person.success = false;
     },
+    resetError: (state) => {
+      state.person.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -37,5 +40,5 @@ const formSlice = createSlice({
   },
 });
 
-export const { resetSuccess } = formSlice.actions;
+export const { resetSuccess, resetError } = formSlice.actions;
 export default formSlice.reducer;

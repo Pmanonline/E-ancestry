@@ -170,6 +170,10 @@ export const MGMModal = React.forwardRef(({ userId }, ref3) => {
   };
   const yearOfBirth = MGMData?.DOB ? MGMData.DOB.split("-")[0] : "Unknown";
 
+  const yearOfDeath = MGMData?.yearDeceased
+    ? MGMData.yearDeceased.split("-")[0]
+    : "Unknown";
+
   React.useImperativeHandle(ref3, () => ({
     openModal: handleOpen,
   }));
@@ -299,12 +303,25 @@ export const MGMModal = React.forwardRef(({ userId }, ref3) => {
                   {MGMData.firstName} {MGMData.lastName}
                 </h5>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                  Born on:
-                  <span className=" mx-2 font-medium">{yearOfBirth}</span>
+                  {MGMData.Lstatus !== "Deceased" ? (
+                    <>
+                      Born on:
+                      <span className="mx-2 font-medium">{yearOfBirth}</span>
+                    </>
+                  ) : null}
                 </span>
+
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {MGMData.Lstatus}
                 </span>
+                <span className="text-sm mt-1 text-gray-500 dark:text-gray-400">
+                  {MGMData.Lstatus === "Deceased" ? (
+                    <>
+                      {yearOfBirth} to {yearOfDeath}
+                    </>
+                  ) : null}
+                </span>
+
                 <div className="flex mt-4 md:mt-6 gap-5">
                   <a
                     href="#"
@@ -320,6 +337,7 @@ export const MGMModal = React.forwardRef(({ userId }, ref3) => {
                   </a>
                 </div>
               </div>
+              ;
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full">

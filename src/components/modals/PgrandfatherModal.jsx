@@ -169,6 +169,9 @@ export const PGFModal = React.forwardRef(({ userId }, ref3) => {
     }
   };
   const yearOfBirth = PGFData?.DOB ? PGFData.DOB.split("-")[0] : "Unknown";
+  const yearOfDeath = PGFData?.yearDeceased
+    ? PGFData.yearDeceased.split("-")[0]
+    : "Unknown";
 
   React.useImperativeHandle(ref3, () => ({
     openModal: handleOpen,
@@ -299,12 +302,25 @@ export const PGFModal = React.forwardRef(({ userId }, ref3) => {
                   {PGFData.firstName} {PGFData.lastName}
                 </h5>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                  Born on:
-                  <span className=" mx-2 font-medium">{yearOfBirth}</span>
+                  {PGFData.Lstatus !== "Deceased" ? (
+                    <>
+                      Born on:
+                      <span className="mx-2 font-medium">{yearOfBirth}</span>
+                    </>
+                  ) : null}
                 </span>
+
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {PGFData.Lstatus}
                 </span>
+                <span className="text-sm mt-1 text-gray-500 dark:text-gray-400">
+                  {PGFData.Lstatus === "Deceased" ? (
+                    <>
+                      {yearOfBirth} to {yearOfDeath}
+                    </>
+                  ) : null}
+                </span>
+
                 <div className="flex mt-4 md:mt-6 gap-5">
                   <a
                     href="#"

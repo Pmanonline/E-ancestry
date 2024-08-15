@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useParams } from "react-router-dom";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import backgroundImage from "../../assets/images/backgroundImage.png";
 import LayoutNAv from "../../components/layoutNAv";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import {
   createFamilyMember,
   editPerson,
@@ -25,7 +25,7 @@ const backendURL =
     ? "http://localhost:8080"
     : "https://gekoda-api.onrender.com";
 
-const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
+const MaternalGGMform = ({ initialState = {}, isEdit = false }) => {
   const [formData, setFormData] = useState({
     firstName: initialState.firstName || "",
     lastName: initialState.lastName || "",
@@ -37,12 +37,10 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
       ? `${backendURL}/${initialState.image}`
       : null,
   });
-
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userId } = useParams();
-  const location = useLocation();
   const { loading, error, success } = useSelector((state) => state.form.person);
   const { Eloading, Eerror, Esuccess } = useSelector(
     (state) => state.edit.person
@@ -71,6 +69,7 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
     formDataToSubmit.append("Lstatus", formData.Lstatus);
     formDataToSubmit.append("DOB", formData.DOB);
     formDataToSubmit.append("yearDeceased", formData.yearDeceased);
+
     if (formData.image) {
       formDataToSubmit.append("image", formData.image);
     }
@@ -93,12 +92,20 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
     } else {
       dispatch(
         createFamilyMember({
-          memberType: "paternalGrandFather",
+          memberType: "maternalGrtGrandMother",
           formData: formDataToSubmit,
         })
       );
       dispatch(fetchAllDetails());
     }
+  };
+
+  const handleModalConfirm = () => {
+    setFormData({
+      ...formData,
+      yearDeceased: formData.yearDeceased,
+    });
+    setShowModal(false);
   };
 
   const handleInputChange = (e) => {
@@ -116,14 +123,6 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
     }
   };
 
-  const handleModalConfirm = () => {
-    setFormData({
-      ...formData,
-      yearDeceased: formData.yearDeceased, // Ensure the yearDeceased is captured in formData
-    });
-    setShowModal(false);
-  };
-
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setFormData((prevData) => ({
@@ -138,10 +137,7 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
       toast.success("Created!!");
       dispatch(fetchAllDetails(userId));
       dispatch(resetSuccess());
-      setTimeout(
-        () => navigate(`/layout/paternalGrandmother-form/${userId}`),
-        2000
-      );
+      setTimeout(() => navigate("/layout/paternalGGMother-form"), 2000);
     }
 
     if (error) {
@@ -150,7 +146,6 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
       dispatch(fetchAllDetails(userId));
     }
   }, [success, error, dispatch, navigate, userId]);
-
   const formRef = useRef(); // Create a ref for the form
   const fileInputRef = useRef();
 
@@ -172,7 +167,9 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
           >
             <div className="mb-5">
               <h3 className="text-2xl text-black mb-2">
-                {isEdit ? "Edit here" : "Add paternalGrandFather details"}
+                {isEdit
+                  ? "Edit here"
+                  : "Add maternal Great GrandMothers details"}
               </h3>
               <p>
                 Nam bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
@@ -187,7 +184,7 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
                 onChange={handleInputChange}
                 value={formData.firstName}
                 className="py-2 mt-1 block w-full lg:w-[66%] border-b-2 border-gray-500 focus:ring-green focus:border-green placeholder:text-gray-400 bg-opacity-90 text-black placeholder-black sm:text-md focus:outline-none bg-transparent"
-                placeholder="PaternalGrandFather name"
+                placeholder="Maternal Great Grand Mothers name"
               />
               <IoPersonCircleOutline size={28} className="mt-6" />
             </div>
@@ -198,10 +195,11 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
                 name="lastName"
                 onChange={handleInputChange}
                 value={formData.lastName}
-                className="py-2 mt-1 block w-full lg:w-[70%] border-b-2 border-gray-500 focus:ring-green focus:border-green placeholder:text-gray-400 bg-opacity-90 text-black placeholder-black sm:text-md focus:outline-none bg-transparent"
-                placeholder="PaternalGrandFather last name"
+                className="py-2 mt-1 block w-full lg:w-[70%] border-b-2 border-gray-500 focus:ring-green focus:border-green  placeholder:text-gray-400 bg-opacity-90 text-black placeholder-black sm:text-md focus:outline-none bg-transparent"
+                placeholder="Maternal Great Grand Mpthers last name"
               />
             </div>
+
             <div className="w-full flex flex-col items-center lg:items-start">
               <label
                 htmlFor="gender"
@@ -211,15 +209,15 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
               </label>
               <div className="flex space-x-4 mt-1">
                 <button
+                  className="py-2 px-4 border-2 rounded-lg bg-transparent text-gray-400 border-gray-400 cursor-not-allowed"
                   type="button"
-                  className="py-2 px-4 border-2 rounded-lg focus:outline-none bg-green text-white"
+                  disabled
                 >
                   Male
                 </button>
                 <button
                   type="button"
-                  disabled
-                  className="py-2 px-4 border-2 rounded-lg bg-transparent text-gray-400 border-gray-400 cursor-not-allowed"
+                  className="py-2 px-4 border-2 rounded-lg focus:outline-none bg-green text-white"
                 >
                   Female
                 </button>
@@ -247,7 +245,7 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
                 type="radio"
                 id="Still-Living"
                 name="Lstatus"
-                value=" Still-Living"
+                value="Still-Living"
                 checked={formData.Lstatus === "Still-Living"}
                 onChange={() => handleLstatusChange("Still-Living")}
                 className="h-4 w-4 text-green-600 focus:ring-green border-gray-300 rounded mr-2"
@@ -330,7 +328,7 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
             ) : (
               <div className="w-full text-end items-end flex justify-end">
                 <Link
-                  to={`/layout/paternalGrandmother-form/${userId}`}
+                  to={`/layout/paternalGGMother-form/${userId}`}
                   className="w-full flex justify-start font-medium"
                 >
                   <button className="underline w-full flex items-center bg-green-500 px-4 py-2 transition ease-in-out duration-200 transform hover:scale-105 rounded-3xl">
@@ -379,4 +377,4 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
   );
 };
 
-export default PaternalGrandfatherForm;
+export default MaternalGGMform;

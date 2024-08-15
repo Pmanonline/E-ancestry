@@ -212,16 +212,16 @@
 // }
 // function Spinner({ showOverlay }) {
 //   return (
-//     <div className="relative flex justify-center items-center mt-4">
-//       {showOverlay && (
-//         <div className="absolute inset-0 bg-transparent opacity-50 z-10"></div>
-//       )}
-//       <img
-//         src={Search}
-//         alt="Searching..."
-//         className="w-32 h-32 relative z-20"
-//       />
-//     </div>
+// <div className="relative flex justify-center items-center mt-4">
+//   {showOverlay && (
+//     <div className="absolute inset-0 bg-transparent opacity-50 z-10"></div>
+//   )}
+//   <img
+//     src={Search}
+//     alt="Searching..."
+//     className="w-32 h-32 relative z-20"
+//   />
+// </div>
 //   );
 // }
 
@@ -282,10 +282,6 @@ export default function SearchUsers() {
       return () => clearTimeout(hideSpinnerTimer);
     }
   }, [loading, submitted]);
-
-  // Extract first names from Users array if it exists
-  const Image = users.Users ? users.Users.map((user) => user.image) : [];
-  console.log(Image); // Logs an array of first names
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -362,6 +358,7 @@ export default function SearchUsers() {
           <p className="text-lg font-semibold mb-4 text-center">
             Related Searches
           </p>
+
           <div className="flex flex-wrap justify-center gap-4">
             {users.Users.map((result) => (
               <div
@@ -410,6 +407,7 @@ export default function SearchUsers() {
                   ) : (
                     ""
                   )}
+
                   <a
                     onClick={() => handleResultClick(result.userId)}
                     className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green rounded-lg focus:ring-4 focus:outline-none cursor-pointer  transition ease-in-out duration-200 transform hover:scale-105"
