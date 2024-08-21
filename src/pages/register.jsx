@@ -5,7 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import familytree from "../assets/images/familytree.png";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { DirectionButton2 } from "../components/d-button";
-import GoogleSignIn from "../components/tools/GoogleSignIn";
 import Error from "../components/tools/Error";
 import Spinner from "../components/tools/Spinner";
 import { registerUser } from "../features/auth/authActions";
@@ -153,14 +152,6 @@ const Register = () => {
               >
                 Login
               </Link>
-            </p>
-            {/* Sign in with Google */}
-            <div className="mx-auto text-center mt-3">OR</div>
-            <p className="text-center w-[12rem] mx-auto mt-5">
-              <GoogleSignIn
-                onSuccess={handleLoginSuccess}
-                onFailure={handleLoginFailure}
-              />
             </p>
           </form>
         </div>
