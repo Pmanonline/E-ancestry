@@ -20,8 +20,12 @@ function Navbar() {
   const menuRef = useRef(null);
   const userDropdownRef = useRef(null);
   const familyTreeDropdownRef = useRef(null);
-  const { userInfo } = useSelector((state) => state.auth);
-  const userId = userInfo?.user._id;
+  // const { userInfo } = useSelector((state) => state.auth);
+  // const userId = userInfo?.user._id;
+  // console.log(userId);
+  const userInfo = useSelector((state) => state.auth.user);
+  console.log("User:", userInfo?.email);
+  const userId = userInfo?.id;
   console.log(userId);
 
   useEffect(() => {
@@ -147,8 +151,8 @@ function Navbar() {
               >
                 Family Tree <FaChevronDown className="ml-2" />
               </button>
-              {isFamilyTreeOpen && (
-                <ul className="absolute bg-NavClr border rounded-lg mt-2 py-2">
+              {/* {isFamilyTreeOpen && (
+                <ul className="absolute bg-NavClr border rounded-lg mt-2 py-2 px-6">
                   <li>
                     <Link
                       to="/my-family-tree"
@@ -168,6 +172,28 @@ function Navbar() {
                     </Link>
                   </li>
                 </ul>
+              )} */}
+              {isFamilyTreeOpen && (
+                <ul className="absolute bg-NavClr border rounded-lg mt-2 py-2 px-6">
+                  <li>
+                    <Link
+                      to="/my-family-tree"
+                      className="block px-4 py-2 text-black hover:text-green whitespace-nowrap"
+                      onClick={closeMenu}
+                    >
+                      My Family Tree
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/search-a-tree"
+                      className="block px-4 py-2 text-black hover:text-green whitespace-nowrap"
+                      onClick={closeMenu}
+                    >
+                      Search a Tree
+                    </Link>
+                  </li>
+                </ul>
               )}
             </li>
             <li>
@@ -181,11 +207,11 @@ function Navbar() {
             </li>
             <li>
               <Link
-                to="/historical-search"
+                to="/historicalPeople"
                 className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
                 onClick={closeMenu}
               >
-                Historical People Search
+                Historical People
               </Link>
             </li>
           </ul>
@@ -232,8 +258,8 @@ function Navbar() {
                       >
                         <div className="px-4 py-3 text-sm text-black">
                           <div className="font-medium truncate">
-                            {userInfo && userInfo.user.email
-                              ? userInfo.user.email
+                            {userInfo && userInfo.email
+                              ? userInfo.email
                               : "User email not available"}
                           </div>
                         </div>

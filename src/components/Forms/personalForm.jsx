@@ -40,11 +40,12 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error, success } = useSelector((state) => state.form.person);
-  const { userInfo } = useSelector((state) => state.auth);
+  const userInfo = useSelector((state) => state.auth.user);
   const { Eloading, Eerror, Esuccess } = useSelector(
     (state) => state.edit.person
   );
-  const userId = userInfo?.user._id || id;
+  const userId = userInfo?.id || id;
+
   console.log(userId);
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -146,10 +147,10 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
         <div className="absolute inset-0 bg-opacity-50 pointer-events-none"></div>
+        <span className="w-full flex justify-center">
+          <LayoutNAv />
+        </span>
         <div className="relative p-8 flex flex-col items-center lg:items-start lg:flex-row">
-          <span className="lg:hidden w-full flex justify-center">
-            <LayoutNAv />
-          </span>
           <form
             onSubmit={handleSubmit}
             ref={formRef} // Attach ref to form

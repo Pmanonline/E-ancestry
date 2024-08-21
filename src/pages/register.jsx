@@ -6,7 +6,6 @@ import familytree from "../assets/images/familytree.png";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { DirectionButton2 } from "../components/d-button";
 import GoogleSignIn from "../components/tools/GoogleSignIn";
-import { GoogleSignInAction } from "../features/auth/authActions";
 import Error from "../components/tools/Error";
 import Spinner from "../components/tools/Spinner";
 import { registerUser } from "../features/auth/authActions";

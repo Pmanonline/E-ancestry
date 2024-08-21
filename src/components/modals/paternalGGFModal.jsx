@@ -110,8 +110,8 @@ export const PGGFModal = React.forwardRef(({ userId }, ref3) => {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
   const PGGFData = useSelector((state) => state.person.PGGF);
-  const { userInfo } = useSelector((state) => state.auth);
-  const LoggedId = userInfo?.user._id;
+  const userInfo = useSelector((state) => state.auth.user);
+  const LoggedId = userInfo?.id;
   const { Dloading, Derror, Dsuccess } = useSelector(
     (state) => state.delete.person
   );

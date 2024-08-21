@@ -33,7 +33,8 @@ function Home() {
     <>
       {/* section1 Hero starts */}
       <section className="mt-24 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center mx-4">
-        <div className="relative rounded-3xl bg-green h-[80%] flex items-center justify-center lg:order-2">
+        {/* LARGE_SCREEN */}
+        <div className="relative rounded-3xl bg-green h-[80%] lg:flex items-center justify-center lg:order-2 hidden ">
           <img
             src={heroImage2}
             alt="Family Tree"
@@ -45,6 +46,23 @@ function Home() {
             <span className="text-white font-black text-2xl">History</span>
           </h4>
         </div>
+
+        <div className="relative rounded-3xl  h-full Nlg:flex items-center justify-center lg:order-2 bg-green hidden">
+          <h4 className="absolute top-4 left-4 text-black text-xl z-20  px-4 py-2 rounded-md">
+            Know the truth about <br /> your heritage and <br />
+            <span className="text-white font-black text-2xl">History</span>
+          </h4>
+          <span className="">
+            <img
+              src={heroImage2}
+              alt="Family Tree"
+              // sizes="50"
+              className="sm:w-[35rem]"
+            />
+          </span>
+        </div>
+        {/* SMALL_SCREEN */}
+
         <div className="lg:order-1 lg:pr-10 mx-auto">
           <h1 className="text-3xl mod:text-lg font-bold mb-6  font-Montserrat">
             Trace your Family
@@ -104,9 +122,11 @@ function Home() {
               a,
             </p>
             <div className="mt-4">
-              <button className="bg-green text-white py-2 px-3 rounded-2xl mod:text-sm transition ease-in-out duration-200 transform hover:scale-105">
-                Explore your ethnicity
-              </button>
+              <Link to={"/genealogy/Abia-State"}>
+                <button className="bg-green text-white py-2 px-3 rounded-2xl mod:text-sm transition ease-in-out duration-200 transform hover:scale-105">
+                  Explore your ethnicity
+                </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -243,12 +263,16 @@ function Home() {
 
         <div className="my-[4rem]">
           <div className="mt-3  sm:flex justify-around lg:w-[55rem] mx-auto mod:text-center">
-            <button className="bg-green text-white py-2 px-3 mx-3 mod:mb-5 mod:text-sm rounded-2xl font-bold transition ease-in-out duration-200 transform hover:scale-105">
-              Explore your ethnicity
-            </button>
-            <button className="bg-purple text-white py-2 px-3 rounded-2xl font-bold mod:text-sm transition ease-in-out duration-200 transform hover:scale-105">
-              know more through surname
-            </button>
+            <Link to={"/genealogy/Abia-State"}>
+              <button className="bg-green text-white py-2 px-3 mx-3 mod:mb-5 mod:text-sm rounded-2xl font-bold transition ease-in-out duration-200 transform hover:scale-105">
+                Explore your ethnicity
+              </button>
+            </Link>
+            <Link to={"/names/ayo"}>
+              <button className="bg-purple text-white py-2 px-3 rounded-2xl font-bold mod:text-sm transition ease-in-out duration-200 transform hover:scale-105">
+                know more through surname
+              </button>
+            </Link>
           </div>
         </div>
       </section>

@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStateDetails } from "../features/Statefeature/stateAction";
-import AbiaImage from "../assets/images/abia.jpg";
 import Spinner from "../components/tools/Spinner";
 import { DirectionButton2 } from "../components/d-button";
+const backendURL =
+  process.env.NODE_ENV !== "production"
+    ? "http://localhost:8080"
+    : "https://gekoda-api.onrender.com";
 
 function Genealogy() {
   const { stateName } = useParams();
@@ -14,6 +17,7 @@ function Genealogy() {
     (state) => state.state
   );
   console.log(religions);
+  console.log(allStates);
   const [loading, setLoading] = useState(true);
   const [selectedState, setSelectedState] = useState(stateName || "");
   const [selectedLocalGovernment, setSelectedLocalGovernment] = useState(null);
@@ -126,91 +130,135 @@ function Genealogy() {
         </button>
       </div>
       {/* search */}
-      <div className="h-8 bg-green text-center font-bold text-white align-middle items-center flex justify-center my-8 !px-0">
-        {/* {specificState.name} */}
+
+      <div className="h-8 bg-green text-center   align-middle items-center flex justify-center my-8 !px-0">
         <select
           id="state-dropdown"
           value={selectedState}
           onChange={handleChange}
-          className="bg-transparent bg-green  text-white rounded py-2 px-3 focus:outline-none"
+          className=" text-black bg-green rounded cursor-pointer px-4 focus:outline-none   "
         >
-          {allStates &&
+          <option value="" disabled>
+            Select a state...
+          </option>
+          {allStates && allStates.length > 0 ? (
             allStates.map((state) => (
               <option
                 key={state.name}
                 value={state.name}
-                style={{ padding: "16px 16px", color: "black", margin: "15px" }}
+                className="py-5 bg-white my-5 gap-5"
               >
                 {state.name}
               </option>
-            ))}
+            ))
+          ) : (
+            <option value="">No states available</option>
+          )}
         </select>
       </div>
+
       <section className="px-5">
-        <div class="lg:grid grid-cols-3 gap-4 lg:grid-cols-5">
-          <div class="col-span-2 lg:col-span-3 ">
+        <div class="lg:grid grid-cols-1 lg:grid-cols-5 gap-4">
+          {/* Text section */}
+          <div class="col-span-3 flex flex-col justify-start space-y-4">
             <div>
               <span>Language:</span>
-              <span className=" font-medium"> {specificState.language}</span>
+              <span className="font-medium"> {specificState.language}</span>
             </div>
             <div>
               <span>Location:</span>
-              <span className=" font-medium">{specificState.location}</span>
+              <span className="font-medium">{specificState.location}</span>
             </div>
             <div>
-              <span>Tribe:</span>{" "}
-              <span className=" font-medium"> {specificState.tribe}</span>
+              <span>Tribe:</span>
+              <span className="font-medium"> {specificState.tribe}</span>
             </div>
             {/* Origin */}
             <div className="mt-5">
-              <h3 className="text-black  text-sm font-bold uppercase  text-start mb-4">
+              <h3 className="text-black text-sm font-bold uppercase text-start mb-4">
                 Origin of {specificState.name}
               </h3>
-
               <div className="">
-                <p className="text-black text-sm font-normal">
-                  {specificState.origin}
-                </p>
+                <p
+                  dangerouslySetInnerHTML={{ __html: specificState?.origin }}
+                  className="text-black text-sm font-normal"
+                ></p>
               </div>
             </div>
           </div>
-          <div class="col-span-1 lg:col-span-2 bg-green">
-            {/* <!-- Content for the 40% width --> */}
-            <img src={AbiaImage} alt="AbiaImage" className="rounded-sm" />
-          </div>
-        </div>
-        {/* Next */}
-        <div className="mt-5">
-          <h3 className="text-black  text-sm font-bold uppercase  text-start mb-4 mt-12">
-            History of {specificState.name}
-          </h3>
 
-          <div className="">
-            <p className="text-black text-sm font-normal">
-              {specificState.history}
-            </p>
+          {/* Image section */}
+          <div class="col-span-2 flex items-start lg:items-end justify-center">
+            <img
+              className="rounded-md Nlg:hidden w-[40rem] "
+              src={`${backendURL}/insertImage/${specificState?.image}`}
+              alt={specificState?.name}
+            />
           </div>
         </div>
-        {/* Culture */}
+        <h3 className="text-black  text-sm font-bold uppercase  text-start mb-4 mt-12">
+          History of {specificState.name}
+        </h3>
+
+        {Array.isArray(specificState.history) &&
+        specificState.history.length > 0 ? (
+          specificState.history.map((history, index) => (
+            <div key={index} className="mb-6">
+              <div className="">
+                <p
+                  dangerouslySetInnerHTML={{ __html: history?.writeUp }}
+                  className="text-black text-sm font-normal mb-3"
+                ></p>
+              </div>
+
+              <ol className=" list-decimal ml-6 text-black text-sm font-normal">
+                {Array.isArray(history.list) &&
+                  history.list.map((item, idx) => (
+                    <li
+                      dangerouslySetInnerHTML={{
+                        __html: item,
+                      }}
+                      key={idx}
+                      className="mb-3"
+                    ></li>
+                  ))}
+              </ol>
+            </div>
+          ))
+        ) : (
+          <p className="text-black text-sm font-normal">
+            No History information available.
+          </p>
+        )}
+
+        {/* Next */}
+
         <div>
           <h3 className="text-black  text-sm font-bold uppercase  text-start mb-4 mt-12">
             Culture of {specificState.name}
           </h3>
+
           {Array.isArray(specificState.cultures) &&
           specificState.cultures.length > 0 ? (
             specificState.cultures.map((culture, index) => (
               <div key={index} className="mb-6">
                 <div className="">
-                  <p className="text-black text-sm font-normal">
-                    {culture.writeUp}
-                  </p>
+                  <p
+                    dangerouslySetInnerHTML={{ __html: culture?.writeUp }}
+                    className="text-black text-sm font-normal"
+                  ></p>
                 </div>
-                <ol className=" list-decimal  ml-6 text-black text-sm font-normal">
+
+                <ol className=" list-decimal ml-6 text-black text-sm font-normal">
                   {Array.isArray(culture.list) &&
                     culture.list.map((item, idx) => (
-                      <li key={idx} className="mb-3">
-                        {item}
-                      </li>
+                      <li
+                        dangerouslySetInnerHTML={{
+                          __html: item,
+                        }}
+                        key={idx}
+                        className="mb-3"
+                      ></li>
                     ))}
                 </ol>
               </div>
@@ -240,15 +288,22 @@ function Genealogy() {
                 specificState.kingship.map((kingship, index) => (
                   <div key={index} className="mb-6">
                     <div className="">
-                      <p className="text-black text-sm font-normal">
-                        {kingship.writeUp}
-                      </p>
+                      <p
+                        dangerouslySetInnerHTML={{ __html: kingship?.writeUp }}
+                        className="text-black text-sm font-normal mb-3"
+                      ></p>
                     </div>
                     <ol className=" list-decimal ml-6 text-black text-sm font-normal">
                       {Array.isArray(kingship.list) &&
                         kingship.list.map((item, idx) => (
-                          <li key={idx} className="mb-3">
-                            {item}
+                          <li
+                            dangerouslySetInnerHTML={{
+                              __html: item,
+                            }}
+                            key={idx}
+                            className="mb-3"
+                          >
+                            {/* {item} */}
                           </li>
                         ))}
                     </ol>
@@ -273,14 +328,20 @@ function Genealogy() {
           specificState.foods.map((food, index) => (
             <div key={index} className="mb-6">
               <div className="">
-                <p className="text-black text-sm font-normal">{food.writeUp}</p>
+                <p className="text-black text-sm font-normal mb-3">
+                  {food.writeUp}
+                </p>
               </div>
               <ol className=" list-decimal ml-6 text-black text-sm font-normal">
                 {Array.isArray(food.list) &&
                   food.list.map((item, idx) => (
-                    <li key={idx} className="mb-3">
-                      {item}
-                    </li>
+                    <li
+                      dangerouslySetInnerHTML={{
+                        __html: item,
+                      }}
+                      key={idx}
+                      className="mb-3"
+                    ></li>
                   ))}
               </ol>
             </div>
@@ -293,25 +354,24 @@ function Genealogy() {
 
         {/* LOCAL GOVERNMENTS */}
         <div class="lg:grid grid-cols-10 gap-4">
-          <div className=" col-span-4">
-            {" "}
-            <h3 className="text-black  text-sm font-medium uppercase  text-start mb-3 mt-3">
+          <div className="col-span-4">
+            <h3 className="text-black text-sm font-medium uppercase text-start mb-3 mt-3">
               Local government areas in {specificState.name}
             </h3>
             <ol className="list-decimal ml-6 text-black text-sm font-normal">
-              {specificState.localGovernments.map((area) => (
-                <li key={area._id} className="mb-2">
-                  <div className="font-bold">{area.name}</div>
+              {specificState.localGovernmentsList.map((area, index) => (
+                <li key={index} className="mb-2">
+                  <div className="font-bold">{area}</div>
                 </li>
               ))}
             </ol>
           </div>
+
           <div className=" col-span-6 flex justify-center align-middle items-center">
-            {/* IMAGE */}
             <img
-              src={AbiaImage}
-              alt="image"
-              className="rounded-sm Nlg:hidden w-[40rem] "
+              className="rounded-md Nlg:hidden w-[40rem] "
+              src={`${backendURL}/insertImage/${specificState?.image}`}
+              alt={specificState?.name}
             />
           </div>
         </div>
@@ -349,35 +409,155 @@ function Genealogy() {
         <div className="my-8">
           {selectedLocalGovernment ? (
             <>
-              <h3 className="text-black  text-sm font-medium uppercase  text-start mb-4 mt-12">
+              <h3 className="text-black  text-sm font-medium uppercase  text-start mb-4 mt-12 underline">
                 {selectedLocalGovernment.name}
               </h3>
 
-              <h3 className="text-black  text-sm font-normal uppercase  text-start mb-2">
-                Origin of {selectedLocalGovernment.name}
-              </h3>
-              <p className="text-black text-sm font-normal">
-                {selectedLocalGovernment.origin}
-              </p>
-              <h3 className="text-black  text-sm font-normal uppercase  text-start mb-2 mt-4">
-                history of {selectedLocalGovernment.name}
-              </h3>
-              <p className="text-black text-sm font-normal">
-                {selectedLocalGovernment.history}
-              </p>
-              <h3 className="text-black  text-sm font-normal uppercase mt-3 text-start mb-1">
-                CULTURES AND TRADITIONS OF {selectedLocalGovernment.name}
-              </h3>
-              <ol className=" list-decimal ml-6 text-black text-sm font-normal">
-                {Array.isArray(selectedLocalGovernment.cultureTradition) &&
-                  selectedLocalGovernment.cultureTradition.map(
-                    (culture, index) => (
-                      <li key={index} className="mb-3">
-                        {culture}
-                      </li>
-                    )
-                  )}
-              </ol>
+              {Array.isArray(selectedLocalGovernment?.origin) &&
+                selectedLocalGovernment.origin.length > 0 && (
+                  <>
+                    <h3 className="text-black text-sm font-semibold uppercase mt-3 text-start mb-1">
+                      ORIGIN OF {selectedLocalGovernment.name}
+                    </h3>
+                    {selectedLocalGovernment.origin.map((origin, index) => (
+                      <div key={index} className="mb-6">
+                        <div className="">
+                          <p
+                            dangerouslySetInnerHTML={{
+                              __html: origin?.writeUp,
+                            }}
+                            className="text-black text-sm font-normal mb-3"
+                          ></p>
+                        </div>
+                        {Array.isArray(origin.list) &&
+                          origin.list.length > 0 && (
+                            <ol className="list-decimal ml-6 text-black text-sm font-normal">
+                              {origin.list.map((item, idx) => (
+                                <li
+                                  dangerouslySetInnerHTML={{
+                                    __html: item,
+                                  }}
+                                  key={idx}
+                                  className="mb-3"
+                                ></li>
+                              ))}
+                            </ol>
+                          )}
+                      </div>
+                    ))}
+                  </>
+                )}
+
+              {/* HISTORY`` */}
+
+              {Array.isArray(selectedLocalGovernment?.history) &&
+                selectedLocalGovernment.history.length > 0 && (
+                  <>
+                    <h3 className="text-black text-sm font-semibold uppercase mt-3 text-start mb-1">
+                      History of {selectedLocalGovernment.name}
+                    </h3>
+                    {selectedLocalGovernment.history.map((history, index) => (
+                      <div key={index} className="mb-6">
+                        <div className="">
+                          <p
+                            dangerouslySetInnerHTML={{
+                              __html: history?.writeUp,
+                            }}
+                            className="text-black text-sm font-normal mb-3"
+                          ></p>
+                        </div>
+                        {Array.isArray(history.list) &&
+                          history.list.length > 0 && (
+                            <ol className="list-decimal ml-6 text-black text-sm font-normal">
+                              {history.list.map((item, idx) => (
+                                <li
+                                  dangerouslySetInnerHTML={{
+                                    __html: item,
+                                  }}
+                                  key={idx}
+                                  className="mb-3"
+                                ></li>
+                              ))}
+                            </ol>
+                          )}
+                      </div>
+                    ))}
+                  </>
+                )}
+
+              {/* CULTURES AND TRADITION */}
+              {Array.isArray(selectedLocalGovernment?.cultureTradition) &&
+                selectedLocalGovernment.cultureTradition.length > 0 && (
+                  <>
+                    <h3 className="text-black text-sm font-semibold uppercase mt-3 text-start mb-1">
+                      CULTURES AND TRADITION OF {selectedLocalGovernment.name}
+                    </h3>
+                    {selectedLocalGovernment.cultureTradition.map(
+                      (culture, index) => (
+                        <div key={index} className="mb-6">
+                          <div className="">
+                            <p
+                              dangerouslySetInnerHTML={{
+                                __html: culture?.writeUp,
+                              }}
+                              className="text-black text-sm font-normal mb-3"
+                            ></p>
+                          </div>
+                          {Array.isArray(culture.list) &&
+                            culture.list.length > 0 && (
+                              <ol className="list-decimal ml-6 text-black text-sm font-normal">
+                                {culture.list.map((item, idx) => (
+                                  <li
+                                    dangerouslySetInnerHTML={{
+                                      __html: item,
+                                    }}
+                                    key={idx}
+                                    className="mb-3"
+                                  ></li>
+                                ))}
+                              </ol>
+                            )}
+                        </div>
+                      )
+                    )}
+                  </>
+                )}
+
+              {/* KINGSHIP AND TRADITION */}
+              {Array.isArray(selectedLocalGovernment?.kingship) &&
+                selectedLocalGovernment.kingship.length > 0 && (
+                  <>
+                    <h3 className="text-black text-sm font-semibold uppercase mt-3 text-start mb-1">
+                      KINGSHIP IN {selectedLocalGovernment.name}
+                    </h3>
+                    {selectedLocalGovernment.kingship.map((kingship, index) => (
+                      <div key={index} className="mb-6">
+                        <div className="">
+                          <p
+                            dangerouslySetInnerHTML={{
+                              __html: kingship.writeUp,
+                            }}
+                            className="text-black text-sm font-normal mb-3"
+                          ></p>
+                        </div>
+                        {Array.isArray(kingship.list) &&
+                          kingship.list.length > 0 && (
+                            <ol className="list-decimal ml-6 text-black text-sm font-normal">
+                              {kingship.list.map((item, idx) => (
+                                <li
+                                  dangerouslySetInnerHTML={{
+                                    __html: item,
+                                  }}
+                                  key={idx}
+                                  className="mb-3"
+                                ></li>
+                              ))}
+                            </ol>
+                          )}
+                      </div>
+                    ))}
+                  </>
+                )}
             </>
           ) : (
             <p>No local government selected.</p>

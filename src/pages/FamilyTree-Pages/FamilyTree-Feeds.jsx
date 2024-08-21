@@ -8,14 +8,20 @@ import BirtdayFrame from "../../assets/images/birthdayFrame.png";
 import birthdayframeM1 from "../../assets/images/birthdayframeM1.png";
 import birthdayframeM2 from "../../assets/images/birthdayframeM2.png";
 import FamilyImage from "../../assets/images/FamilyImage.png";
+import noProfile from "../../assets/images/noProfile.png";
 import { DirectionButton2 } from "../../components/d-button";
 import { useDispatch, useSelector } from "react-redux";
-import { getProfile } from "../../features/UserFeature/UserAction";
+import {
+  getProfile,
+  getAllProfiles,
+} from "../../features/UserFeature/UserAction";
 import { fetchStateDetails } from "../../features/Statefeature/stateAction";
 import moment from "moment";
 import Spinner from "../../components/tools/Spinner";
 import { calculateBirthdayCountdown } from "../../components/tools/birthdayCountdown";
 import { NameProfileCard } from "../../components/Cards/NameProfileCard";
+import SearchUsers from "../../components/tools/SearchUsers";
+import { RecentSearches } from "../../components/tools/SearchUsers";
 
 const backendURL =
   process.env.NODE_ENV !== "production"
@@ -28,27 +34,47 @@ function ChildFeed() {
   const [Loading, setLoading] = useState(true);
   const [selectedReligionDescription, setSelectedReligionDescription] =
     useState("");
-
-  // Fetch user data from API or other source
-  const { profile, loading, error } = useSelector((state) => state.person);
-  const { allStates, religions, tribes } = useSelector((state) => state.state);
-  console.log(allStates);
-  console.log(religions);
-  console.log(tribes);
-  if (error) {
-    console.error("Error fetching data:", error);
-  }
-
+  const { profile, profiles, loading, error } = useSelector(
+    (state) => state.person
+  );
   // Debugging output
   const { userId } = useParams();
   console.log("User ID prop:", userId);
   console.log("Profile from state:", profile);
 
+  // Fetch user data from API or other source
+
+  // Fetch current profile when userId changes
   useEffect(() => {
     if (userId) {
       dispatch(getProfile(userId));
     }
   }, [dispatch, userId]);
+
+  // Fetch all profiles
+  useEffect(() => {
+    dispatch(getAllProfiles());
+  }, [dispatch]);
+
+  // Log the state to console
+  useEffect(() => {
+    console.log("Current Profile:", profile?.role);
+    console.log("All Profiles:", profiles);
+    console.log("Loading:", loading);
+    console.log("Error:", error);
+  }, [profile, profiles, loading, error]);
+
+  // If profile data is available, use its name for filtering profiles
+  const relatedProfiles = profiles.filter(
+    (p) =>
+      p.firstName === profile?.firstName || p.lastName === profile?.lastName
+  );
+
+  const { allStates, religions, tribes } = useSelector((state) => state.state);
+
+  if (error) {
+    console.error("Error fetching data:", error);
+  }
 
   // Find the state based on the user's selected state
   const stateName = profile?.state;
@@ -101,10 +127,10 @@ function ChildFeed() {
 
   const imageSrc = profile?.image
     ? `${backendURL}/${profile.image}`
-    : FeedImage;
+    : noProfile;
   const imageSrc2 = profile?.image2
     ? `${backendURL}/${profile.image2}`
-    : FeedImage;
+    : noProfile; // Same logic for image2
   const getText = (html) => {
     const doc = new DOMParser().parseFromString(html, "text/html");
     return doc.body.textContent;
@@ -126,7 +152,7 @@ function ChildFeed() {
       <div className="lg:flex flex-row Nlg:mx-auto Nlg:flex-col Nlg:justify-center">
         <div className="mb-6 lg:mr-6 lg:mb-0 lg:w-[45rem] mx-auto flex justify-center">
           <img
-            src={imageSrc}
+            src={imageSrc} // Use dynamic image source
             alt="Profile"
             className="rounded-lg shadow-md w-[25rem] h-[25rem] object-cover"
           />
@@ -237,26 +263,30 @@ function ChildFeed() {
           </Link>
         </div>
       </div>
-      <div className="mt-20">
-        <h3 className="text-black text-lg mod:text-sm font-bold uppercase text-start mb-2">
-          Background
-        </h3>
-        <div>
-          <p className="text-black text-sm font-normal">
-            {getText(profile.about)}
-          </p>
+      {profile.about && (
+        <div className="mt-20">
+          <h3 className="text-black text-lg mod:text-sm font-bold uppercase text-start mb-2">
+            Background
+          </h3>
+          <div>
+            <p className="text-black text-sm font-normal">
+              {getText(profile.about)}
+            </p>
+          </div>
         </div>
-      </div>
-      <div className="mt-10">
-        <h3 className="text-black text-lg font-bold uppercase text-start mb-2">
-          State of origin
-        </h3>
-        <div>
-          <p className="text-black text-sm font-normal">
-            {userStateOfOrigin?.origin || "State description not available"}
-          </p>
+      )}
+      {userStateOfOrigin?.origin && (
+        <div className="mt-10">
+          <h3 className="text-black text-lg font-bold uppercase text-start mb-2">
+            State of origin
+          </h3>
+          <div>
+            <p className="text-black text-sm font-normal">
+              {userStateOfOrigin?.origin || "State description not available"}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
       <div className="flex justify-center my-7">
         <Link to={`/genealogy/${formattedStateName}`}>
           <button className="bg-green text-white rounded-2xl w-auto py-2 px-3 flex items-center justify-center transition ease-in-out duration-200 transform hover:scale-105">
@@ -307,7 +337,7 @@ function ChildFeed() {
         <div className=" col-span-4">
           <img src={imageSrc2} alt="" className="w-full" />
         </div>
-        <div className="flex mx-3 flex-col justify-center items-center col-span-6">
+        <div className="flex mx-3 flex-col justify-start items-start col-span-6 ">
           <div className="">
             {/* childrensCard */}
             <div className="flex flex-wrap space-x-2 Nlg:my-3 gap-2 mb-9">
@@ -327,90 +357,106 @@ function ChildFeed() {
                 Chid5
               </button>
             </div>
-            <h3 className="text-black text-lg font-bold uppercase mb-3">
-              State religion
-            </h3>
-            <button className="text-white bg-green text-lg font-bold uppercase mb-1 p-1 rounded-xs">
-              {profile.religion}
-            </button>
-            <div className="">
-              <p className="text-black text-sm font-normal">
-                {ReligionDetails?.description ||
-                  "Religion description not available"}
-              </p>
-            </div>
+
+            {profile.religion && (
+              <>
+                <h3 className="text-black text-lg font-bold uppercase mb-3">
+                  State religion
+                </h3>
+                <button className="text-white bg-green text-lg font-bold uppercase mb-1 p-1 rounded-xs">
+                  {profile.religion}
+                </button>
+                <div className="">
+                  <p className="text-black text-sm font-normal">
+                    {ReligionDetails?.description ||
+                      "Religion description not available"}
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
       {/* Tribe  */}
-      <div className="mt-10">
-        <h3 className="text-black  text-lg font-bold uppercase  text-start mb-4">
-          Tribe
-        </h3>
-        <button className="text-white bg-green text-lg font-bold uppercase mb-1 p-1 rounded-xs">
-          {profile.tribe}
-        </button>
-        <div className="">
-          <p className="text-black text-sm font-normal">
-            {TribesDetails?.description || "Tribe description not available"}
-          </p>
+      {profile.tribe && (
+        <div className="mt-10">
+          <h3 className="text-black  text-lg font-bold uppercase  text-start mb-4">
+            Tribe
+          </h3>
+          <button className="text-white bg-green text-lg font-bold uppercase mb-1 p-1 rounded-xs">
+            {profile.tribe}
+          </button>
+          <div className="">
+            <p className="text-black text-sm font-normal">
+              {TribesDetails?.description || "Tribe description not available"}
+            </p>
+          </div>
         </div>
-      </div>
-      /* Greate people bearing this name */
+      )}
+
+      {/* Greate people bearing this name */}
       <div className="mt-10">
         <div className="mt-24">
           <h3 className="text-black  text-lg font-bold  text-start mb-4">
             Greate people bearing this name
           </h3>
 
-          {/* Cards */}
-          <NameProfileCard />
-        </div>
-
-        {/* search */}
-        <div className="mt-24">
-          <h4 className="text-black my-4 text-sm  font-bold   text-center">
-            Dont Find What You Are Looking For?
-          </h4>
-          <p className="mt-4 text-center lg:max-w-[35rem] mx-auto">
-            should lead to more on culture and town, religion, tribe family
-            photograph, highlight position of people on the photo
-          </p>
-
-          {/* form */}
-          <div className="flex justify-center my-3">
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col sm:flex-row items-center w-full sm:w-auto"
-            >
-              <input
-                type="surname"
-                placeholder="Customize your search more"
-                value={surname}
-                onChange={handleChange}
-                className="px-6 py-2 mb-4 sm:mb-0 sm:mr-4 w-full sm:w-[26rem] focus:outline-none focus:ring-2 focus:ring-green text-black bg-NavClr rounded-xl rounded-bl-xl"
-              />
-              <button className="text-white flex items-center justify-center bg-green-500 px-4 py-2 bg-green hover:bg-green-600 rounded-xl rounded-br-xl  sm:w-auto">
-                <span className="mr-2">Search</span>
-                <DirectionButton2 className="ml-2" />
-              </button>
-            </form>
-          </div>
-          {/* form */}
-
-          {/* related searches */}
-          <div className="mt-24 mx-4">
-            <h3 className="text-black my-4 text-lg mod:text-sm font-bold   text-start mb-3">
-              Related searches
-            </h3>
-            <ul className="">
-              <li>Jame John</li>
-              <li>Jame John</li>
-              <li>Jame John</li>
-              <li>Jame John</li>
-            </ul>
+          <div className="flex flex-wrap justify-center lg:justify-start">
+            {relatedProfiles.map((profile) => (
+              <div
+                key={profile._id}
+                className="overflow-hidden rounded-xl bg-white bg-clip-border text-gray-700 shadow-lg max-w-[15rem] w-full m-4"
+              >
+                {/* Image */}
+                <div className="overflow-hidden bg-transparent shadow-none bg-clip-border">
+                  <img
+                    src={
+                      profile.image
+                        ? `${backendURL}/${profile.image}`
+                        : noProfile // Use default image if profile.image is empty
+                    }
+                    alt="profile"
+                    className="w-full h-[15rem] object-cover"
+                  />
+                </div>
+                {/* Name */}
+                <div className="px-4 mb-3">
+                  <h3 className="font-sans text-lg font-bold mod:text-sm py-2">
+                    {profile.lastName} {profile.firstName} {profile.middlename}
+                  </h3>
+                </div>
+                {/* Gender and Position */}
+                <div className="flex justify-between px-4 pb-3">
+                  <h3 className="font-sans text-base mod:text-sm font-normal">
+                    {profile.profession}
+                  </h3>
+                  <h3 className="font-sans text-base mod:text-sm font-normal bg-NavClr py-">
+                    {profile.gender}
+                  </h3>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
+      </div>
+
+      {/* search */}
+      <div className="mt-24">
+        <h4 className="text-black my-4 text-sm  font-bold   text-center">
+          Dont Find What You Are Looking For?
+        </h4>
+        <p className="mt-4 text-center lg:max-w-[35rem] mx-auto">
+          should lead to more on culture and town, religion, tribe family
+          photograph, highlight position of people on the photo
+        </p>
+
+        {/* form */}
+        <SearchUsers />
+        {/* form */}
+
+        {/* related searches */}
+        <RecentSearches />
+        {/* related searches */}
       </div>
     </section>
   );

@@ -110,8 +110,8 @@ export const PGMModal = React.forwardRef(({ userId }, ref3) => {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
   const PGMData = useSelector((state) => state.person.PGM);
-  const { userInfo } = useSelector((state) => state.auth);
-  const LoggedId = userInfo?.user._id;
+  const userInfo = useSelector((state) => state.auth.user);
+  const LoggedId = userInfo?.id;
   const { Dloading, Derror, Dsuccess } = useSelector(
     (state) => state.delete.person
   );

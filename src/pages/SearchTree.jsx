@@ -34,6 +34,8 @@ export function SearchTree() {
   const [recentSearches, setRecentSearches] = useState(
     JSON.parse(localStorage.getItem("recentSearches")) || []
   );
+  const userInfo = useSelector((state) => state.auth.user);
+  const LoggedId = userInfo?.id;
 
   const toggleViewMore = () => {
     setviewMore(!viewMore);
@@ -421,24 +423,6 @@ export function SearchTree() {
           {/* Last section */}
 
           <div className="bg-NavClr p-4 rounded-lg">
-            {/* <div className="flex justify-start">
-              <p className="block text-sm font-bold text-black">
-                Recently searched
-              </p>
-            </div>
-            <div>
-              <ul className="gap-3 my-3">
-                {recentSearches.length > 0 ? (
-                  recentSearches.map((search, index) => (
-                    <li key={index} className="my-1 text-black">
-                      {search}
-                    </li>
-                  ))
-                ) : (
-                  <li>No recent searches</li>
-                )}
-              </ul>
-            </div> */}
             <section className="my-[3rem]">
               {/* Other code for search form */}
 
@@ -564,37 +548,39 @@ export function SearchTree() {
                         </p>
                       )}
 
-                      <a
-                        onClick={() => handleResultClick(result.userId)}
-                        className="inline-flex items-center px-3 py-2 text-sm font-medium text-white border-2 border-green  bg-green rounded-lg focus:ring-4 focus:outline-none cursor-pointer transition ease-in-out duration-200 transform hover:scale-105"
-                      >
-                        Go to
-                        {result.role !== "main" ? (
-                          <>
-                            <span className="font-medium mx-1">
-                              {result.userName}
-                            </span>
-                            's Profile
-                          </>
-                        ) : (
-                          " Profile"
-                        )}
-                        <svg
-                          className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 14 10"
+                      {LoggedId !== result.userId && (
+                        <a
+                          onClick={() => handleResultClick(result.userId)}
+                          className="inline-flex items-center px-3 py-2 text-sm font-medium text-white border-2 border-green bg-green rounded-lg focus:ring-4 focus:outline-none cursor-pointer transition ease-in-out duration-200 transform hover:scale-105"
                         >
-                          <path
-                            stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M1 5h12m0 0L9 1m4 4L9 9"
-                          />
-                        </svg>
-                      </a>
+                          Go to
+                          {result.role !== "main" ? (
+                            <>
+                              <span className="font-medium mx-1">
+                                {result.userName}
+                              </span>
+                              's Profile
+                            </>
+                          ) : (
+                            " Profile"
+                          )}
+                          <svg
+                            className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 14 10"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M1 5h12m0 0L9 1m4 4L9 9"
+                            />
+                          </svg>
+                        </a>
+                      )}
                     </div>
                   </li>
                 ))}
@@ -656,7 +642,6 @@ export function SearchTree() {
         {/* Spinner */}
         {spinnerVisible && showOverlay && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-            {/* <div className="animate-spin h-16 w-16 border-t-4 border-blue-500 border-solid rounded-full"></div> */}
             <img
               src={Search}
               alt="Searching..."

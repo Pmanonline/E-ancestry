@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "./features/auth/authSlice";
+// import useTokenExpiration from "./components/tools/TokenExpiry";
 import {
   BrowserRouter as Router,
   Routes,
@@ -9,6 +12,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import ProtectedRoute from "./components/routing/ProtectedRoute";
+import Modal from "./components/tools/sessionModal";
 
 // Authentication Pages
 import Login from "./pages/Login";
@@ -36,6 +40,8 @@ import FamilyTreeFeeds from "./pages/FamilyTree-Pages/FamilyTree-Feeds";
 import Layout from "./pages/LAYOUTS/Pages/FamilyTreeSelf";
 import NotFound from "./pages/NotFound";
 import SearchUsers from "./components/tools/SearchUsers";
+import HistoricalPeople from "./pages/HistoricalPeople";
+import AcceptInvite from "./pages/acceptInvite";
 
 //  all family tree forms
 import PersonalForm from "./components/Forms/personalForm";
@@ -60,7 +66,6 @@ function App() {
   const location = useLocation();
   const [showNav, setShowNav] = useState(true);
   const [showFooter, setShowFooter] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const noNavFooterRoutes = [
@@ -72,18 +77,14 @@ function App() {
     ];
     const protectedRoutes = ["/layout"];
 
-    if (noNavFooterRoutes.includes(location.pathname)) {
-      setShowNav(false);
-      setShowFooter(false);
-    } else if (
-      protectedRoutes.some((route) => location.pathname.startsWith(route))
-    ) {
-      setShowNav(true);
-      setShowFooter(false);
-    } else {
-      setShowNav(true);
-      setShowFooter(true);
-    }
+    // Avoid unnecessary state updates by checking first
+    const shouldShowNav = !noNavFooterRoutes.includes(location.pathname);
+    const shouldShowFooter = !protectedRoutes.some((route) =>
+      location.pathname.startsWith(route)
+    );
+
+    if (showNav !== shouldShowNav) setShowNav(shouldShowNav);
+    if (showFooter !== shouldShowFooter) setShowFooter(shouldShowFooter);
   }, [location.pathname]);
 
   return (
@@ -103,6 +104,8 @@ function App() {
         <Route path="/my-family-tree" element={<FamilyTree />} />
         <Route path="/search-a-tree" element={<SearchTree />} />
         <Route path="/about" element={<AboutUs />} />
+        <Route path="/historicalPeople" element={<HistoricalPeople />} />
+        <Route path="/accept-invite" element={<AcceptInvite />} />
         {/* <Route path="/about-ayo" element={<AboutAyo />} /> */}
         <Route path="/names/:name" element={<NameDetails />} />
         <Route path="/get-started" element={<GetStartedWithFamilyTree />} />
@@ -164,15 +167,74 @@ function App() {
           </Route>
         </Route>
       </Routes>
-      {/* {showFooter && <Footer />} */}
+      {showFooter && <Footer />}
     </>
   );
 }
 
 export default function WrappedApp() {
+  const dispatch = useDispatch();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleLogin = () => {
+    // Redirect to login page or show login form
+    window.location.href = "/login";
+  };
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
+    let inactivityTimer;
+
+    const refreshAccessToken = async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/refresh-token",
+          {},
+          { withCredentials: true }
+        );
+        localStorage.setItem("userToken", response.data.accessToken);
+      } catch (error) {
+        dispatch(logoutUser());
+        setIsModalOpen(true); // Show modal instead of alert
+      }
+    };
+
+    const resetTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(refreshAccessToken, 24 * 60 * 60 * 1000); // Refresh before 24h
+    };
+
+    window.addEventListener("mousemove", resetTimer);
+    window.addEventListener("keydown", resetTimer);
+    window.addEventListener("scroll", resetTimer);
+    window.addEventListener("click", resetTimer);
+
+    resetTimer(); // Initialize the timer
+
+    return () => {
+      window.removeEventListener("mousemove", resetTimer);
+      window.removeEventListener("keydown", resetTimer);
+      window.removeEventListener("scroll", resetTimer);
+      window.removeEventListener("click", resetTimer);
+      clearTimeout(inactivityTimer);
+    };
+  }, [dispatch]);
+
   return (
-    <Router>
-      <App />
-    </Router>
+    <>
+      <div>
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleClose}
+          onLogin={handleLogin}
+        />
+      </div>
+      <Router>
+        <App />
+      </Router>
+    </>
   );
 }

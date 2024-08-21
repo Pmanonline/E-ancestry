@@ -107,8 +107,8 @@ export const NestedModal = React.forwardRef(({ userId }, ref) => {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
   const personData = useSelector((state) => state.person.person);
-  const { userInfo } = useSelector((state) => state.auth);
-  const LoggedId = userInfo?.user._id;
+  const userInfo = useSelector((state) => state.auth.user);
+  const LoggedId = userInfo?.id;
 
   console.log(personData);
   const [Deleteopen, setDeleteOpen] = React.useState(false);

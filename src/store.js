@@ -7,6 +7,8 @@ import deleteReducer from "./features/UserFeature/deleteUserSlice";
 import stateReducer from "./features/Statefeature/stateSlice";
 import nameReducer from "./features/nameFeature/nameSlice";
 import userSearchReducer from "./features/UserFeature/SearchSlice";
+import historicalReducer from "./features/historicalFeature/historicalSlice";
+import inviteReducer from "./features/UserFeature/inviteSlice";
 import { authApi } from "./features/auth/authServive";
 
 const store = configureStore({
@@ -19,6 +21,8 @@ const store = configureStore({
     state: stateReducer,
     name: nameReducer,
     userSearch: userSearchReducer,
+    historicalPeople: historicalReducer,
+    invite: inviteReducer,
     [authApi.reducerPath]: authApi.reducer, // Ensure this path is used correctly
   },
   middleware: (getDefaultMiddleware) =>

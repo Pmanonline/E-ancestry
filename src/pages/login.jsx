@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUser, GoogleSignInAction } from "../features/auth/authActions";
+import { loginUser, registerUser } from "../features/auth/authActions";
 import { resetSuccess } from "../features/auth/authSlice";
 import Error from "../components/tools/Error";
 import Spinner from "../components/tools/Spinner";
@@ -14,15 +14,16 @@ import { DirectionButton2 } from "../components/d-button";
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { loading, error, success } = useSelector((state) => state.auth);
-  const { userInfo } = useSelector((state) => state.auth);
-  const userId = userInfo?.user._id;
-  console.log(userId);
+  const user = useSelector((state) => state.auth.user);
+  console.log("User:", user);
+  console.log("User id:", user?.id);
+  console.log("User Email:", user?.email);
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
-  const submitForm = (data) => {
-    dispatch(loginUser(data));
+  const submitForm = ({ email, password }) => {
+    dispatch(loginUser({ email, password }));
   };
 
   useEffect(() => {
@@ -42,21 +43,6 @@ const Login = () => {
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
-  };
-
-  const handleGoogleSignIn = async (credential) => {
-    console.log("Google sign-in credential:", credential); // Debugging line
-    try {
-      const resultAction = await dispatch(
-        GoogleSignInAction(credential)
-      ).unwrap();
-      console.log("Google sign-in result:", resultAction); // Debugging line
-      localStorage.setItem("userToken", resultAction.userToken);
-      localStorage.setItem("user", JSON.stringify(resultAction));
-      // navigate("/");
-    } catch (error) {
-      console.error("Google sign-in failed", error);
-    }
   };
 
   return (
@@ -134,17 +120,7 @@ const Login = () => {
               className="border flex justify-center mx-auto bg-green text-white py-2 px-[8rem] rounded-2xl hover:scale-105 focus:outline-none focus:bg-green"
               disabled={loading}
             >
-              {loading ? (
-                <Spinner />
-              ) : (
-                <>
-                  Login
-                  <span className="ml-2">
-                    {/* Replace with your custom button or component */}
-                    <DirectionButton2 />
-                  </span>
-                </>
-              )}
+              {loading ? <Spinner /> : <>Login</>}
             </button>
           </div>
 
@@ -161,9 +137,6 @@ const Login = () => {
               Signup
             </Link>
           </p>
-          <p className="text-center w-[12rem] mx-auto mt-5">
-            <GoogleSignInButton onSignIn={handleGoogleSignIn} />
-          </p>
         </form>
       </div>
     </div>
@@ -171,3 +144,122 @@ const Login = () => {
 };
 
 export default Login;
+
+// import React, { useState } from "react";
+// import { useDispatch, useSelector } from "react-redux";
+// import { loginUser, registerUser } from "../features/auth/authActions";
+// import { logoutUser } from "../features/auth/authSlice";
+
+// const Login = () => {
+//   const dispatch = useDispatch();
+//   const token = useSelector((state) => state.auth.token);
+//   const user = useSelector((state) => state.auth.user);
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [isRegistering, setIsRegistering] = useState(false);
+
+//   console.log("Token:", token);
+// console.log("User:", user);
+// console.log("User id:", user?._id);
+// console.log("User Email:", user?.email);
+
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     console.log(
+//       `Form submitted. Registering: ${isRegistering}. Email: ${email}`
+//     );
+
+//     if (isRegistering) {
+//       dispatch(registerUser({ email, password }));
+//       console.log("Dispatching registerUser with:", { email, password });
+//     } else {
+//       dispatch(loginUser({ email, password }));
+//       console.log("Dispatching loginUser with:", { email, password });
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center py-6">
+//       <nav className="w-full bg-white shadow-md p-4 flex justify-between items-center">
+//         <h1 className="text-2xl font-bold text-gray-900">My App</h1>
+//         <div>
+//           <button
+//             onClick={() => {
+//               setIsRegistering(!isRegistering);
+//               console.log(
+//                 `Switched to ${isRegistering ? "Login" : "Register"}`
+//               );
+//             }}
+//             className="bg-blue-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
+//           >
+//             {isRegistering ? "Go to Login" : "Go to Register"}
+//           </button>
+//           {token && (
+//             <button
+//               onClick={() => {
+//                 dispatch(logoutUser());
+//                 console.log("Logout button clicked.");
+//               }}
+//               className="bg-red-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-600 ml-4"
+//             >
+//               Logout
+//             </button>
+//           )}
+//         </div>
+//       </nav>
+//       <main className="flex flex-col items-center justify-center w-full max-w-md mt-10 p-6 bg-white shadow-lg rounded-md">
+//         <h2 className="text-2xl font-bold mb-4">
+//           {isRegistering ? "Register" : "Login"}
+//         </h2>
+//         <form onSubmit={handleSubmit} className="space-y-4 w-full">
+//           <div>
+//             <label className="block text-gray-700">Email:</label>
+//             <input
+//               autoComplete="email"
+//               type="email"
+//               value={email}
+//               onChange={(e) => {
+//                 setEmail(e.target.value);
+//                 console.log("Email updated:", e.target.value);
+//               }}
+//               required
+//               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+//             />
+//           </div>
+//           <div>
+//             <label className="block text-gray-700">Password:</label>
+//             <input
+//               type="password"
+//               value={password}
+//               onChange={(e) => {
+//                 setPassword(e.target.value);
+//                 console.log("Password updated:", e.target.value);
+//               }}
+//               required
+//               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+//             />
+//           </div>
+//           <button
+//             type="submit"
+//             className="w-full bg-blue-500 text-black py-2 rounded-md shadow-md hover:bg-blue-600"
+//           >
+//             {isRegistering ? "Register" : "Login"}
+//           </button>
+//         </form>
+//         {token && user && (
+//           <div className="mt-6">
+//             <h3 className="text-xl font-semibold">
+//               Welcome, {user.name || "User"}!
+//             </h3>
+//             <p className="text-gray-700">
+//               Your email: {user.email || "No email provided"}
+//               Your id``: {user.id || "No email provided"}
+//             </p>
+//           </div>
+//         )}
+//       </main>
+//     </div>
+//   );
+// };
+
+// export default Login;

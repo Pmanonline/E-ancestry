@@ -1,465 +1,435 @@
-// import React, { useState, useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-// import { fetchUsers } from "../../features/UserFeature/UserAction";
-// import Search from "../../assets/images/Search.gif";
-// import NoResult from "../../assets/images/noResult.png";
-
-// // Ensure backendURL is defined
-// const backendURL =
-//   process.env.NODE_ENV !== "production"
-//     ? "http://localhost:8080"
-//     : "https://your-backend-url";
-
-// export default function SearchUsers() {
-//   const [surname, setSurname] = useState("");
-//   const [submitted, setSubmitted] = useState(false); // Track if search has been submitted
-//   const [spinnerVisible, setSpinnerVisible] = useState(false); // Ensures spinner is visible for at least 1 second
-//   const navigate = useNavigate();
-//   const dispatch = useDispatch();
-
-//   // Access users state from Redux store
-//   const {
-//     users = { Users: [] },
-//     loading,
-//     error,
-//   } = useSelector((state) => state.userSearch);
-//   console.log(users);
-
-//   useEffect(() => {
-//     let spinnerTimer;
-
-//     if (loading) {
-//       // Show spinner after 1 second if loading continues
-//       spinnerTimer = setTimeout(() => {
-//         setSpinnerVisible(true);
-//       }, 1000); // 1 second minimum display time
-//     } else {
-//       // Hide spinner immediately when loading stops
-//       setSpinnerVisible(false);
-//       clearTimeout(spinnerTimer);
-//     }
-
-//     return () => clearTimeout(spinnerTimer); // Clean up timer on component unmount or before next effect
-//   }, [loading]);
-
-//   useEffect(() => {
-//     // If loading has stopped, check results after 1 second to hide spinner
-//     if (!loading && submitted) {
-//       const hideSpinnerTimer = setTimeout(() => {
-//         setSpinnerVisible(false);
-//       }, 1000); // Ensure spinner hides after 1 second
-//       return () => clearTimeout(hideSpinnerTimer);
-//     }
-//   }, [loading, submitted]);
-
-//   // Extract first names from Users array if it exists
-//   const Image = users.Users ? users.Users.map((user) => user.image) : [];
-//   console.log(Image); // Logs an array of first names
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     if (surname.trim()) {
-//       console.log(`Form submitted with surname: ${surname}`);
-//       dispatch(fetchUsers(surname));
-//       setSubmitted(true); // Mark as submitted
-//     }
-//   };
-
-//   const handleChange = (e) => {
-//     setSurname(e.target.value);
-//     setSubmitted(false); // Reset submitted state when user starts typing
-//   };
-
-//   const handleResultClick = (userId) => {
-//     navigate(`/familytree/${userId}`);
-//   };
-
-//   // Safeguard against undefined or null users.Users
-//   const hasResults = users.Users && users.Users.length > 0;
-//   const noResults = submitted && surname && !hasResults; // Show "No results" only if search has been submitted
-
-//   const mainPerson = users.Users?.find((user) => user.role === "main");
-//   const relatedPersons = users.Users?.filter((user) => user.role !== "main");
-
-//   console.log("mainPerson:", mainPerson?.role);
-//   console.log("relatedPersons:", relatedPersons);
-
-//   return (
-//     <section className="my-[3rem]">
-//       <div className="flex justify-center">
-//         <form onSubmit={handleSubmit} className="flex">
-//           <input
-//             type="text"
-//             value={surname}
-//             onChange={handleChange}
-//             placeholder="Search for a user..."
-//             className="border p-2 w-full px-6 sm:w-[26rem] py-2 focus:outline-none focus:ring-1 focus:ring-green text-black bg-NavClr"
-//           />
-
-//           <button
-//             type="submit"
-//             className="focus:ring-1 focus:ring-green bg-NavClr px-4 py-2 hover:bg-green-600 rounded-tr-xl rounded-br-xl"
-//           >
-//             Search
-//           </button>
-//         </form>
-//       </div>
-
-//       {/* Display spinner while loading */}
-//       {spinnerVisible && (
-//         <div className="flex justify-center mt-4">
-//           <Spinner showOverlay={false} />
-//         </div>
-//       )}
-
-//       {/* Display error message */}
-//       {error && (
-//         <div className="text-center mt-4 text-red-500">
-//           <p>Error: {error}</p>
-//         </div>
-//       )}
-
-//       {/* Display when no results */}
-//       {noResults ? (
-//         <div className="text-center mt-4">
-//           <div className="flex flex-col items-center">
-//             <img src={NoResult} alt="No Results" className="w-24 h-24 mb-4" />
-//             <p className="text-lg font-semibold mb-2">No results found</p>
-//             <p className="text-gray-500">
-//               Try a different search term or check the spelling.
-//             </p>
-//           </div>
-//         </div>
-//       ) : hasResults ? (
-//         <div className="text-start mt-4">
-//           <p className="text-lg font-semibold mb-4 text-center">
-//             Related Searches
-//           </p>
-//           <div className="flex flex-wrap justify-center gap-4">
-//             {users.Users.map((result) => (
-//               <div
-//                 key={result._id}
-//                 class="md:w-[30%] bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-600 dark:border-gray-700"
-//               >
-//                 <a href="#">
-//                   <img
-//                     class="rounded-t-lg w-[10rem] h-[10rem] rounded-xl"
-//                     src={`${backendURL}/${result.image}`}
-//                     alt="images"
-//                   />
-//                 </a>
-//                 <div class="p-5">
-//                   <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-//                     Full name:
-//                     <span className="text-white ml-2">
-//                       {result.firstName} {result.lastName}
-//                     </span>
-//                   </p>
-//                   {result.gender && (
-//                     <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-//                       Gender:
-//                       <span className="text-white ml-2">{result.gender}</span>
-//                     </p>
-//                   )}
-//                   <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-//                     Date of Birth:
-//                     <span className="text-white ml-2">
-//                       {new Date(result.DOB).toLocaleDateString()}
-//                     </span>
-//                   </p>
-
-//                   <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-//                     {result.role === "main" ? (
-//                       <span className="text-white ">Family Tree Creator</span>
-//                     ) : (
-//                       <span className="text-white ">{result.role}</span>
-//                     )}
-//                   </p>
-//                   <p class="mb-3 font-normal text-gray-700 dark:text-gray-400  ">
-//                     <span className="italic"> Created by:</span>
-//                     <span className="text-white ml-2">{result.userName}</span>
-//                   </p>
-//                   <a
-//                     onClick={handleResultClick}
-//                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green rounded-lg  focus:ring-4 focus:outline-none"
-//                   >
-//                     Go to Profile
-//                     <svg
-//                       class="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-//                       aria-hidden="true"
-//                       xmlns="http://www.w3.org/2000/svg"
-//                       fill="none"
-//                       viewBox="0 0 14 10"
-//                     >
-//                       <path
-//                         stroke="currentColor"
-//                         stroke-linecap="round"
-//                         stroke-linejoin="round"
-//                         stroke-width="2"
-//                         d="M1 5h12m0 0L9 1m4 4L9 9"
-//                       />
-//                     </svg>
-//                   </a>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       ) : null}
-//     </section>
-//   );
-// }
-// function Spinner({ showOverlay }) {
-//   return (
-// <div className="relative flex justify-center items-center mt-4">
-//   {showOverlay && (
-//     <div className="absolute inset-0 bg-transparent opacity-50 z-10"></div>
-//   )}
-//   <img
-//     src={Search}
-//     alt="Searching..."
-//     className="w-32 h-32 relative z-20"
-//   />
-// </div>
-//   );
-// }
-
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchUsers } from "../../features/UserFeature/UserAction";
-import Search from "../../assets/images/Search.gif";
+import { RiArrowDropDownLine } from "react-icons/ri";
+import { IoMdClose } from "react-icons/io";
+import { DirectionButton2 } from "../../components/d-button";
+import { GrChapterNext } from "react-icons/gr";
+import { GrChapterPrevious } from "react-icons/gr";
+import { RiFilter2Line } from "react-icons/ri";
+import { Box, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import NoResult from "../../assets/images/noResult.png";
+import Search from "../../assets/images/Search.gif";
 
-// Ensure backendURL is defined
 const backendURL =
   process.env.NODE_ENV !== "production"
     ? "http://localhost:8080"
     : "https://your-backend-url";
 
 export default function SearchUsers() {
-  const [surname, setSurname] = useState("");
-  const [submitted, setSubmitted] = useState(false); // Track if search has been submitted
-  const [spinnerVisible, setSpinnerVisible] = useState(false); // Ensures spinner is visible for at least 1 second
-  const [showOverlay, setShowOverlay] = useState(true); // Manage overlay visibility
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [placeLived, setPlaceLived] = useState("");
+  const [dob, setDob] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [spinnerVisible, setSpinnerVisible] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [viewMore, setviewMore] = useState(false);
+  const [category, setCategory] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = React.useState("");
+  const [selectedSubCategory, setSelectedSubCategory] = React.useState("");
+  const [recentSearches, setRecentSearches] = useState(
+    JSON.parse(localStorage.getItem("recentSearches")) || []
+  );
 
-  // Access users state from Redux store
+  const toggleViewMore = () => {
+    setviewMore(!viewMore);
+  };
+
+  const resultsPerPage = 9;
+
   const {
-    users = { Users: [] },
+    users = [], // Updated to default to an empty array
     loading,
     error,
   } = useSelector((state) => state.userSearch);
-  console.log(users);
+
+  const indexOfLastResult = currentPage * resultsPerPage;
+  const indexOfFirstResult = indexOfLastResult - resultsPerPage;
+  const currentResults = users.length
+    ? users.slice(indexOfFirstResult, indexOfLastResult)
+    : [];
+  console.log("Current Results:", currentResults);
+
+  const totalPages = Math.ceil(users.length / resultsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const [modalType, setModalType] = useState(null);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const toggleDropdown = () => setIsOpen(!isOpen);
+  const toggleView = () => setViewMore(!viewMore);
+  const toggleCategory = () => setCategory(!category);
+  const closeModal = () => {
+    setModalType(null); // Reset modalType to close any open modals
+  };
 
   useEffect(() => {
     let spinnerTimer;
 
     if (loading) {
-      setShowOverlay(true); // Show overlay while loading
-      // Show spinner after 1 second if loading continues
+      setShowOverlay(true);
       spinnerTimer = setTimeout(() => {
         setSpinnerVisible(true);
-      }, 1000); // 1 second minimum display time
+      }, 1000);
     } else {
-      // Hide spinner immediately when loading stops
       setSpinnerVisible(false);
-      setShowOverlay(false); // Hide overlay when loading stops
+      setShowOverlay(false);
       clearTimeout(spinnerTimer);
     }
 
-    return () => clearTimeout(spinnerTimer); // Clean up timer on component unmount or before next effect
+    return () => clearTimeout(spinnerTimer);
   }, [loading]);
 
   useEffect(() => {
-    // If loading has stopped, check results after 1 second to hide spinner
-    if (!loading && submitted) {
-      const hideSpinnerTimer = setTimeout(() => {
-        setSpinnerVisible(false);
-      }, 1000); // Ensure spinner hides after 1 second
-      return () => clearTimeout(hideSpinnerTimer);
+    if (loading && submitted) {
+      setSpinnerVisible(true);
+      setModalType(null); // Hide modals while loading
+    } else if (!loading && submitted) {
+      setSpinnerVisible(false);
+      if (users.length > 0) {
+        setModalType("results");
+        setFirstName("");
+        setLastName("");
+        setPlaceLived("");
+        setDob("");
+      } else {
+        setModalType("noResults");
+      }
     }
-  }, [loading, submitted]);
+  }, [loading, submitted, users]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (surname.trim()) {
-      console.log(`Form submitted with surname: ${surname}`);
-      dispatch(fetchUsers(surname));
-      setSubmitted(true); // Mark as submitted
+    if (firstName.trim() || lastName.trim() || placeLived.trim() || dob) {
+      const searchParams = {
+        firstName,
+        lastName,
+        placeLived,
+        dob,
+      };
+
+      dispatch(fetchUsers(searchParams));
+      console.log("Submitted Search with:", searchParams); // Log the search params
+      setSubmitted(true);
+      // Add to recent searches
+      addRecentSearch(`${firstName} ${lastName}`);
     }
   };
 
   const handleChange = (e) => {
-    setSurname(e.target.value);
-    setSubmitted(false); // Reset submitted state when user starts typing
+    const { name, value } = e.target;
+    if (name === "firstName") setFirstName(value);
+    if (name === "lastName") setLastName(value);
+    if (name === "placeLived") setPlaceLived(value);
+    if (name === "dob") setDob(value);
+    setSubmitted(false);
+  };
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+
+  const handleSubCategoryChange = (event) => {
+    setSelectedSubCategory(event.target.value);
   };
 
   const handleResultClick = (userId) => {
     navigate(`/FamilyTree-feeds/${userId}`);
   };
 
-  // Safeguard against undefined or null users.Users
-  const hasResults = users.Users && users.Users.length > 0;
-  const noResults = submitted && surname && !hasResults; // Show "No results" only if search has been submitted
+  const hasResults = users.length > 0;
+  const noResults = submitted && !hasResults;
 
-  const mainPerson = users.Users?.find((user) => user.role === "main");
-  const relatedPersons = users.Users?.filter((user) => user.role !== "main");
+  useEffect(() => {
+    if (submitted) {
+      if (hasResults) {
+        setModalType("results");
+      } else if (noResults) {
+        setModalType("noResults");
+      }
+    }
+  }, [hasResults, noResults, submitted]);
 
-  console.log("mainPerson:", mainPerson?.role);
-  console.log("relatedPersons:", relatedPersons);
+  useEffect(() => {
+    console.log("Fetched Users:", users); // Ensure users are logged when fetched
+  }, [users]);
+
+  const addRecentSearch = (search) => {
+    setRecentSearches((prevSearches) => {
+      const updatedSearches = [search, ...prevSearches].slice(0, 10); // Store up to 10 searches
+      localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
+      return updatedSearches;
+    });
+  };
 
   return (
     <section className="my-[3rem]">
-      <div className="flex justify-center">
-        <form onSubmit={handleSubmit} className="flex">
-          <input
-            type="text"
-            value={surname}
-            onChange={handleChange}
-            placeholder="Search for a user..."
-            className="border p-2 w-full px-6 sm:w-[26rem] py-2 focus:outline-none focus:ring-1 focus:ring-green text-black bg-NavClr"
-          />
+      <div className="">
+        <div className="">
+          <div className="flex justify-center my-3">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col sm:flex-row items-center w-full sm:w-auto"
+            >
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                placeholder="Customize your search more"
+                value={firstName}
+                onChange={handleChange}
+                className="px-6 py-2 mb-4 sm:mb-0 sm:mr-4 w-full sm:w-[26rem] focus:outline-none focus:ring-2 focus:ring-green text-black bg-NavClr rounded-xl rounded-bl-xl"
+              />
+              <button className="text-white flex items-center justify-center bg-green-500 px-4 py-2 bg-green hover:bg-green-600 rounded-xl rounded-br-xl  sm:w-auto">
+                <span className="mr-2">Search</span>
+                <DirectionButton2 className="ml-2" />
+              </button>
+            </form>
+          </div>
+        </div>
 
-          <button
-            type="submit"
-            className="focus:ring-1 focus:ring-green bg-NavClr px-4 py-2 hover:bg-green-600 rounded-tr-xl rounded-br-xl"
+        {/*  */}
+
+        {!spinnerVisible && modalType === "results" && (
+          <div
+            className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center"
+            onClick={closeModal}
           >
-            Search
-          </button>
-        </form>
-      </div>
-
-      {/* Display spinner while loading */}
-      {spinnerVisible && <Spinner showOverlay={showOverlay} />}
-
-      {/* Display error message */}
-      {error && (
-        <div className="text-center mt-4 text-red-500">
-          <p>Error: {error}</p>
-        </div>
-      )}
-
-      {/* Display when no results */}
-      {noResults ? (
-        <div className="text-center mt-4">
-          <div className="flex flex-col items-center">
-            <img src={NoResult} alt="No Results" className="w-24 h-24 mb-4" />
-            <p className="text-lg font-semibold mb-2">No results found</p>
-            <p className="text-gray-500">
-              Try a different search term or check the spelling.
-            </p>
-          </div>
-        </div>
-      ) : hasResults ? (
-        <div className="text-start mt-4">
-          <p className="text-lg font-semibold mb-4 text-center">
-            Related Searches
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-4">
-            {users.Users.map((result) => (
-              <div
-                key={result._id}
-                className="md:w-[30%] bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-600 dark:border-gray-700"
-              >
-                <a href="#">
-                  <img
-                    className="rounded-t-lg w-[10rem] h-[10rem] rounded-xl"
-                    src={`${backendURL}/${result.image}`}
-                    alt="images"
-                  />
-                </a>
-                <div className="p-5">
-                  <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                    Full name:
-                    <span className="text-white ml-2">
-                      {result.firstName} {result.lastName}
-                    </span>
-                  </p>
-                  {result.gender && (
-                    <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                      Gender:
-                      <span className="text-white ml-2">{result.gender}</span>
-                    </p>
-                  )}
-                  <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                    Date of Birth:
-                    <span className="text-white ml-2">
-                      {new Date(result.DOB).toLocaleDateString()}
-                    </span>
-                  </p>
-
-                  <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                    {result.role === "main" ? (
-                      <span className="text-white ">Family Tree Creator</span>
-                    ) : (
-                      <span className="text-white ">{result.role}</span>
-                    )}
-                  </p>
-                  {result.role !== "main" ? (
-                    <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                      <span className="italic">Related to:</span>
-                      <span className="text-white ml-2">{result.userName}</span>
-                    </p>
-                  ) : (
-                    ""
-                  )}
-
-                  <a
-                    onClick={() => handleResultClick(result.userId)}
-                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green rounded-lg focus:ring-4 focus:outline-none cursor-pointer  transition ease-in-out duration-200 transform hover:scale-105"
-                  >
-                    Go to
-                    {result.role !== "main" ? (
-                      <>
-                        <span className="font-medium mx-1">
-                          {result.userName}
-                        </span>
-                        's Profile
-                      </>
-                    ) : (
-                      " Profile"
-                    )}
-                    <svg
-                      className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 14 10"
-                    >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M1 5h12m0 0L9 1m4 4L9 9"
-                      />
-                    </svg>
-                  </a>
-                </div>
+            <div
+              className="bg-white p-6 rounded-lg shadow-lg w-full h-full max-w-full max-h-full overflow-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-lg text-center mb-3 font-bold">
+                Search Results
+              </h2>
+              <div className="flex justify-end mr-2">
+                <button
+                  onClick={closeModal}
+                  className="mt-4 border-red-500 border text-red-500 py-1 px-4 rounded-lg  transition ease-in-out duration-200 transform hover:scale-105"
+                >
+                  <IoMdClose size={24} />
+                </button>
               </div>
-            ))}
+
+              <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {currentResults.map((result) => (
+                  <li
+                    key={result._id}
+                    className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-600 dark:border-gray-700 flex flex-col"
+                    style={{ flex: "1 1 30%" }}
+                  >
+                    <a href="#">
+                      <img
+                        className="rounded-t-lg w-full h-[10rem] object-cover rounded-xl mb-4"
+                        src={`${backendURL}/${result.image}`}
+                        alt="images"
+                      />
+                    </a>
+                    <div className="p-3 flex flex-col space-y-2">
+                      <p className="font-normal text-gray-700 dark:text-gray-400">
+                        Full name:
+                        <span className="text-white ml-2">
+                          {result.firstName} {result.lastName}
+                        </span>
+                      </p>
+                      {result.gender && (
+                        <p className="font-normal text-gray-700 dark:text-gray-400">
+                          Gender:
+                          <span className="text-white ml-2">
+                            {result.gender}
+                          </span>
+                        </p>
+                      )}
+                      <p className="font-normal text-gray-700 dark:text-gray-400">
+                        Date of Birth:
+                        <span className="text-white ml-2">
+                          {new Date(result.DOB).toLocaleDateString()}
+                        </span>
+                      </p>
+
+                      <p className="font-normal text-gray-700 dark:text-gray-400">
+                        {result.role === "main" ? (
+                          <span className="text-white ">
+                            Family Tree Creator
+                          </span>
+                        ) : (
+                          <span className="text-white ">{result.role}</span>
+                        )}
+                      </p>
+
+                      {result.Lstatus === "Deceased" && (
+                        <span className="text-white">
+                          <span className="block mb-2">{result.Lstatus}</span>
+                          {new Date(result.DOB).getFullYear()} to{" "}
+                          {result.yearDeceased
+                            ? new Date(result.yearDeceased).getFullYear()
+                            : "Unknown year"}
+                        </span>
+                      )}
+
+                      {result.role !== "main" && (
+                        <p className="font-normal text-gray-700 dark:text-gray-400">
+                          <span className="italic">Related to:</span>
+                          <span className="text-white ml-2">
+                            {result.userName}
+                          </span>
+                        </p>
+                      )}
+
+                      <a
+                        onClick={() => handleResultClick(result.userId)}
+                        className="inline-flex items-center px-3 py-2 text-sm font-medium text-white border-2 border-green  bg-green rounded-lg focus:ring-4 focus:outline-none cursor-pointer transition ease-in-out duration-200 transform hover:scale-105"
+                      >
+                        Go to
+                        {result.role !== "main" ? (
+                          <>
+                            <span className="font-medium mx-1">
+                              {result.userName}
+                            </span>
+                            's Profile
+                          </>
+                        ) : (
+                          " Profile"
+                        )}
+                        <svg
+                          className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M1 5h12m0 0L9 1m4 4L9 9"
+                          />
+                        </svg>
+                      </a>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex justify-between mt-4">
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className="mt-4 border-gray-800 border text-gray-800 py-1 px-4 rounded-lg  transition ease-in-out duration-200 transform hover:scale-105"
+                >
+                  <GrChapterPrevious size={24} />
+                </button>
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className="mt-4 border-gray-800 border text-gray-800 py-1 px-4 rounded-lg  transition ease-in-out duration-200 transform hover:scale-105"
+                >
+                  <GrChapterNext size={24} />
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      ) : null}
+        )}
+        {/* Results and No Results Modals ends*/}
+        {!spinnerVisible && modalType === "noResults" && (
+          <div
+            className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center px-3 mx-3"
+            onClick={closeModal}
+          >
+            <div
+              className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full"
+              onClick={(e) => e.stopPropagation()} // Prevent click event from bubbling up to parent
+            >
+              <h2 className="text-lg font-bold">No Results Found</h2>
+              <img
+                src={NoResult}
+                alt="No Results"
+                className="w-24 mx-auto my-4"
+              />
+              <p className="text-center">
+                No results found for "{firstName}
+                {lastName} {placeLived}". Please try again with a different name
+                or criteria.
+              </p>
+              <button
+                onClick={closeModal}
+                className="mt-4 border-red-500 border text-red-500 py-2 px-3 rounded-lg  transition ease-in-out duration-200 transform hover:scale-105"
+              >
+                <IoMdClose size={12} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Spinner */}
+        {spinnerVisible && showOverlay && (
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+            <img
+              src={Search}
+              alt="Searching..."
+              className="w-32 h-32 relative z-20"
+            />
+          </div>
+        )}
+      </div>
     </section>
   );
 }
 
-function Spinner({ showOverlay }) {
+export function RecentSearches() {
+  const [recentSearches, setRecentSearches] = useState(
+    JSON.parse(localStorage.getItem("recentSearches")) || []
+  );
+
+  // Clear a recent search item
+  const removeRecentSearch = (searchToRemove) => {
+    const updatedSearches = recentSearches.filter(
+      (search) => search !== searchToRemove
+    );
+    setRecentSearches(updatedSearches);
+    localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
+  };
+
+  // Use effect to listen for updates in recentSearches and sync with localStorage
+  useEffect(() => {
+    localStorage.setItem("recentSearches", JSON.stringify(recentSearches));
+  }, [recentSearches]);
+
   return (
-    <div className="fixed inset-0 flex justify-center items-center z-50">
-      {showOverlay && (
-        <div className="absolute inset-0 bg-gray-700 bg-opacity-50 z-10"></div>
+    <div className="mb-8">
+      <h2 className="text-lg font-bold mb-4 text-start">Recently Searched</h2>
+      {recentSearches.length > 0 ? (
+        <ul className="list-none space-y-1">
+          {recentSearches.slice(0, 3).map((search, index) => (
+            <li key={index} className="mx-2 p-2 rounded-lg">
+              {search}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-center">No recent searches found.</p>
       )}
-      <img
-        src={Search}
-        alt="Searching..."
-        className="w-32 h-32 relative z-20"
-      />
     </div>
   );
 }

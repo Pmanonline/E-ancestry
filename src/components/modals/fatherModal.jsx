@@ -110,8 +110,8 @@ export const FatherModal = React.forwardRef(({ userId }, ref2) => {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
   const fatherData = useSelector((state) => state.person.father);
-  const { userInfo } = useSelector((state) => state.auth);
-  const LoggedId = userInfo?.user._id;
+  const userInfo = useSelector((state) => state.auth.user);
+  const LoggedId = userInfo?.id;
   const [imagePreview, setImagePreview] = useState(null);
   const { Dloading, Derror, Dsuccess } = useSelector(
     (state) => state.delete.person

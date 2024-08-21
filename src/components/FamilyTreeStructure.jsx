@@ -194,7 +194,7 @@ export const FamilyTreeStructure = () => {
   return (
     <>
       {/* Zoom Controls */}
-      <div className="flex space-x-2 mb-4 relative z-50">
+      <div className=" flex space-x-2 mb-4 relative z-50">
         <button
           onClick={handleZoomIn}
           className=" text-gray-800 p-2 rounded  transition ease-in-out duration-200 transform hover:scale-105"

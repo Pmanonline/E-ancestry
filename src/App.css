@@ -70,3 +70,7 @@ a {
     display: block;
   }
 }
+/* In your CSS file or <style> block */
+.biography-content p {
+  margin-bottom: 1em; /* Adjust the spacing between paragraphs */
+}

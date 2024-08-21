@@ -137,7 +137,7 @@ const PaternalGGMform = ({ initialState = {}, isEdit = false }) => {
       toast.success("Created!!");
       dispatch(fetchAllDetails(userId));
       dispatch(resetSuccess());
-      setTimeout(() => navigate("/maternalGGFather-form"), 2000);
+      setTimeout(() => navigate(`/maternalGGFather-form/${userId}`), 2000);
     }
 
     if (error) {
@@ -157,10 +157,10 @@ const PaternalGGMform = ({ initialState = {}, isEdit = false }) => {
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
         <div className="absolute inset-0 bg-opacity-50 pointer-events-none"></div>
+        <span className="w-full flex justify-center">
+          <LayoutNAv />
+        </span>
         <div className="relative p-8 flex flex-col items-center lg:items-start lg:flex-row">
-          <span className="lg:hidden w-full flex justify-center">
-            <LayoutNAv />
-          </span>
           <form
             onSubmit={handleSubmit}
             ref={formRef} // Attach ref to form

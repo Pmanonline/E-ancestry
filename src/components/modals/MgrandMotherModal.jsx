@@ -110,11 +110,11 @@ export const MGMModal = React.forwardRef(({ userId }, ref3) => {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
   const MGMData = useSelector((state) => state.person.MGM);
-  const { userInfo } = useSelector((state) => state.auth);
+  const userInfo = useSelector((state) => state.auth.user);
   const { Dloading, Derror, Dsuccess } = useSelector(
     (state) => state.delete.person
   );
-  const LoggedId = userInfo?.user._id;
+  const LoggedId = userInfo?.id;
 
   console.log(MGMData);
   const [Deleteopen, setDeleteOpen] = React.useState(false);

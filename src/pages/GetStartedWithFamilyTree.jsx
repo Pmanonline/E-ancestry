@@ -11,9 +11,9 @@ import { HomeCard3 } from "../components/Cards/Cards";
 import FamilyImage from "../assets/images/familyTree2.png";
 
 function GetStartedWithFamilyTree() {
-  const { userInfo } = useSelector((state) => state.auth);
-  const userId = userInfo?.user._id || id;
-  console.log(userId);
+  const userInfo = useSelector((state) => state.auth.user);
+  const userId = userInfo?.id;
+
   return (
     <>
       <section>

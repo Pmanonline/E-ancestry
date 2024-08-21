@@ -138,7 +138,8 @@ const FindInTree = () => {
         }}
       >
         {/* Nav */}
-        <span className="lg:hidden w-full flex justify-center">
+        <div className="absolute inset-0 bg-opacity-50 pointer-events-none"></div>
+        <span className="w-full flex justify-center">
           <LayoutNAv />
         </span>
         {/* Nav */}

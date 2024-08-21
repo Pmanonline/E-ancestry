@@ -3,6 +3,11 @@ import axios from "axios";
 import { SET_EMAIL } from "../types";
 import Cookies from "js-cookie";
 
+import * as jwt_decode from "jwt-decode";
+// import jwt_decode from "jwt-decode";
+
+axios.defaults.withCredentials = true;
+
 // Define your backend URL based on the environment
 const backendURL =
   process.env.NODE_ENV !== "production"
@@ -49,37 +54,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const GoogleSignInAction = createAsyncThunk(
-  "auth/googleSignIn",
-  async (tokenId, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(
-        `${backendURL}/api/auth/google/callback`,
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenId}`,
-          },
-          withCredentials: true,
-        }
-      );
-
-      const { userToken, refreshToken, ...user } = response.data;
-
-      // Store tokens in localStorage
-      localStorage.setItem("userToken", userToken);
-      localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("userInfo", JSON.stringify(user));
-
-      // Return the data
-      return { userToken, refreshToken, user };
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message);
-    }
-  }
-);
-
 // Register user and send welcome email
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
@@ -110,6 +84,28 @@ export const registerUser = createAsyncThunk(
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message
+      );
+    }
+  }
+);
+
+export const refreshToken = createAsyncThunk(
+  "auth/refreshToken",
+  async (_, { dispatch, rejectWithValue }) => {
+    dispatch(refreshTokenPending());
+    try {
+      const response = await axios.post(`${backendURL}/api/refresh-token`);
+      const { token, refreshToken } = response.data;
+      dispatch(refreshTokenSuccess({ token, refreshToken }));
+      return { token, refreshToken };
+    } catch (error) {
+      dispatch(
+        refreshTokenFailure(
+          error.response ? error.response.data.message : error.message
+        )
+      );
+      return rejectWithValue(
+        error.response ? error.response.data.message : error.message
       );
     }
   }

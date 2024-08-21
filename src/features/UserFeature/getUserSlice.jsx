@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchAllDetails, getProfile } from "./UserAction";
+import { fetchAllDetails, getProfile, getAllProfiles } from "./UserAction";
 
 const initialState = {
   person: {},
@@ -13,7 +13,8 @@ const initialState = {
   MGGM: {},
   PGGM: {},
   PGGF: {},
-  profile: null,
+  profile: null, // Single profile
+  profiles: [],
   loading: false,
   error: null,
   success: false,
@@ -63,12 +64,26 @@ const userSlice = createSlice({
       })
 
       .addCase(getProfile.fulfilled, (state, action) => {
-        state.profile = action.payload;
+        state.profile = action.payload; // Set the single profile
         state.loading = false;
         state.success = true;
       })
 
       .addCase(getProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.success = false;
+      })
+      .addCase(getAllProfiles.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllProfiles.fulfilled, (state, action) => {
+        state.profiles = action.payload; // Set all profiles
+        state.loading = false;
+        state.success = true;
+      })
+      .addCase(getAllProfiles.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.success = false;

@@ -13,6 +13,7 @@ import { MdOutlineImageSearch } from "react-icons/md";
 import { MdTravelExplore } from "react-icons/md";
 import { PiBinocularsBold } from "react-icons/pi";
 import { GrNotes } from "react-icons/gr";
+import { Link } from "react-router-dom";
 import "../../App.css";
 
 const HomeCard1 = () => {
@@ -145,10 +146,12 @@ const RoundedCard = ({ card }) => {
             <span className="break-expcard">heroes</span>
           </h4>
           <p className="max-w-[16rem]  text-xs px-2">{card.description}</p>
-          <button className="bg-green text-white py-2  mt-3 rounded-2xl w-[8rem] whitespace-nowrap flex items-center justify-center transition ease-in-out duration-200 transform hover:scale-105">
-            {card.buttonText}
-            <DirectionButton2 className="" />
-          </button>
+          <Link to="/historicalPeople">
+            <button className="bg-green text-white py-2  mt-3 rounded-2xl w-[8rem] whitespace-nowrap flex items-center justify-center transition ease-in-out duration-200 transform hover:scale-105">
+              {card.buttonText}
+              <DirectionButton2 className="" />
+            </button>
+          </Link>
         </div>
       </div>
     </div>

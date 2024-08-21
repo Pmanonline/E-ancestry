@@ -5,12 +5,14 @@ import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import familytree from "../assets/images/familytree.png";
 
 function LoginGetStarted() {
-  const userInfo = useSelector((state) => state.auth.userInfo);
+  const userInfo = useSelector((state) => state.auth.user);
   const navigate = useNavigate(); // Initialize useNavigate hook
+
+  const userId = userInfo?.id || id;
 
   const handleGetStarted = () => {
     // Navigate to "/layout/personal-form" when the button is clicked
-    navigate("/layout/personal-form");
+    navigate(`/layout/personal-form/${userId}`);
   };
 
   return (
