@@ -16,7 +16,7 @@ import Modal from "./components/tools/sessionModal";
 
 // Authentication Pages
 
-import Login from "./pages/Login";
+import Login from "../../E-aution/src/pages/Login";
 import Register from "./pages/Register";
 import Forgotpassword from "./pages/Forgotpassword";
 import VerifyOTP from "./pages/VerifyOTP";
