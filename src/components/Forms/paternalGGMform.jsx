@@ -137,7 +137,10 @@ const PaternalGGMform = ({ initialState = {}, isEdit = false }) => {
       toast.success("Created!!");
       dispatch(fetchAllDetails(userId));
       dispatch(resetSuccess());
-      setTimeout(() => navigate(`/maternalGGFather-form/${userId}`), 2000);
+      setTimeout(
+        () => navigate(`/layout/maternalGGFather-form/${userId}`),
+        2000
+      );
     }
 
     if (error) {

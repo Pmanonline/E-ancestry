@@ -32,7 +32,7 @@ export default function LayoutNAv() {
               Invites
             </a>
             <a
-              href="/layout/viewers"
+              href={`/layout/viewers/${userId}`}
               className="hover:text-green Nlg:text-xs hover:underline px-3 py-2 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
             >
               Viewers

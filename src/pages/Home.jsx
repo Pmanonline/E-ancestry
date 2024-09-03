@@ -72,10 +72,16 @@ function Home() {
             <br />
             <span className="text-green font-Montserrat"> Heritage</span>
           </h1>
-          <p className="sm:max-w-[80%] text-lg mb-4  mod:text-sm">
-            Corem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu
-            turpis molestie, dictum est a, Corem ipsum dolor sit amet,
-            consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a,
+          <p className="sm:max-w-[100%] text-base mb-4  mod:text-sm">
+            Are you curious about your family’s history? With our comprehensive
+            ancestry tracing service, you can embark on a fascinating journey to
+            discover the stories, cultures, and individuals that make up your
+            unique heritage. Whether you're a seasoned genealogist or just
+            starting out, we provide the tools and expertise to help you trace
+            your family tree and connect with your past. Begin by creating a
+            personalized account on our platform. This will be your hub for all
+            things genealogy, where you can store documents, track your
+            progress, and collaborate with others.
           </p>
           <Link to="/LoginGetStarted">
             <div className="mt-3">
@@ -89,7 +95,7 @@ function Home() {
       {/* section1 Hero ends */}
 
       {/* section2 starts */}
-      <section className="bg-green mt-[14rem] ">
+      <section className="bg-green mt-[14rem] Nlg:mb-[6rem]">
         <div className="relative flex items-center justify-center">
           <div className="bg-white lg:max-w-[90%] mx-auto gap-20 sm:flex justify-around rounded-lg px-4 md:px-36 py-8 md:py-5 shadow-inner shadow-gray-200 absolute top-[1%] mod:top-[-12%] mod:px-12 transform -translate-y-1/2 z-20 ">
             <div className="text-black text-center">
@@ -108,18 +114,26 @@ function Home() {
           <img
             src={hero2}
             alt="Family Tree"
-            className="w-full h-full pt-[2rem] object-cover"
+            className="w-full h-full pt-[2rem] object-cover Nlg:hidden"
+          />
+
+          <img
+            src={hero2}
+            alt="Family Tree"
+            className="w-full h-[25rem] sm:h-[25rem] md:h-[30rem] lg:h-full pt-[2rem] object-cover lg:hidden"
           />
 
           <div className="lg:top-[30%] absolute top-[2rem] text-white text-xl z-20 px-4 py-2 rounded-md text-center md:max-w-[70%] md:left-[15%]">
             <h1 className="text-3xl mod:text-lg font-bold mb-6 mt-12 font-Montserrat uppercase">
               A family tree ties your history together <br /> over time.
             </h1>
-            <p className="text-lg mod:text-sm mb-4">
-              Corem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu
-              turpis molestie, dictum est a, Corem ipsum dolor sit amet,
-              consectetur adipiscing elit. Etiam eu turpis molestie, dictum est
-              a,
+            <p className="text-base mod:text-sm mb-4 ">
+              A family tree is more than just a chart of names—it’s a living map
+              that connects your heritage across generations. It bridges the
+              past and present, revealing how your ancestors’ stories are
+              intertwined with your own. With each branch, you discover a legacy
+              of relationships, traditions, and milestones that define who you
+              are today.
             </p>
             <div className="mt-4">
               <Link to={"/genealogy/Abia-State"}>
@@ -139,22 +153,22 @@ function Home() {
           <FamilyHistoryCard1 />
           <FamilyHistoryCard2 />
         </div>
-        <div className="lg:order-1 lg:pr-10 mx-auto text-white ml-3">
+        <div className="lg:order-1  mx-auto text-white ml-3">
           <h1 className="text-4xl mod:text-3xl font-bold mb-6 uppercase font-Montserrat Nlg:mx-12">
             Bring Your Backstory to Life
           </h1>
           <p className="Nlg:mx-12">
-            Corem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu
-            turpis molestie, dictum est a, Corem ipsum dolor sit amet,
-            consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a,
-            Corem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu
-            turpis molestie, dictum est a, Corem ipsum dolor sit amet,
-            consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a,
-            Corem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu
-            turpis molestie, dictum est a, Corem ipsum dolor sit amet,
-            consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a,
-            Corem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu
-            turpis molestie, dictum est a, Corem ipsum dolor sit amet, consect
+            Our Family Listing Membership offers you a unique opportunity to
+            connect with relatives, share discoveries, and collaboratively
+            preserve your family’s history. Whether you’re actively tracing your
+            family tree or simply looking to maintain family connections, our
+            membership provides the tools and resources you need to keep your
+            family legacy alive. You can also build a private network where you
+            and your relatives can collaborate on your family history. Share
+            stories, documents, photos, and more, all in one secure, centralized
+            location. Work together with family members to build and expand your
+            family tree. Each member can contribute information, ensuring that
+            your tree is as complete and accurate as possible.
           </p>
         </div>
       </section>
@@ -177,11 +191,12 @@ function Home() {
             </span>
           </h3>
           <p className="text-end">
-            dictum est a, Corem ipsum dolor sit amet, consectetur adipiscing
-            elit. Etiam eu turpis molestie, dictum est a, Corem ipsum dolor sit
-            amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum
-            est a, Corem ipsum dolor sit amet, consectetur adipiscing elit.
-            Etiam eu turpis molestie, dictum est a, Corem ipsum dolor sit amet,
+            Understanding the motivations behind their actions can offer deep
+            insights into your family’s history and help you connect with your
+            heritage on a more personal level. Dive into the personal beliefs
+            and values that may have guided your ancestors’ choices. Religion,
+            family loyalty, and personal convictions often played a key role in
+            determining how they lived their lives.
           </p>
           <div className="flex justify-end mt-5 ">
             <DirectionButton1 />

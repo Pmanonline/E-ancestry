@@ -24,14 +24,36 @@ export const sendInvite = createAsyncThunk(
   }
 );
 
-export const fetchVisit = createAsyncThunk(
-  "invite/fetchVisit",
-  async (userId, thunkAPI) => {
+export const recordVisit = createAsyncThunk(
+  "invite/recordVisit",
+  async ({ visitorId, visitedId }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${backendURL}/api/visits/${userId}`);
-      return response.data; // Returning data on success
+      const response = await axios.post(`${backendURL}/api/record-visit`, {
+        visitorId,
+        visitedId,
+      });
+      console.log("Visit Data:", response.data);
+      return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data); // Returning error on failure
+      return rejectWithValue(
+        error.response?.data || { message: error.message }
+      );
+    }
+  }
+);
+
+export const fetchVisits = createAsyncThunk(
+  "visit/fetchVisits",
+  async ({ visitorId, visitedId }, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${backendURL}/api/fetch-visits`, {
+        params: { visitorId, visitedId },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: error.message }
+      );
     }
   }
 );

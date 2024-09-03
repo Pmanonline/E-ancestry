@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "./features/auth/authSlice";
-// import useTokenExpiration from "./components/tools/TokenExpiry";
+import { ChatContextProvider } from "./components/context/chatContext";
+import { AuthContext } from "./components/context/AuthContext";
 import {
   BrowserRouter as Router,
   Routes,
@@ -61,6 +63,7 @@ import Viewers from "@/pages/LAYOUTS/Pages/Viewers";
 import Invites from "@/pages/LAYOUTS/Pages/Invites";
 import FindInTree from "@/pages/LAYOUTS/Pages/FindInTree";
 import { ViewTree } from "@/pages/ViewTree";
+import ChatPage from "./pages/chatPage";
 
 function App() {
   const location = useLocation();
@@ -99,6 +102,7 @@ function App() {
         <Route path="/ResetPassword" element={<ResetPassword />} />
         {/* Public routes */}
         <Route path="/" element={<Home />} />
+        <Route path="/ChatPage" element={<ChatPage />} />
         <Route path="/LoginGetStarted" element={<LoginGetStarted />} />
         <Route path="/name-meanings" element={<NameMeaning />} />
         <Route path="/my-family-tree" element={<FamilyTree />} />
@@ -161,13 +165,13 @@ function App() {
               path="paternalGGFather-form/:userId"
               element={<PaternalGGFform />}
             />
-            <Route path="viewers" element={<Viewers />} />
+            <Route path="viewers/:userId" element={<Viewers />} />
             <Route path="invites" element={<Invites />} />
             <Route path="find-in-tree" element={<FindInTree />} />
           </Route>
         </Route>
       </Routes>
-      {showFooter && <Footer />}
+      {/* {showFooter && <Footer />} */}
     </>
   );
 }
@@ -223,6 +227,8 @@ export default function WrappedApp() {
     };
   }, [dispatch]);
 
+  const { user } = useContext(AuthContext);
+
   return (
     <>
       <div>
@@ -232,9 +238,11 @@ export default function WrappedApp() {
           onLogin={handleLogin}
         />
       </div>
-      <Router>
-        <App />
-      </Router>
+      <ChatContextProvider user={user}>
+        <Router>
+          <App />
+        </Router>
+      </ChatContextProvider>
     </>
   );
 }

@@ -55,13 +55,48 @@ export const loginUser = createAsyncThunk(
 );
 
 // Register user and send welcome email
+
+// export const registerUser = createAsyncThunk(
+//   "auth/registerUser",
+//   async ({ email, password }, { rejectWithValue }) => {
+//     try {
+//       const response = await axios.post(
+//         `${backendURL}/api/register`,
+//         { email, password },
+//         {
+//           headers: { "Content-Type": "application/json" },
+//           withCredentials: true,
+//         }
+//       );
+
+//       if (response.status === 201) {
+//         await axios.post(`${backendURL}/api/registerMail`, {
+//           email,
+//           message: "Welcome to our platform!",
+//         });
+//       }
+
+//       Cookies.set("userToken", response.data.token, { expires: 7 });
+//       Cookies.set("userInfo", JSON.stringify(response.data), { expires: 7 });
+
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(
+//         error.response && error.response.data.message
+//           ? error.response.data.message
+//           : error.message
+//       );
+//     }
+//   }
+// );
+
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password, firstName, lastName }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${backendURL}/api/register`,
-        { email, password },
+        { email, password, firstName, lastName }, // Include firstName and lastName
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
@@ -75,8 +110,11 @@ export const registerUser = createAsyncThunk(
         });
       }
 
+      // Store token and user info in cookies
       Cookies.set("userToken", response.data.token, { expires: 7 });
-      Cookies.set("userInfo", JSON.stringify(response.data), { expires: 7 });
+      Cookies.set("userInfo", JSON.stringify(response.data.user), {
+        expires: 7,
+      });
 
       return response.data;
     } catch (error) {

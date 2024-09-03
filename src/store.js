@@ -9,6 +9,7 @@ import nameReducer from "./features/nameFeature/nameSlice";
 import userSearchReducer from "./features/UserFeature/SearchSlice";
 import historicalReducer from "./features/historicalFeature/historicalSlice";
 import inviteReducer from "./features/UserFeature/inviteSlice";
+import messagesReducer from "./features/chatFeature/chatSlice";
 import { authApi } from "./features/auth/authServive";
 
 const store = configureStore({
@@ -23,6 +24,7 @@ const store = configureStore({
     userSearch: userSearchReducer,
     historicalPeople: historicalReducer,
     invite: inviteReducer,
+    messages: messagesReducer,
     [authApi.reducerPath]: authApi.reducer, // Ensure this path is used correctly
   },
   middleware: (getDefaultMiddleware) =>

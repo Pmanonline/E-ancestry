@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../components/context/AuthContext";
 import { useParams } from "react-router-dom";
 import { FaTwitter, FaFacebookF, FaInstagram } from "react-icons/fa";
 import { BsWhatsapp } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import FeedImage from "../../assets/images/feedImage.png";
+import { toast } from "react-toastify";
 import BirtdayFrame from "../../assets/images/birthdayFrame.png";
 import birthdayframeM1 from "../../assets/images/birthdayframeM1.png";
 import birthdayframeM2 from "../../assets/images/birthdayframeM2.png";
@@ -22,29 +25,36 @@ import { calculateBirthdayCountdown } from "../../components/tools/birthdayCount
 import { NameProfileCard } from "../../components/Cards/NameProfileCard";
 import SearchUsers from "../../components/tools/SearchUsers";
 import { RecentSearches } from "../../components/tools/SearchUsers";
+import { BsChatDots } from "react-icons/bs";
+import ChatModal from "../../components/tools/chatModal";
+import { ChatContext } from "../../components/context/chatContext";
 
 const backendURL =
   process.env.NODE_ENV !== "production"
     ? "http://localhost:8080"
     : "https://gekoda-api.onrender.com";
 
-function ChildFeed() {
+function ChildFeed(chat) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [surname, setSurname] = useState("");
   const [Loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedReligionDescription, setSelectedReligionDescription] =
     useState("");
+  const { potentialChats, CreateChat, onlineUsers } = useContext(ChatContext);
+  const { user } = useContext(AuthContext);
+  const chatuserId = user?.id;
+
   const { profile, profiles, loading, error } = useSelector(
     (state) => state.person
   );
   // Debugging output
   const { userId } = useParams();
-  console.log("User ID prop:", userId);
-  console.log("Profile from state:", profile);
 
-  // Fetch user data from API or other source
+  const { userChats, isUserChatsLoading, isUserChatsError, updateCurrentChat } =
+    useContext(ChatContext);
 
-  // Fetch current profile when userId changes
   useEffect(() => {
     if (userId) {
       dispatch(getProfile(userId));
@@ -55,14 +65,6 @@ function ChildFeed() {
   useEffect(() => {
     dispatch(getAllProfiles());
   }, [dispatch]);
-
-  // Log the state to console
-  useEffect(() => {
-    console.log("Current Profile:", profile?.role);
-    console.log("All Profiles:", profiles);
-    console.log("Loading:", loading);
-    console.log("Error:", error);
-  }, [profile, profiles, loading, error]);
 
   // If profile data is available, use its name for filtering profiles
   const relatedProfiles = profiles.filter(
@@ -135,13 +137,30 @@ function ChildFeed() {
     const doc = new DOMParser().parseFromString(html, "text/html");
     return doc.body.textContent;
   };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form submitted with surname:", surname);
-    setSurname("");
+  const handleModalClose = (chat) => {
+    console.log("Closing modal...");
+    setIsModalOpen(false);
   };
-  const handleChange = (e) => {
-    setSurname(e.target.value);
+
+  const handleStartChat = async () => {
+    try {
+      if (user && profile._id) {
+        const chat = await CreateChat(userId, profile._id); // Get chat object
+
+        if (chat) {
+          // Update current chat with the returned chat object
+          updateCurrentChat(chat, user, userChats);
+
+          navigate("/chatPage");
+        } else {
+          console.error("Chat creation failed, no chat object returned");
+        }
+      } else {
+        console.error("User or profile ID missing");
+      }
+    } catch (error) {
+      console.error("Error creating chat:", error);
+    }
   };
 
   return (
@@ -165,48 +184,62 @@ function ChildFeed() {
           </div>
           <div className="flex mb-2 px-6">
             <div className="space-x-3">
-              <button className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm">
-                {profile.profession}
-              </button>
+              {profile?.profession ? (
+                <button className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm">
+                  {profile.profession}
+                </button>
+              ) : (
+                <spn className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm">
+                  Unavailable
+                </spn>
+              )}
               <button className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm">
                 Classic
               </button>
+              <button className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm">
+                <StartChatButton
+                  chat={chat}
+                  user={user}
+                  onClick={handleStartChat}
+                />
+              </button>
             </div>
-            <div className="flex flex-col md:flex-row items-center mb-6 md:mb-0 mx-3">
-              <div className="flex space-x-4 mt-2">
-                <a
-                  href={profile.twitter}
-                  target="_blank"
-                  aria-label="twitter"
-                  rel="noopener noreferrer"
-                >
-                  <FaTwitter className="w-4 h-auto text-[#A60505]" />
-                </a>
-                <a
-                  href={`https://wa.me/${profile.phoneNumber}`}
-                  target="_blank"
-                  aria-label="whatsapp"
-                  rel="noopener noreferrer"
-                >
-                  <BsWhatsapp className="w-4 h-auto text-[#A60505]" />
-                </a>
-                <a
-                  href={profile.facebook}
-                  target="_blank"
-                  aria-label="facebook"
-                  rel="noopener noreferrer"
-                >
-                  <FaFacebookF className="w-4 h-auto text-[#A60505]" />
-                </a>
-                <a
-                  href={profile.instagram}
-                  target="_blank"
-                  aria-label="instagram"
-                  rel="noopener noreferrer"
-                >
-                  <FaInstagram className="w-4 h-auto text-[#A60505]" />
-                </a>
-              </div>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-start mb-6 md:mb-0 mx-3 ml-7">
+            <div className="flex space-x-4 mt-2">
+              <a
+                href={profile.twitter}
+                target="_blank"
+                aria-label="twitter"
+                rel="noopener noreferrer"
+              >
+                <FaTwitter className="w-4 h-auto text-[#A60505]" />
+              </a>
+              <a
+                href={`https://wa.me/${profile.phoneNumber}`}
+                target="_blank"
+                aria-label="whatsapp"
+                rel="noopener noreferrer"
+              >
+                <BsWhatsapp className="w-4 h-auto text-[#A60505]" />
+              </a>
+              <a
+                href={profile.facebook}
+                target="_blank"
+                aria-label="facebook"
+                rel="noopener noreferrer"
+              >
+                <FaFacebookF className="w-4 h-auto text-[#A60505]" />
+              </a>
+              <a
+                href={profile.instagram}
+                target="_blank"
+                aria-label="instagram"
+                rel="noopener noreferrer"
+              >
+                <FaInstagram className="w-4 h-auto text-[#A60505]" />
+              </a>
             </div>
           </div>
 
@@ -458,6 +491,9 @@ function ChildFeed() {
         <RecentSearches />
         {/* related searches */}
       </div>
+      {isModalOpen && (
+        <ChatModal isOpen={isModalOpen} onClose={handleModalClose} />
+      )}
     </section>
   );
 }
@@ -469,3 +505,10 @@ const FamilyTreeFeeds = () => {
 };
 
 export default FamilyTreeFeeds;
+
+export const StartChatButton = ({ onClick, chat }) => (
+  <button className="flex gap-2 items-center" onClick={onClick}>
+    <BsChatDots className="w-3 h-3 text-[#A60505]" />
+    <span>Start Chat</span>
+  </button>
+);

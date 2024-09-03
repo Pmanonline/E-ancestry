@@ -31,6 +31,8 @@ const Invites = () => {
     if (success) {
       toast.success("Invite sent successfully!!");
       dispatch(resetSuccess());
+      setName("");
+      setRecipient("");
     }
   }, [success, dispatch]);
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
 import { FaChevronDown } from "react-icons/fa";
@@ -10,6 +10,8 @@ import {
   createFamilyMember,
   getProfile,
 } from "../features/UserFeature/UserAction";
+import NotificationBar from "../components/chats/Notifications";
+import { AuthContext } from "../components/context/AuthContext";
 
 function Navbar() {
   const dispatch = useDispatch();
@@ -20,19 +22,14 @@ function Navbar() {
   const menuRef = useRef(null);
   const userDropdownRef = useRef(null);
   const familyTreeDropdownRef = useRef(null);
-  // const { userInfo } = useSelector((state) => state.auth);
-  // const userId = userInfo?.user._id;
-  // console.log(userId);
   const userInfo = useSelector((state) => state.auth.user);
-  console.log("User:", userInfo?.email);
   const userId = userInfo?.id;
-  console.log(userId);
+
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
-    console.log("Access Token:", accessToken);
-    console.log("Refresh Token:", refreshToken);
   }, []);
 
   useEffect(() => {
@@ -168,11 +165,13 @@ function Navbar() {
                       className="block px-4 py-2 text-black hover:text-green"
                       onClick={closeMenu}
                     >
+                    
                       Search a Tree
                     </Link>
                   </li>
                 </ul>
               )} */}
+
               {isFamilyTreeOpen && (
                 <ul className="absolute bg-NavClr border rounded-lg mt-2 py-2 px-6">
                   <li>
@@ -214,6 +213,16 @@ function Navbar() {
                 Historical People
               </Link>
             </li>
+            <li>
+              <Link
+                to="/historicalPeople"
+                className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
+              >
+                <Link className=" text-black rounded  md:dark:hover:bg-transparent font-semibold">
+                  <NotificationBar />
+                </Link>
+              </Link>
+            </li>
           </ul>
           <div className="flex items-center mt-4 md:mt-0">
             <div className="text-center flex">
@@ -233,7 +242,7 @@ function Navbar() {
                     >
                       <IoPersonCircleOutline size={25} />
                       <svg
-                        className={`w-2.5 h-2.5 ms-3 ${
+                        className={`w-2.5 h-2.5 ms-3  hover:text-green ${
                           userOpen ? "transform rotate-180" : ""
                         }`}
                         aria-hidden="true"
@@ -275,11 +284,20 @@ function Navbar() {
                           </li>
                           <li>
                             <Link
-                              to="/settings"
+                              to={`/view-tree/${userId}`}
                               className="block px-4 py-2 text-black rounded hover:text-green md:dark:hover:bg-transparent font-semibold"
                               onClick={() => setUserOpen(false)}
                             >
-                              Settings
+                              View Tree
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to={`/chatPage`}
+                              className="block px-4 py-2 text-black rounded hover:text-green md:dark:hover:bg-transparent font-semibold"
+                              onClick={() => setUserOpen(false)}
+                            >
+                              Chat
                             </Link>
                           </li>
                         </ul>

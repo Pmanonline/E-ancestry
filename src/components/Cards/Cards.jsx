@@ -35,9 +35,10 @@ const HomeCard1 = () => {
           <GrNotes />
         </span>
         <p className="block mt-3 font-sans text-lg mod:text-sm font-normal leading-relaxed text-gray-700">
-          tum est a, Corem ipsum dolor sit amet, consectetur adipiscing elit.
-          Etiam eu turpis molestie, dictum est a, Corem ipsum dolor sit amet,
-          consectetur adipiscing elit.
+          Your knowledge of family stories and traditions adds depth to your
+          ancestors' history, filling gaps left by historical records. Sharing
+          these details creates a fuller, more meaningful picture of your
+          family's story.
         </p>
       </div>
     </div>
@@ -63,9 +64,10 @@ const HomeCard3 = () => {
           <MdTravelExplore />
         </span>
         <p className="block mt-3 font-sans text-lg mod:text-sm font-normal leading-relaxed text-gray-700">
-          tum est a, Corem ipsum dolor sit amet, consectetur adipiscing elit.
-          Etiam eu turpis molestie, dictum est a, Corem ipsum dolor sit amet,
-          consectetur adipiscing elit.
+          We provide concrete details and reveal the stories of your ancestors’
+          lives. Our platform gives you access to a vast array of historical
+          documents, allowing you to delve into the past and uncover essential
+          information about your family’s history.
         </p>
       </div>
     </div>
@@ -91,9 +93,10 @@ const HomeCard2 = () => {
           <PiBinocularsBold />
         </span>
         <p className="block mt-3 font-sans text-lg mod:text-sm font-normal leading-relaxed text-gray-700">
-          tum est a, Corem ipsum dolor sit amet, consectetur adipiscing elit.
-          Etiam eu turpis molestie, dictum est a, Corem ipsum dolor sit amet,
-          consectetur adipiscing elit.
+          Ready to explore further into your family’s past? Our "Find Out More"
+          feature is designed to help you dig deeper, uncover hidden stories,
+          and discover new connections that enrich your understanding of your
+          family’s history.
         </p>
       </div>
     </div>
@@ -119,9 +122,10 @@ const HomeCard4 = () => {
           <MdOutlineImageSearch />
         </span>
         <p className="block mt-3 font-sans text-lg mod:text-sm font-normal leading-relaxed text-gray-700">
-          tum est a, Corem ipsum dolor sit amet, consectetur adipiscing elit.
-          Etiam eu turpis molestie, dictum est a, Corem ipsum dolor sit amet,
-          consectetur adipiscing elit.
+          Your last name is a historical link to your family's legacy. Our
+          platform helps you explore its origins, significance, and evolution,
+          offering insights into the geographical, linguistic, or cultural roots
+          of your surname
         </p>
       </div>
     </div>

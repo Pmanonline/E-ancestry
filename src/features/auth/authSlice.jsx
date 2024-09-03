@@ -367,6 +367,7 @@ const authSlice = createSlice({
       localStorage.removeItem("userToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("userInfo");
+      localStorage.removeItem("User");
     },
     setCredentials(state, action) {
       const { token, refreshToken, user } = action.payload;

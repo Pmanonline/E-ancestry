@@ -28,7 +28,7 @@ const initialFormData = {
   background: "",
   firstName: "",
   lastName: "",
-  email: "",
+  // email: "",
   DOB: "",
   phoneNumber: "",
   streetAddress: "",
@@ -96,10 +96,8 @@ export default function Profile() {
   }, [profile]);
 
   useEffect(() => {
-    if (profile) {
-      localStorage.setItem("formData", JSON.stringify(formData));
-    } else {
-      localStorage.removeItem("formData");
+    if (!profile) {
+      localStorage.removeItem("formData", JSON.stringify(formData));
     }
   }, [formData, profile]);
 
@@ -150,7 +148,7 @@ export default function Profile() {
     const {
       firstName,
       lastName,
-      email,
+      // email,
       DOB,
       phoneNumber,
       streetAddress,
@@ -173,7 +171,7 @@ export default function Profile() {
     return (
       firstName &&
       lastName &&
-      email &&
+      // email &&
       DOB &&
       phoneNumber &&
       streetAddress &&
@@ -567,7 +565,7 @@ export default function Profile() {
                       </select>
                     </div>
                   </div>
-                  <div className="sm:col-span-3">
+                  {/* <div className="sm:col-span-3">
                     <label
                       htmlFor="street-address"
                       className="block text-sm  leading-6 text-gray-900"
@@ -585,7 +583,7 @@ export default function Profile() {
                         className="px-3 py-2 mb-4 text-sm  sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
                       />
                     </div>
-                  </div>
+                  </div> */}
                   <div className="sm:col-span-3">
                     <label
                       htmlFor="street-address"
@@ -839,7 +837,7 @@ export default function Profile() {
                   value={formData.about}
                   onChange={handleQuillChange}
                   rows={5}
-                  placeholder="Write a few sentences about background."
+                  placeholder="Write a few sentences about your bbackground."
                   className="w-full h-36  mod:w-full py-2 mb-4 sm:mb-0  text-black  rounded-sm  placeholder-NavClr "
                 />
               </div>

@@ -19,12 +19,17 @@ import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MdOutlineAddAPhoto } from "react-icons/md";
+import { Popup, RelativePopup, IllustrationPopup } from "../tools/popUp";
 const backendURL =
   process.env.NODE_ENV !== "production"
     ? "http://localhost:8080"
     : "https://gekoda-api.onrender.com";
 
 const PersonalForm = ({ initialState = {}, isEdit = false }) => {
+  const [showPopup, setShowPopup] = useState(true);
+  const [showRelativePopup, setShowRelativePopup] = useState(false);
+  const [showThirdPopup, setShowThirdPopup] = useState(false);
+  const [resetDone, setResetDone] = useState(false);
   const [formData, setFormData] = useState({
     firstName: initialState.firstName || "",
     lastName: initialState.lastName || "",
@@ -140,8 +145,47 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
   const formRef = useRef(); // Create a ref for the form
   const fileInputRef = useRef();
 
+  useEffect(() => {
+    if (!showPopup && !showRelativePopup && !showThirdPopup) {
+      setShowRelativePopup(true); // Show second popup when first is closed
+    }
+  }, [showPopup]);
+
+  useEffect(() => {
+    if (!showRelativePopup && !showThirdPopup) {
+      setShowThirdPopup(true); // Show third popup when second is closed
+    }
+  }, [showRelativePopup]);
+
+  useEffect(() => {
+    if (!showThirdPopup && !resetDone) {
+      // Reset all modal states when the third modal is closed
+      setShowPopup(true); // Optionally reset the first popup state
+      setShowRelativePopup(false);
+      setShowThirdPopup(false);
+      setResetDone(true); // Mark reset as done to prevent repeat
+    }
+  }, [showThirdPopup, resetDone]);
   return (
     <>
+      <span className="lg:absolute right-[10rem]">
+        {showPopup && (
+          <Popup
+            message="How to Create a Family Tree?"
+            onClose={() => setShowPopup(false)}
+          />
+        )}
+      </span>
+      <span className="lg:absolute right-[-30rem] top-[8rem]">
+        {showRelativePopup && (
+          <RelativePopup onClose={() => setShowRelativePopup(false)} />
+        )}
+      </span>
+      <span className="lg:absolute right-[-20rem] top-[20rem]">
+        {showThirdPopup && (
+          <IllustrationPopup onClose={() => setShowThirdPopup(false)} />
+        )}
+      </span>
       <section
         className="relative bg-cover bg-center bg-no-repeat h-full w-full Nlg:max-w-[40rem] Nlg:mx-auto"
         style={{ backgroundImage: `url(${backgroundImage})` }}

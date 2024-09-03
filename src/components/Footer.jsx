@@ -64,7 +64,7 @@ const Footer = () => {
               onChange={handleChange}
               className="px-9 py-2  focus:outline-none focus:ring-2 focus:ring-green text-black"
             />
-            <button className="bg-green-500 bg-white px-4 py-2  hover:bg-green-600">
+            <button className="bg-green-500 bg-white px-4 py-2  hover:bg-green-600 relative z-0">
               <DirectionButton1 />
             </button>
           </form>
