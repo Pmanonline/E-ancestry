@@ -40,7 +40,7 @@ export const ChatContextProvider = ({ children, user, chat }) => {
   // initializie socket
 
   useEffect(() => {
-    const newSocket = io("http://localhost:3001");
+    const newSocket = io("http://localhost:8080");
     setSocket(newSocket);
 
     return () => {
@@ -186,6 +186,19 @@ export const ChatContextProvider = ({ children, user, chat }) => {
 
       if (response.ok) {
         const chat = await response.json();
+
+        // Check if the chat already exists in the userChats state
+        const chatExists = userChats.some(
+          (existingChat) =>
+            existingChat.members.includes(firstId) &&
+            existingChat.members.includes(secondId)
+        );
+
+        if (!chatExists) {
+          // Only add the chat if it doesn't already exist
+          setUserChats((prev) => [...prev, chat]);
+        }
+
         return chat; // Ensure this returns the created chat object
       } else {
         const errorResponse = await response.text();

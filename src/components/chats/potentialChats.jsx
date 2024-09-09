@@ -8,7 +8,7 @@ export function PotentialChats() {
   const userId = user?.id;
 
   return (
-    <div className="all-users p-4 space-y-4">
+    <div className="all-users p-4 space-y-4 cursor-pointer">
       {potentialChats &&
         potentialChats.map((u, index) => {
           return (

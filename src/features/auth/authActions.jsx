@@ -54,42 +54,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Register user and send welcome email
-
-// export const registerUser = createAsyncThunk(
-//   "auth/registerUser",
-//   async ({ email, password }, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.post(
-//         `${backendURL}/api/register`,
-//         { email, password },
-//         {
-//           headers: { "Content-Type": "application/json" },
-//           withCredentials: true,
-//         }
-//       );
-
-//       if (response.status === 201) {
-//         await axios.post(`${backendURL}/api/registerMail`, {
-//           email,
-//           message: "Welcome to our platform!",
-//         });
-//       }
-
-//       Cookies.set("userToken", response.data.token, { expires: 7 });
-//       Cookies.set("userInfo", JSON.stringify(response.data), { expires: 7 });
-
-//       return response.data;
-//     } catch (error) {
-//       return rejectWithValue(
-//         error.response && error.response.data.message
-//           ? error.response.data.message
-//           : error.message
-//       );
-//     }
-//   }
-// );
-
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async ({ email, password, firstName, lastName }, { rejectWithValue }) => {

@@ -309,6 +309,17 @@ export const PGMModal = React.forwardRef(({ userId }, ref3) => {
                 </span>
 
                 <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {PGMData.placesLived ? (
+                    <>
+                      Place lived:
+                      <span className="mx-2 font-medium">
+                        {PGMData.placesLived}
+                      </span>
+                    </>
+                  ) : null}
+                </span>
+
+                <span className="text-sm text-gray-500 dark:text-gray-400">
                   {PGMData.Lstatus}
                 </span>
                 <span className="text-sm mt-1 text-gray-500 dark:text-gray-400">

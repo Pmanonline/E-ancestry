@@ -311,6 +311,16 @@ export const MGFModal = React.forwardRef(({ userId }, ref3) => {
                     </>
                   ) : null}
                 </span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {MGFData.placesLived ? (
+                    <>
+                      Place lived:
+                      <span className="mx-2 font-medium">
+                        {MGFData.placesLived}
+                      </span>
+                    </>
+                  ) : null}
+                </span>
 
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {MGFData.Lstatus}

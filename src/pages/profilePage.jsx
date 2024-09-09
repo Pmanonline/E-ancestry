@@ -45,7 +45,8 @@ const initialFormData = {
   instagram: "",
   about: "",
   image: "",
-  image2: "",
+  images: [],
+  captions: [],
 };
 
 export default function Profile() {
@@ -59,7 +60,7 @@ export default function Profile() {
   });
   const [hasToastBeenShown, setHasToastBeenShown] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
-  const [imagePreview2, setImagePreview2] = useState(null);
+  const [imagePreviews2, setImagePreviews2] = useState([]);
 
   const fileInputRef = useRef(null);
   const fileInputRef2 = useRef(null);
@@ -82,18 +83,31 @@ export default function Profile() {
 
   useEffect(() => {
     if (profile) {
+      // Set the form data with profile information
       setFormData((prevState) => ({
         ...prevState,
         ...profile,
         image: profile.image || prevState.image,
-        image2: profile.image2 || prevState.image2,
+        images: Array.isArray(profile.images)
+          ? profile.images
+          : prevState.images,
+        captions: profile.images
+          ? profile.images.map((img) => img.caption || "")
+          : prevState.captions,
       }));
+
+      // Set the preview for the single image
       setImagePreview(profile.image ? `${backendURL}/${profile.image}` : null);
-      setImagePreview2(
-        profile.image2 ? `${backendURL}/${profile.image2}` : null
+
+      // Set the previews for multiple images
+      setImagePreviews2(
+        Array.isArray(profile.images)
+          ? profile.images.map((img) => `${backendURL}/${img.path}`)
+          : []
       );
     }
   }, [profile]);
+  // console.log(profile?.images, "profile images");
 
   useEffect(() => {
     if (!profile) {
@@ -119,12 +133,22 @@ export default function Profile() {
   };
 
   const handleFileChange2 = (e) => {
-    const file = e.target.files[0];
+    const files = Array.from(e.target.files);
+    const newImagePreviews = files.map((file) => URL.createObjectURL(file));
     setFormData((prevState) => ({
       ...prevState,
-      image2: file,
+      images: files,
+      captions: new Array(files.length).fill(""), // Initialize captions for new files
     }));
-    setImagePreview2(URL.createObjectURL(file));
+    setImagePreviews2(newImagePreviews);
+  };
+
+  const handleCaptionChange = (index, value) => {
+    setFormData((prevState) => {
+      const newCaptions = [...prevState.captions];
+      newCaptions[index] = value;
+      return { ...prevState, captions: newCaptions };
+    });
   };
 
   const handleStateChange = (e) => {
@@ -195,23 +219,18 @@ export default function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const selectedState = statesAndLGAs.find(
-      (state) => state.id === formData.state
-    )?.name;
-    const selectedLGA = statesAndLGAs
-      .find((state) => state.id === formData.state)
-      ?.local_governments.find((lga) => lga.id === formData.lga)?.name;
-
     const data = new FormData();
-    for (const key in formData) {
-      if (key === "state" && selectedState) {
-        data.append(key, selectedState);
-      } else if (key === "lga" && selectedLGA) {
-        data.append(key, selectedLGA);
+    Object.keys(formData).forEach((key) => {
+      if (key === "images") {
+        formData.images.forEach((file) => data.append("images", file));
+      } else if (key === "captions") {
+        formData.captions.forEach((caption, index) =>
+          data.append(`captions[${index}]`, caption)
+        );
       } else {
         data.append(key, formData[key]);
       }
-    }
+    });
 
     try {
       await dispatch(
@@ -362,87 +381,53 @@ export default function Profile() {
                         />
                       </label>
                     </div>
-
-                    {/* FAmilyPictureUpload */}
-                    <div
-                      className="col-span-full 
-                   mx-auto  text-center  items-center align-middle"
-                    >
+                    {/* Multiple Images and Captions Upload */}
+                    <div className="col-span-full text-center">
                       <label
-                        htmlFor="cover-photo"
-                        className="block text-sm font-medium l text-gray-900"
+                        htmlFor="file-upload2"
+                        className="block text-sm font-medium leading-6 text-gray-900 cursor-pointer"
                       >
-                        Family picture
-                      </label>
-                      <div className="mt-1 flex justify-center rounded-lg px-6 py-10">
-                        <div className="relative text-center">
-                          {imagePreview2 ? (
-                            <>
-                              <img
-                                src={imagePreview2}
-                                alt="Image preview"
-                                className="h-[20rem] w-[20rem] rounded-md object-cover"
-                              />
-                              <div
-                                onClick={() =>
-                                  document
-                                    .getElementById("file-upload2")
-                                    .click()
-                                }
-                                className="absolute bottom-[-3rem] right-0 cursor-pointer h-12 w-12 bg-white rounded-full flex justify-center items-center border-2 border-white"
-                              >
-                                <MdOutlineAddAPhoto
-                                  aria-hidden="true"
-                                  className="h-8 w-8 text-gray-500"
-                                />
-                              </div>
-                            </>
-                          ) : (
-                            <div
-                              onClick={() =>
-                                document.getElementById("file-upload2").click()
-                              }
-                              className="cursor-pointer h-40 w-40 flex flex-col justify-center items-center border-2 border-dashed border-gray-300 rounded-full"
-                            >
-                              <BsPersonBoundingBox
-                                aria-hidden="true"
-                                className="h-12 w-12 text-gray-300"
-                              />
-                              <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                                <label
-                                  htmlFor="file-upload2"
-                                  className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                                >
-                                  <span className="hidden">Upload a file</span>
-                                  <input
-                                    ref={fileInputRef}
-                                    id="file-upload2"
-                                    name="image2"
-                                    type="file"
-                                    className="sr-only"
-                                    onChange={handleFileChange2}
+                        <div className="px-6 py-10">
+                          {imagePreviews2.length > 0 ? (
+                            <div className="grid grid-cols-2 gap-4">
+                              {imagePreviews2.map((preview, index) => (
+                                <div key={index} className="relative">
+                                  <img
+                                    src={preview}
+                                    alt={`Preview ${index + 1}`}
+                                    className="h-[10rem] w-[15rem] rounded-sm object-cover"
                                   />
-                                </label>
-                              </div>
+                                  <input
+                                    type="text"
+                                    placeholder={`Caption for image ${
+                                      index + 1
+                                    }`}
+                                    value={formData.captions[index] || ""}
+                                    onChange={(e) =>
+                                      handleCaptionChange(index, e.target.value)
+                                    }
+                                    className="mt-2 w-full px-2 py-1 border border-gray-300 rounded"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="h-40 w-40 flex items-center border-2 border-dashed border-gray-300 rounded-full">
+                              <MdOutlineAddAPhoto className="h-12 w-12 text-gray-300" />
+                              <span>Upload Images</span>
                             </div>
                           )}
                         </div>
-                      </div>
-
-                      <label
-                        htmlFor="file-upload2"
-                        className=" hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer"
-                      >
-                        Change
-                        <input
-                          ref={fileInputRef}
-                          id="file-upload2"
-                          name="image2"
-                          type="file"
-                          className="sr-only"
-                          onChange={handleFileChange2}
-                        />
                       </label>
+                      <input
+                        id="file-upload2"
+                        name="images"
+                        type="file"
+                        multiple
+                        ref={fileInputRef2}
+                        onChange={handleFileChange2}
+                        className="sr-only"
+                      />
                     </div>
                   </div>
                 </div>
@@ -565,25 +550,6 @@ export default function Profile() {
                       </select>
                     </div>
                   </div>
-                  {/* <div className="sm:col-span-3">
-                    <label
-                      htmlFor="street-address"
-                      className="block text-sm  leading-6 text-gray-900"
-                    >
-                      Email address
-                    </label>
-                    <div className="mt-1">
-                      <input
-                        placeholder="Enter email address"
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="px-3 py-2 mb-4 text-sm  sm:mb-0 sm:mr-4 w-full  focus:outline-none focus:ring-2 focus:ring-green text-black  rounded-sm  ring-1 ring-gray-200 "
-                      />
-                    </div>
-                  </div> */}
                   <div className="sm:col-span-3">
                     <label
                       htmlFor="street-address"

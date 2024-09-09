@@ -308,6 +308,16 @@ export const NestedModal2 = React.forwardRef(({ userId }, ref) => {
                     </>
                   ) : null}
                 </span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {motherData.placesLived ? (
+                    <>
+                      Place lived:
+                      <span className="mx-2 font-medium">
+                        {motherData.placesLived}
+                      </span>
+                    </>
+                  ) : null}
+                </span>
 
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {motherData.Lstatus}

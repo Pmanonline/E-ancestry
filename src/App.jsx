@@ -64,6 +64,7 @@ import Invites from "@/pages/LAYOUTS/Pages/Invites";
 import FindInTree from "@/pages/LAYOUTS/Pages/FindInTree";
 import { ViewTree } from "@/pages/ViewTree";
 import ChatPage from "./pages/chatPage";
+import { MyConnections } from "./pages/MyConnections";
 
 function App() {
   const location = useLocation();
@@ -102,7 +103,6 @@ function App() {
         <Route path="/ResetPassword" element={<ResetPassword />} />
         {/* Public routes */}
         <Route path="/" element={<Home />} />
-        <Route path="/ChatPage" element={<ChatPage />} />
         <Route path="/LoginGetStarted" element={<LoginGetStarted />} />
         <Route path="/name-meanings" element={<NameMeaning />} />
         <Route path="/my-family-tree" element={<FamilyTree />} />
@@ -129,6 +129,8 @@ function App() {
           <Route path="/profile/:id" element={<Profile />} />
           {/* <Route path="/familytree/:userId" element={<FamilyTreePage />} /> */}
           <Route path="/view-tree/:userId" element={<ViewTree />} />
+          <Route path="/ChatPage" element={<ChatPage />} />
+          <Route path="/MyConnections" element={<MyConnections />} />
           <Route path="/layout" element={<Layout />}>
             <Route path="personal-form/:userId" element={<PersonalForm />} />
             <Route path="mothers-form/:userId" element={<MotherForm />} />

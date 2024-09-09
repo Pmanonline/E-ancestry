@@ -330,6 +330,16 @@ export const FatherModal = React.forwardRef(({ userId }, ref2) => {
                     </>
                   ) : null}
                 </span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {fatherData.placesLived ? (
+                    <>
+                      Place lived:
+                      <span className="mx-2 font-medium">
+                        {fatherData.placesLived}
+                      </span>
+                    </>
+                  ) : null}
+                </span>
 
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {fatherData.Lstatus}

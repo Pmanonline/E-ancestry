@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import useFetchRecipientUser from "../../components/Hooks/useFetchRecipient";
 import { FaUserCircle } from "react-icons/fa";
 import { ChatContext } from "../context/chatContext";
-import { UnreadNotificationfunction } from "../chats/UnreadNotifications";
+import { UnreadNotificationfunction } from "../chats/UnreadNotificationfunction";
 import useFetchLatestMessage from "../Hooks/useFetchLatestMessage";
 import moment from "moment";
 
@@ -36,7 +36,7 @@ function UserChats({ chat, user }) {
     return shorttext;
   };
 
-  console.log(latestMessage, "latestMessage");
+  // console.log(latestMessage, "latestMessage");
 
   return (
     <Link>

@@ -166,16 +166,47 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
       setResetDone(true); // Mark reset as done to prevent repeat
     }
   }, [showThirdPopup, resetDone]);
+
+  useEffect(() => {
+    if (!isEdit) {
+      if (!showPopup && !showRelativePopup && !showThirdPopup) {
+        setShowRelativePopup(true); // Show second popup when first is closed
+      }
+    }
+  }, [showPopup, isEdit]);
+
+  useEffect(() => {
+    if (!isEdit) {
+      if (!showRelativePopup && !showThirdPopup) {
+        setShowThirdPopup(true);
+      }
+    }
+  }, [showRelativePopup, isEdit]);
+
+  useEffect(() => {
+    if (!isEdit && !showThirdPopup && !resetDone) {
+      setShowPopup(true); // Optionally reset the first popup state
+      setShowRelativePopup(false);
+      setShowThirdPopup(false);
+      setResetDone(true); // Mark reset as done to prevent repeat
+    }
+  }, [showThirdPopup, resetDone, isEdit]);
+
   return (
     <>
-      <span className="lg:absolute right-[10rem]">
-        {showPopup && (
-          <Popup
-            message="How to Create a Family Tree?"
-            onClose={() => setShowPopup(false)}
-          />
-        )}
-      </span>
+      {isEdit ? (
+        ""
+      ) : (
+        <span className="lg:absolute right-[10rem]">
+          {showPopup && (
+            <Popup
+              message="How to Create a Family Tree?"
+              onClose={() => setShowPopup(false)}
+            />
+          )}
+        </span>
+      )}
+
       <span className="lg:absolute right-[-30rem] top-[8rem]">
         {showRelativePopup && (
           <RelativePopup onClose={() => setShowRelativePopup(false)} />

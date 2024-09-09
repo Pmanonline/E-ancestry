@@ -22,7 +22,7 @@ function Navbar() {
   const menuRef = useRef(null);
   const userDropdownRef = useRef(null);
   const familyTreeDropdownRef = useRef(null);
-  const userInfo = useSelector((state) => state.auth.user);
+  const userInfo = useSelector((state) => state.auth.userInfo);
   const userId = userInfo?.id;
 
   const { user } = useContext(AuthContext);
@@ -173,7 +173,7 @@ function Navbar() {
               )} */}
 
               {isFamilyTreeOpen && (
-                <ul className="absolute bg-NavClr border rounded-lg mt-2 py-2 px-6">
+                <ul className="absolute  z-50 bg-NavClr border rounded-lg mt-2 py-2 px-6">
                   <li>
                     <Link
                       to="/my-family-tree"
@@ -272,7 +272,7 @@ function Navbar() {
                               : "User email not available"}
                           </div>
                         </div>
-                        <ul className="py-2 text-sm text-gray-700">
+                        <ul className="py-2 text-start text-sm text-gray-700">
                           <li>
                             <Link
                               to={`/profile/${userId}`}
@@ -298,6 +298,15 @@ function Navbar() {
                               onClick={() => setUserOpen(false)}
                             >
                               Chat
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to={`/MyConnections`}
+                              className="block px-4 py-2 text-black rounded hover:text-green md:dark:hover:bg-transparent font-semibold"
+                              onClick={() => setUserOpen(false)}
+                            >
+                              Connections
                             </Link>
                           </li>
                         </ul>

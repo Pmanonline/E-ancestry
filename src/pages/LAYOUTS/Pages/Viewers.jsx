@@ -46,7 +46,7 @@ const Viewers = () => {
                 className="flex flex-row mb-4 w-full items-center"
               >
                 <div className="mr-4">
-                  {visit.visitor.image ? (
+                  {visit.visitor && visit.visitor.image ? (
                     <img
                       src={`${backendURL}/${visit.visitor.image}`}
                       alt={`${visit.visitor.firstName} ${visit.visitor.lastName}`}
@@ -56,9 +56,9 @@ const Viewers = () => {
                     <CgProfile className="w-7 h-7" />
                   )}
                 </div>
-                <div className="flex  gap-2">
-                  <p className="">{visit.visitor.firstName}</p>
-                  <p>{visit.visitor.lastName}</p>
+                <div className="flex gap-2">
+                  <p className="">{visit.visitor?.firstName}</p>
+                  <p>{visit.visitor?.lastName}</p>
                   <p className="text-sm text-gray-500 mt-1">
                     {moment(visit.visitedAt).fromNow()}
                   </p>

@@ -33,6 +33,7 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
     Lstatus: initialState.Lstatus || "",
     DOB: initialState.DOB || "",
     yearDeceased: initialState.yearDeceased || "",
+    placesLived: initialState.placesLived || "",
     image: null,
     imagePreview: initialState.image
       ? `${backendURL}/${initialState.image}`
@@ -71,6 +72,7 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
     formDataToSubmit.append("Lstatus", formData.Lstatus);
     formDataToSubmit.append("DOB", formData.DOB);
     formDataToSubmit.append("yearDeceased", formData.yearDeceased);
+    formDataToSubmit.append("placesLived", formData.placesLived);
 
     if (formData.image) {
       formDataToSubmit.append("image", formData.image);
@@ -86,6 +88,7 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
           DOB: formData.DOB,
           image: formData.image,
           yearDeceased: formData.yearDeceased,
+          placesLived: formData.placesLived,
         })
       );
 
@@ -187,7 +190,7 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
                 name="firstName"
                 onChange={handleInputChange}
                 value={formData.firstName}
-                className="py-2 mt-1 block w-full lg:w-[66%] border-b-2 border-gray-500 focus:ring-green focus:border-green bg-opacity-90 text-black placeholder-black sm:text-md focus:outline-none bg-transparent"
+                className="py-2 mt-1 block w-full lg:w-[66%] border-b-2 border-gray-500 focus:ring-green focus:border-green bg-opacity-90 text-black placeholder-gray-400 sm:text-md focus:outline-none bg-transparent"
                 placeholder="Mothers name"
               />
               <IoPersonCircleOutline size={28} className="mt-6" />
@@ -199,10 +202,22 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
                 name="lastName"
                 onChange={handleInputChange}
                 value={formData.lastName}
-                className="py-2 mt-1 block w-full lg:w-[70%] border-b-2 border-gray-500 focus:ring-green focus:border-green bg-opacity-90 text-black placeholder-black sm:text-md focus:outline-none bg-transparent"
+                className="py-2 mt-1 block w-full lg:w-[70%] border-b-2 border-gray-500 focus:ring-green focus:border-green bg-opacity-90 text-black placeholder-gray-400 sm:text-md focus:outline-none bg-transparent"
                 placeholder="Mothers last name"
               />
             </div>
+            <div className="w-full flex justify-center lg:justify-start">
+              <input
+                type="text"
+                id="placesLived"
+                name="placesLived"
+                onChange={handleInputChange}
+                value={formData.placesLived}
+                className="py-2 mt-1 block w-full lg:w-[70%] border-b-2 border-gray-500 focus:ring-green focus:border-green bg-opacity-90 text-black placeholder-gray-400 sm:text-md focus:outline-none bg-transparent"
+                placeholder="Place lived e.g Ijebu"
+              />
+            </div>
+
             <div className="w-full flex flex-col items-center lg:items-start">
               <label
                 htmlFor="gender"
@@ -226,7 +241,6 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
                 </button>
               </div>
             </div>
-
             <div className="flex-col pt-3 pb-7 w-full flex justify-center lg:justify-start">
               <label
                 htmlFor="DOB"

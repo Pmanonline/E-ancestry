@@ -11,6 +11,7 @@ import BirtdayFrame from "../../assets/images/birthdayFrame.png";
 import birthdayframeM1 from "../../assets/images/birthdayframeM1.png";
 import birthdayframeM2 from "../../assets/images/birthdayframeM2.png";
 import FamilyImage from "../../assets/images/FamilyImage.png";
+import { IoMdClose } from "react-icons/io";
 import noProfile from "../../assets/images/noProfile.png";
 import { DirectionButton2 } from "../../components/d-button";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +19,7 @@ import {
   getProfile,
   getAllProfiles,
 } from "../../features/UserFeature/UserAction";
+import { fetchConnections } from "../../features/connectionFeature/connectionAction";
 import { fetchStateDetails } from "../../features/Statefeature/stateAction";
 import moment from "moment";
 import Spinner from "../../components/tools/Spinner";
@@ -26,8 +28,10 @@ import { NameProfileCard } from "../../components/Cards/NameProfileCard";
 import SearchUsers from "../../components/tools/SearchUsers";
 import { RecentSearches } from "../../components/tools/SearchUsers";
 import { BsChatDots } from "react-icons/bs";
-import ChatModal from "../../components/tools/chatModal";
+import { IoIosLink } from "react-icons/io";
+import { IoIosClose } from "react-icons/io";
 import { ChatContext } from "../../components/context/chatContext";
+import { sendConnectionRequest } from "../../features/connectionFeature/connectionAction";
 
 const backendURL =
   process.env.NODE_ENV !== "production"
@@ -69,7 +73,9 @@ function ChildFeed(chat) {
   // If profile data is available, use its name for filtering profiles
   const relatedProfiles = profiles.filter(
     (p) =>
-      p.firstName === profile?.firstName || p.lastName === profile?.lastName
+      (p.firstName === profile?.firstName ||
+        p.lastName === profile?.lastName) &&
+      p._id !== userId // Exclude the logged-in user
   );
 
   const { allStates, religions, tribes } = useSelector((state) => state.state);
@@ -110,6 +116,15 @@ function ChildFeed(chat) {
       .catch(() => setLoading(false));
   }, [dispatch]);
 
+  const handleModalOpen = () => {
+    console.log("Opening modal...");
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    console.log("Closing modal...");
+    setIsModalOpen(false);
+  };
   if (loading) {
     return <Spinner />;
   }
@@ -137,15 +152,11 @@ function ChildFeed(chat) {
     const doc = new DOMParser().parseFromString(html, "text/html");
     return doc.body.textContent;
   };
-  const handleModalClose = (chat) => {
-    console.log("Closing modal...");
-    setIsModalOpen(false);
-  };
 
   const handleStartChat = async () => {
     try {
       if (user && profile._id) {
-        const chat = await CreateChat(userId, profile._id); // Get chat object
+        const chat = await CreateChat(userId, chatuserId); // Get chat object
 
         if (chat) {
           // Update current chat with the returned chat object
@@ -165,38 +176,33 @@ function ChildFeed(chat) {
 
   return (
     <section className="mx-auto px-4 py-8">
-      <h2 className="text-black mb-9 text-2xl md:text-xl font-bold uppercase font-Montserrat text-center">
+      <h2 className="text-black mb-9 text-2xl md:text-xl font-bold uppercase font-Montserrat text-center ">
         ABOUT {profile.lastName} {profile.firstName} {profile.middlename}
       </h2>
       <div className="lg:flex flex-row Nlg:mx-auto Nlg:flex-col Nlg:justify-center">
         <div className="mb-6 lg:mr-6 lg:mb-0 lg:w-[45rem] mx-auto flex justify-center">
           <img
-            src={imageSrc} // Use dynamic image source
+            src={imageSrc}
             alt="Profile"
             className="rounded-lg shadow-md w-[25rem] h-[25rem] object-cover"
           />
         </div>
         <div className="w-full">
           <div className="text-start text-black">
-            <h2 className="text-lg mb-2 px-6">
+            <h2 className="text-lg mb-2 px-6 first-letter:uppercase">
               {profile.lastName} {profile.firstName} {profile.middlename}
             </h2>
           </div>
           <div className="flex mb-2 px-6">
             <div className="space-x-3">
-              {profile?.profession ? (
-                <button className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm">
-                  {profile.profession}
-                </button>
-              ) : (
-                <spn className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm">
-                  Unavailable
-                </spn>
-              )}
-              <button className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm">
-                Classic
+              <button className="bg-[#d9f8de] text-xs px-5 py-2  rounded-sm transition ease-in-out duration-200 transform hover:scale-105 ">
+                <ConnectionButton onClick={handleModalOpen} />
               </button>
-              <button className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm">
+
+              <button className="bg-[#d9f8de] text-xs px-5 py-2  rounded-sm transition ease-in-out duration-200 transform hover:scale-105">
+                <SendRequestButton />
+              </button>
+              <button className="bg-[#d9f8de] text-xs px-5 py-2 rounded-sm   transition ease-in-out duration-200 transform hover:scale-105">
                 <StartChatButton
                   chat={chat}
                   user={user}
@@ -248,39 +254,53 @@ function ChildFeed(chat) {
               <div className="mb-4 flex justify-between">
                 <h3 className="text-sm font-bold">Home Address:</h3>
                 <p className="text-gray-700 text-sm whitespace-normal text-end">
-                  {profile.streetAddress}
+                  {profile.streetAddress || "Unavailable"}
                 </p>
               </div>
               <div className="mb-4 flex justify-between">
                 <h3 className="text-sm font-bold">Phone No:</h3>
-                <p className="text-gray-700 text-sm">{profile.phoneNumber}</p>
+                <p className="text-gray-700 text-sm">
+                  {profile.phoneNumber || "Unavailable"}
+                </p>
               </div>
               <div className="mb-4 flex justify-between">
                 <h3 className="text-sm font-bold">Email:</h3>
-                <p className="text-gray-700 text-sm">{profile.email}</p>
+                <p className="text-gray-700 text-sm">
+                  {profile.email || "Unavailable"}
+                </p>
               </div>
               <div className="mb-4 flex justify-between">
                 <h3 className="text-sm font-bold">DOB:</h3>
-                <p className="text-gray-700 text-sm">{formattedDate}</p>
+                <p className="text-gray-700 text-sm">
+                  {formattedDate || "Unavailable"}
+                </p>
               </div>
             </div>
 
             <div className="p-6 rounded-lg max-w-md w-full">
               <div className="mb-4 flex justify-between">
                 <h3 className="text-sm font-bold">State of Origin:</h3>
-                <p className="text-gray-700 text-sm">{profile.state}</p>
+                <p className="text-gray-700 text-sm">
+                  {profile.state || "Unavailable"}
+                </p>
               </div>
               <div className="mb-4 flex justify-between">
                 <h3 className="text-sm font-bold">Local Government:</h3>
-                <p className="text-gray-700 text-sm">{profile.lga}</p>
+                <p className="text-gray-700 text-sm">
+                  {profile.lga || "Unavailable"}
+                </p>
               </div>
               <div className="mb-4 flex justify-between">
                 <h3 className="text-sm font-bold">Autonomous Community:</h3>
-                <p className="text-gray-700 text-sm">{profile.autonomous}</p>
+                <p className="text-gray-700 text-sm">
+                  {profile.autonomous || "Unavailable"}
+                </p>
               </div>
               <div className="mb-4 flex justify-between">
                 <h3 className="text-sm font-bold">Kindred:</h3>
-                <p className="text-gray-700 text-sm">{profile.kindred}</p>
+                <p className="text-gray-700 text-sm">
+                  {profile.kindred || "Unavailable"}
+                </p>
               </div>
             </div>
           </div>
@@ -315,7 +335,8 @@ function ChildFeed(chat) {
           </h3>
           <div>
             <p className="text-black text-sm font-normal">
-              {userStateOfOrigin?.origin || "State description not available"}
+              {/* {userStateOfOrigin?.origin || "State description not available"} */}
+              {getText(userStateOfOrigin?.origin)}
             </p>
           </div>
         </div>
@@ -366,9 +387,15 @@ function ChildFeed(chat) {
         </p>
       </div>
       {/* familyDetails?  */}
+
       <div className="lg:grid grid-cols-10 my-6">
         <div className=" col-span-4">
-          <img src={imageSrc2} alt="" className="w-full" />
+          {/* <img
+            src={imageSrc2}
+            alt=""
+            className="rounded-lg shadow-md w-[25re] h-[25rem] object-cover"
+          /> */}
+          <FamilyDetails />
         </div>
         <div className="flex mx-3 flex-col justify-start items-start col-span-6 ">
           <div className="">
@@ -410,6 +437,7 @@ function ChildFeed(chat) {
           </div>
         </div>
       </div>
+
       {/* Tribe  */}
       {profile.tribe && (
         <div className="mt-10">
@@ -427,50 +455,53 @@ function ChildFeed(chat) {
         </div>
       )}
 
-      {/* Greate people bearing this name */}
+      {/*   */}
       <div className="mt-10">
-        <div className="mt-24">
-          <h3 className="text-black  text-lg font-bold  text-start mb-4">
-            Greate people bearing this name
-          </h3>
+        {relatedProfiles.length > 0 && (
+          <div className="mt-24">
+            <h3 className="text-black text-lg font-bold text-start mb-4">
+              Greate people bearing this name
+            </h3>
 
-          <div className="flex flex-wrap justify-center lg:justify-start">
-            {relatedProfiles.map((profile) => (
-              <div
-                key={profile._id}
-                className="overflow-hidden rounded-xl bg-white bg-clip-border text-gray-700 shadow-lg max-w-[15rem] w-full m-4"
-              >
-                {/* Image */}
-                <div className="overflow-hidden bg-transparent shadow-none bg-clip-border">
-                  <img
-                    src={
-                      profile.image
-                        ? `${backendURL}/${profile.image}`
-                        : noProfile // Use default image if profile.image is empty
-                    }
-                    alt="profile"
-                    className="w-full h-[15rem] object-cover"
-                  />
+            <div className="flex flex-wrap justify-center lg:justify-start">
+              {relatedProfiles.map((profile) => (
+                <div
+                  key={profile._id}
+                  className="overflow-hidden rounded-xl bg-white bg-clip-border text-gray-700 shadow-lg max-w-[15rem] w-full m-4"
+                >
+                  {/* Image */}
+                  <div className="overflow-hidden bg-transparent shadow-none bg-clip-border">
+                    <img
+                      src={
+                        profile.image
+                          ? `${backendURL}/${profile.image}`
+                          : noProfile
+                      }
+                      alt="profile"
+                      className="w-full h-[15rem] object-cover"
+                    />
+                  </div>
+                  {/* Name */}
+                  <div className="px-4 mb-3">
+                    <h3 className="font-sans text-lg font-bold mod:text-sm py-2">
+                      {profile.lastName} {profile.firstName}{" "}
+                      {profile.middlename}
+                    </h3>
+                  </div>
+                  {/* Gender and Position */}
+                  <div className="flex justify-between px-4 pb-3">
+                    <h3 className="font-sans text-base mod:text-sm font-normal">
+                      {profile.profession}
+                    </h3>
+                    <h3 className="font-sans text-base mod:text-sm font-normal bg-NavClr py-">
+                      {profile.gender}
+                    </h3>
+                  </div>
                 </div>
-                {/* Name */}
-                <div className="px-4 mb-3">
-                  <h3 className="font-sans text-lg font-bold mod:text-sm py-2">
-                    {profile.lastName} {profile.firstName} {profile.middlename}
-                  </h3>
-                </div>
-                {/* Gender and Position */}
-                <div className="flex justify-between px-4 pb-3">
-                  <h3 className="font-sans text-base mod:text-sm font-normal">
-                    {profile.profession}
-                  </h3>
-                  <h3 className="font-sans text-base mod:text-sm font-normal bg-NavClr py-">
-                    {profile.gender}
-                  </h3>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* search */}
@@ -512,3 +543,245 @@ export const StartChatButton = ({ onClick, chat }) => (
     <span>Start Chat</span>
   </button>
 );
+export const ConnectionButton = ({ onClick, chat }) => (
+  <button className="flex gap-2 items-center" onClick={onClick}>
+    <IoIosLink className="w-3 h-3 text-[#A60505]" />
+    <span>Connections</span>
+  </button>
+);
+
+export const SendRequestButton = () => {
+  const dispatch = useDispatch();
+  const { user } = useContext(AuthContext);
+  const senderId = user?.id;
+  const { userId } = useParams();
+  const receiverId = userId;
+
+  // Using status instead of loading directly
+  const { status, error, success } = useSelector(
+    (state) => state.connectionRequests
+  );
+
+  const isLoading = status === "loading";
+
+  const handleClick = async () => {
+    try {
+      await dispatch(sendConnectionRequest({ senderId, receiverId })).unwrap();
+      toast.success("Request sent successfully!");
+    } catch (error) {
+      // Display a specific error message if available
+      toast.error(error || "Failed to send request.");
+    }
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={isLoading}
+      className={` ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+    >
+      {isLoading ? "Sending..." : "Send Request"}
+    </button>
+  );
+};
+
+export function ChatModal({ isOpen, onClose }) {
+  const dispatch = useDispatch();
+  const { connections, status, error } = useSelector(
+    (state) => state.connectionRequests
+  );
+  const { profile, profiles, loading } = useSelector((state) => state.person);
+  const { userId } = useParams();
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchConnections(userId));
+    }
+  }, [dispatch, userId]);
+
+  if (status === "loading") {
+    return <div className="text-center py-4">Loading connections...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500 py-4">Error: {error}</div>;
+  }
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="p-5 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-lg h-[80vh] max-h-[90vh] relative">
+        <div className="flex justify-between items-center p-4 border-b">
+          <IoIosLink size={24} />
+
+          <h2 className="text-sm mb-2 px-6 first-letter:uppercase">
+            {`${profile.lastName} ${profile.firstName} ${profile.middlename}'s Connections`}
+          </h2>
+          <button
+            className="text-gray-600 hover:text-gray-900"
+            onClick={onClose}
+          >
+            <IoIosClose
+              className="hover:text-red-400 transition ease-in-out duration-200 transform hover:scale-110"
+              size={28}
+            />
+          </button>
+        </div>
+
+        <div className="max-w-2xl mx-auto p-4">
+          {/* <h2 className="text-xl font-semibold mb-4 ">My Connections</h2> */}
+          {connections.length === 0 ? (
+            <p className="text-gray-600">No connections yet.</p>
+          ) : (
+            connections.map((connection) => (
+              <div
+                key={connection._id}
+                // className="flex items-center p-4 border border-gray-200 shadow-sm rounded-lg mb-2 bg-white"
+                className="md:max-w-[30rem] flex items-center justify-between py-2 px-3 border border-gray-200 rounded-lg mb-2 bg-white shadow-sm"
+              >
+                {connection.userId1.image ? (
+                  <img
+                    src={`${backendURL}/${connection.userId1.image}`}
+                    alt={`${connection.userId1.firstName} ${connection.userId1.lastName}`}
+                    className="w-12 h-12 rounded-full object-cover mr-4"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/fallback-image.png";
+                    }}
+                  />
+                ) : (
+                  <FaUserCircle className="w-12 h-12 text-gray-400 mr-4" />
+                )}
+
+                <div className="flex-1">
+                  <p className=" first-letter:uppercase ext-lg mod:text-sm font-semibold text-gray-900">
+                    {`${connection.userId1.firstName} ${connection.userId1.lastName}`}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {connection.userId1.email || "No email provided"}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export const FamilyDetails = () => {
+  const { profile, loading, error } = useSelector((state) => state.person);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error loading images: {error.message}</div>;
+
+  const images = profile?.images || [];
+  const [showModal, setShowModal] = useState(false);
+
+  const handleImageClick = () => {
+    setShowModal(true);
+  };
+
+  const displayedImages = images.slice(0, 3);
+  const remainingImages = images.length - 3;
+
+  return (
+    <div className="relative">
+      <div className="relative">
+        {images.length === 1 && (
+          <img
+            src={`${backendURL}/${images[0].path}`}
+            alt="Single Family Image"
+            className="object-cover w-full h-80 cursor-pointer rounded"
+            onClick={handleImageClick}
+          />
+        )}
+        {images.length === 2 && (
+          <div className="grid grid-cols-2 gap-2">
+            {displayedImages.map((image, index) => (
+              <img
+                key={index}
+                src={`${backendURL}/${image.path}`}
+                alt={`Family Image ${index}`}
+                className="object-cover w-full h-80 cursor-pointer rounded"
+                onClick={handleImageClick}
+              />
+            ))}
+          </div>
+        )}
+        {images.length >= 3 && (
+          <div className="grid grid-cols-2 gap-2">
+            <div
+              className="relative col-span-1 h-80 cursor-pointer"
+              onClick={handleImageClick}
+            >
+              <img
+                src={`${backendURL}/${displayedImages[0].path}`}
+                alt="Main Family Image"
+                className="object-cover w-full h-full rounded"
+              />
+              {images.length > 3 && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-70 text-white text-xl font-bold">
+                  +{remainingImages}
+                </div>
+              )}
+            </div>
+
+            <div className="grid grid-rows-2 gap-2 h-80">
+              {displayedImages.slice(1).map((image, index) => (
+                <img
+                  key={index}
+                  src={`${backendURL}/${image.path}`}
+                  alt={`Family Image ${index + 1}`}
+                  className="object-cover w-full h-full cursor-pointer "
+                  onClick={handleImageClick}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Image Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+          <div className="relative bg-white  rounded-md max-w-4xl w-full overflow-auto max-h-[100vh] shadow-lg">
+            <div className="sticky top-0 w-full bg-white  flex justify-between items-center p-4">
+              <h2 className="text-lg font-semibold text-gray-700 ml-4">
+                Family Photos
+              </h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="py-2 px-4 text-red-500 border-red-500 border rounded  hover:text-white hover:bg-red-600"
+              >
+                <IoMdClose />
+              </button>
+            </div>
+
+            {/* Images Displayed in Single Blocks */}
+            <div className="flex flex-col space-y-4 p-4">
+              {images.map((image, index) => (
+                <div key={index} className="flex flex-col items-center">
+                  <div className=" my-5 w-[30rem] h-[30rem] shadow-gray-900  shadow-sm bg-gray-100 flex items-center justify-center">
+                    <img
+                      src={`${backendURL}/${image.path}`}
+                      alt={`Expanded Image ${index}`}
+                      className="object-cover w-full h-full  rounded-lg" // Ensures images fill the container while maintaining uniform size
+                    />
+                  </div>
+                  {image.caption && (
+                    <p className="mt-2 text-center text-gray-600">
+                      {image.caption}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
