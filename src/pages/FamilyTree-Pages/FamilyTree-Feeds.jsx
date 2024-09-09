@@ -390,11 +390,6 @@ function ChildFeed(chat) {
 
       <div className="lg:grid grid-cols-10 my-6">
         <div className=" col-span-4">
-          {/* <img
-            src={imageSrc2}
-            alt=""
-            className="rounded-lg shadow-md w-[25re] h-[25rem] object-cover"
-          /> */}
           <FamilyDetails />
         </div>
         <div className="flex mx-3 flex-col justify-start items-start col-span-6 ">
@@ -610,13 +605,72 @@ export function ChatModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
+    // <div className="p-5 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    //   <div className="bg-white rounded-lg shadow-lg w-full max-w-lg h-[80vh] max-h-[90vh] relative">
+    //     <div className="flex justify-between items-center p-4 border-b">
+    //       <IoIosLink size={24} />
+
+    //       <h2 className="text-sm mb-2 px-6 first-letter:uppercase">
+    //         {`${profile.lastName} ${profile.firstName} ${profile.middlename}'s Connections`}
+    //       </h2>
+    //       <button
+    //         className="text-gray-600 hover:text-gray-900"
+    //         onClick={onClose}
+    //       >
+    //         <IoIosClose
+    //           className="hover:text-red-400 transition ease-in-out duration-200 transform hover:scale-110"
+    //           size={28}
+    //         />
+    //       </button>
+    //     </div>
+
+    //     <div className="max-w-2xl mx-auto p-4">
+    //       {/* <h2 className="text-xl font-semibold mb-4 ">My Connections</h2> */}
+    //       {connections.length === 0 ? (
+    //         <p className="text-gray-600">No connections yet.</p>
+    //       ) : (
+    //         connections.map((connection) => (
+    //           <div
+    //             key={connection._id}
+    //             // className="flex items-center p-4 border border-gray-200 shadow-sm rounded-lg mb-2 bg-white"
+    //             className="md:max-w-[30rem] flex items-center justify-between py-2 px-3 border border-gray-200 rounded-lg mb-2 bg-white shadow-sm"
+    //           >
+    //             {connection.userId1.image ? (
+    //               <img
+    //                 src={`${backendURL}/${connection.userId1.image}`}
+    //                 alt={`${connection.userId1.firstName} ${connection.userId1.lastName}`}
+    //                 className="w-12 h-12 rounded-full object-cover mr-4"
+    //                 onError={(e) => {
+    //                   e.target.onerror = null;
+    //                   e.target.src = "/fallback-image.png";
+    //                 }}
+    //               />
+    //             ) : (
+    //               <FaUserCircle className="w-12 h-12 text-gray-400 mr-4" />
+    //             )}
+
+    //             <div className="flex-1">
+    //               <p className=" first-letter:uppercase ext-lg mod:text-sm font-semibold text-gray-900">
+    //                 {`${connection.userId1.firstName} ${connection.userId1.lastName}`}
+    //               </p>
+    //               <p className="text-sm text-gray-500">
+    //                 {connection.userId1.email || "No email provided"}
+    //               </p>
+    //             </div>
+    //           </div>
+    //         ))
+    //       )}
+    //     </div>
+    //   </div>
+    // </div>
     <div className="p-5 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-lg h-[80vh] max-h-[90vh] relative">
         <div className="flex justify-between items-center p-4 border-b">
           <IoIosLink size={24} />
-
           <h2 className="text-sm mb-2 px-6 first-letter:uppercase">
-            {`${profile.lastName} ${profile.firstName} ${profile.middlename}'s Connections`}
+            {profile
+              ? `${profile.lastName} ${profile.firstName} ${profile.middlename}'s Connections`
+              : "Connections"}
           </h2>
           <button
             className="text-gray-600 hover:text-gray-900"
@@ -630,41 +684,46 @@ export function ChatModal({ isOpen, onClose }) {
         </div>
 
         <div className="max-w-2xl mx-auto p-4">
-          {/* <h2 className="text-xl font-semibold mb-4 ">My Connections</h2> */}
-          {connections.length === 0 ? (
-            <p className="text-gray-600">No connections yet.</p>
-          ) : (
-            connections.map((connection) => (
-              <div
-                key={connection._id}
-                // className="flex items-center p-4 border border-gray-200 shadow-sm rounded-lg mb-2 bg-white"
-                className="md:max-w-[30rem] flex items-center justify-between py-2 px-3 border border-gray-200 rounded-lg mb-2 bg-white shadow-sm"
-              >
-                {connection.userId1.image ? (
-                  <img
-                    src={`${backendURL}/${connection.userId1.image}`}
-                    alt={`${connection.userId1.firstName} ${connection.userId1.lastName}`}
-                    className="w-12 h-12 rounded-full object-cover mr-4"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "/fallback-image.png";
-                    }}
-                  />
-                ) : (
-                  <FaUserCircle className="w-12 h-12 text-gray-400 mr-4" />
-                )}
-
-                <div className="flex-1">
-                  <p className=" first-letter:uppercase ext-lg mod:text-sm font-semibold text-gray-900">
-                    {`${connection.userId1.firstName} ${connection.userId1.lastName}`}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {connection.userId1.email || "No email provided"}
-                  </p>
-                </div>
-              </div>
-            ))
+          {status === "loading" && (
+            <div className="text-center py-4 text-gray-600">
+              Loading connections...
+            </div>
           )}
+          {error && (
+            <div className="text-center py-4 text-red-600">Error: {error}</div>
+          )}
+          {connections.length === 0 && !status && !error && (
+            <p className="text-gray-600 text-center">No connections yet.</p>
+          )}
+          {connections.map((connection) => (
+            <div
+              key={connection._id}
+              className="md:max-w-[30rem] flex items-center justify-between py-2 px-3 border border-gray-200 rounded-lg mb-2 bg-white shadow-sm"
+            >
+              {connection.userId1.image ? (
+                <img
+                  src={`${backendURL}/${connection.userId1.image}`}
+                  alt={`${connection.userId1.firstName} ${connection.userId1.lastName}`}
+                  className="w-12 h-12 rounded-full object-cover mr-4"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "/fallback-image.png";
+                  }}
+                />
+              ) : (
+                <FaUserCircle className="w-12 h-12 text-gray-400 mr-4" />
+              )}
+
+              <div className="flex-1">
+                <p className="first-letter:uppercase text-lg mod:text-sm font-semibold text-gray-900">
+                  {`${connection.userId1.firstName} ${connection.userId1.lastName}`}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {connection.userId1.email || "No email provided"}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -22,8 +22,11 @@ function Navbar() {
   const menuRef = useRef(null);
   const userDropdownRef = useRef(null);
   const familyTreeDropdownRef = useRef(null);
-  const userInfo = useSelector((state) => state.auth.userInfo);
-  const userId = userInfo?.id;
+  const userInfo = useSelector((state) => state.auth);
+  const userId = userInfo?.user.id;
+
+  console.log(userInfo, "userinfo from navbar");
+  console.log(userId, "userId from navbar");
 
   const { user } = useContext(AuthContext);
 
@@ -148,29 +151,6 @@ function Navbar() {
               >
                 Family Tree <FaChevronDown className="ml-2" />
               </button>
-              {/* {isFamilyTreeOpen && (
-                <ul className="absolute bg-NavClr border rounded-lg mt-2 py-2 px-6">
-                  <li>
-                    <Link
-                      to="/my-family-tree"
-                      className="block px-4 py-2 text-black hover:text-green"
-                      onClick={closeMenu}
-                    >
-                      My Family Tree
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/search-a-tree"
-                      className="block px-4 py-2 text-black hover:text-green"
-                      onClick={closeMenu}
-                    >
-                    
-                      Search a Tree
-                    </Link>
-                  </li>
-                </ul>
-              )} */}
 
               {isFamilyTreeOpen && (
                 <ul className="absolute  z-50 bg-NavClr border rounded-lg mt-2 py-2 px-6">
@@ -267,8 +247,8 @@ function Navbar() {
                       >
                         <div className="px-4 py-3 text-sm text-black">
                           <div className="font-medium truncate">
-                            {userInfo && userInfo.email
-                              ? userInfo.email
+                            {userInfo && userInfo?.user.email
+                              ? userInfo?.user.email
                               : "User email not available"}
                           </div>
                         </div>

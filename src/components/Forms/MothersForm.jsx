@@ -178,9 +178,9 @@ const MotherForm = ({ initialState = {}, isEdit = false }) => {
               <h3 className="text-2xl text-black mb-2">
                 {isEdit ? "Edit here" : "Add mothers details"}
               </h3>
-              <p>
-                Nam bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-                vestibulum
+              <p className="text-sm">
+                Providing accurate information about your maternal lineage will
+                help create a complete picture of your family history.
               </p>
             </div>
             <div className="flex items-center space-x-2 mb-3 w-full justify-center lg:justify-start">

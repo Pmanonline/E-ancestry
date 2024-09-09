@@ -177,9 +177,11 @@ const PaternalGrandmotherForm = ({ initialState = {}, isEdit = false }) => {
               <h3 className="text-2xl text-black mb-2">
                 {isEdit ? "Edit here" : "Add paternalGrandMothers details"}
               </h3>
-              <p>
-                Nam bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-                vestibulum
+              <p className="text-sm">
+                "Fill in the details for your paternal grandmother. This will
+                help further develop your family tree by adding important
+                information about your father's mother and her side of the
+                family.
               </p>
             </div>
             <div className="flex items-center space-x-2 mb-3 w-full justify-center lg:justify-start">

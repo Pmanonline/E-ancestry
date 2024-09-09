@@ -45,6 +45,8 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error, success } = useSelector((state) => state.form.person);
+
+  const { person: personData } = useSelector((state) => state.person);
   const userInfo = useSelector((state) => state.auth.user);
   const { Eloading, Eerror, Esuccess } = useSelector(
     (state) => state.edit.person
@@ -191,6 +193,7 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
       setResetDone(true); // Mark reset as done to prevent repeat
     }
   }, [showThirdPopup, resetDone, isEdit]);
+  const hasPersonData = personData && Object.keys(personData).length > 0;
 
   return (
     <>
@@ -198,7 +201,7 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
         ""
       ) : (
         <span className="lg:absolute right-[10rem]">
-          {showPopup && (
+          {showPopup && !hasPersonData && (
             <Popup
               message="How to Create a Family Tree?"
               onClose={() => setShowPopup(false)}
@@ -235,9 +238,10 @@ const PersonalForm = ({ initialState = {}, isEdit = false }) => {
               <h3 className="text-2xl text-black mb-2">
                 {isEdit ? "Edit here" : "Start with yourself"}
               </h3>
-              <p>
-                Nam bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-                vestibulum
+              <p className="text-sm">
+                Begin by filling in your details to create the first link in
+                your family tree. Establishing your own profile is the first
+                step towards building a complete family history.
               </p>
             </div>
             <div className="flex items-center space-x-2 mb-3 w-full justify-center lg:justify-start">

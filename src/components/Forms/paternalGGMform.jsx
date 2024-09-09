@@ -179,9 +179,10 @@ const PaternalGGMform = ({ initialState = {}, isEdit = false }) => {
                   ? "Edit here"
                   : "Add Paternal Great Grand Mothers details"}
               </h3>
-              <p>
-                Nam bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-                vestibulum
+              <p className="text-sm">
+                Provide details about your paternal great-grandmother. By adding
+                this information, you’ll contribute to a more complete family
+                tree, capturing the history of your father’s grandmother.
               </p>
             </div>
             <div className="flex items-center space-x-2 mb-3 w-full justify-center lg:justify-start">

@@ -178,9 +178,10 @@ const PaternalGGFform = ({ initialState = {}, isEdit = false }) => {
                   ? "Edit here"
                   : "Add paternal Great GrandFathers details"}
               </h3>
-              <p>
-                Nam bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-                vestibulum
+              <p className="text-sm">
+                Fill in the details for your paternal great-grandfather. This
+                will further enrich your family tree by including the heritage
+                and history of your father’s grandfather
               </p>
             </div>
             <div className="flex items-center space-x-2 mb-3 w-full justify-center lg:justify-start">

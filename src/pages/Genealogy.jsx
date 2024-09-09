@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStateDetails } from "../features/Statefeature/stateAction";
 import Spinner from "../components/tools/Spinner";
@@ -102,6 +102,12 @@ function Genealogy() {
       setFilteredStates(allStates);
     }
   }, [searchTerm, allStates]);
+  const handleScroll = () => {
+    const element = document.getElementById("localGovernment");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   if (loading)
     return (
@@ -173,6 +179,14 @@ function Genealogy() {
               <span>Tribe:</span>
               <span className="font-medium"> {specificState.tribe}</span>
             </div>
+            {/* know more about localGovernments and citiess */}
+            <span
+              onClick={handleScroll}
+              className="font-medium underline cursor-pointer transition ease-in-out duration-200 transform hover:scale-105"
+            >
+              Know more on localGovernments and Cities in {specificState.name}?
+            </span>
+
             {/* Origin */}
             <div className="mt-5">
               <h3 className="text-black text-sm font-bold uppercase text-start mb-4">
@@ -353,10 +367,10 @@ function Genealogy() {
         )}
 
         {/* LOCAL GOVERNMENTS */}
-        <div class="lg:grid grid-cols-10 gap-4">
+        <div id="localGovernment" class="lg:grid grid-cols-10 gap-4">
           <div className="col-span-4">
             <h3 className="text-black text-sm font-medium uppercase text-start mb-3 mt-3">
-              Local government areas in {specificState.name}
+              Local government/ cities in {specificState.name}
             </h3>
             <ol className="list-decimal ml-6 text-black text-sm font-normal">
               {specificState.localGovernmentsList.map((area, index) => (

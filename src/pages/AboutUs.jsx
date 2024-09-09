@@ -1,5 +1,5 @@
 import React from "react";
-import aboutImage from "../assets/images/aboutImage.png";
+import aboutImage from "../assets/images/aboutImage2.png";
 import AboutUsCard from "../components/Cards/AboutUsCards";
 import AboutImageTree from "../assets/images/AboutImageTree2.png";
 import AboutImageTree2 from "../assets/images/AboutImageTree3.png";

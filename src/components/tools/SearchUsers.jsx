@@ -20,7 +20,7 @@ const backendURL =
 export default function SearchUsers() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [placeLived, setPlaceLived] = useState("");
+  const [placesLived, setPlacesLived] = useState("");
   const [dob, setDob] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [spinnerVisible, setSpinnerVisible] = useState(false);
@@ -107,7 +107,7 @@ export default function SearchUsers() {
         setModalType("results");
         setFirstName("");
         setLastName("");
-        setPlaceLived("");
+        setPlacesLived("");
         setDob("");
       } else {
         setModalType("noResults");
@@ -117,11 +117,11 @@ export default function SearchUsers() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (firstName.trim() || lastName.trim() || placeLived.trim() || dob) {
+    if (firstName.trim() || lastName.trim() || placesLived.trim() || dob) {
       const searchParams = {
         firstName,
         lastName,
-        placeLived,
+        placesLived,
         dob,
       };
 
@@ -137,7 +137,7 @@ export default function SearchUsers() {
     const { name, value } = e.target;
     if (name === "firstName") setFirstName(value);
     if (name === "lastName") setLastName(value);
-    if (name === "placeLived") setPlaceLived(value);
+    if (name === "placesLived") setPlacesLived(value);
     if (name === "dob") setDob(value);
     setSubmitted(false);
   };
@@ -168,12 +168,12 @@ export default function SearchUsers() {
   }, [hasResults, noResults, submitted]);
 
   useEffect(() => {
-    console.log("Fetched Users:", users); // Ensure users are logged when fetched
+    console.log("Fetched Users:", users);
   }, [users]);
 
   const addRecentSearch = (search) => {
     setRecentSearches((prevSearches) => {
-      const updatedSearches = [search, ...prevSearches].slice(0, 10); // Store up to 10 searches
+      const updatedSearches = [search, ...prevSearches].slice(0, 10);
       localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
       return updatedSearches;
     });
@@ -369,8 +369,8 @@ export default function SearchUsers() {
               />
               <p className="text-center">
                 No results found for "{firstName}
-                {lastName} {placeLived}". Please try again with a different name
-                or criteria.
+                {lastName} {placesLived}". Please try again with a different
+                name or criteria.
               </p>
               <button
                 onClick={closeModal}

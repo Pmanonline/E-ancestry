@@ -1,83 +1,3 @@
-// import { createContext, useState, useCallback, useEffect } from "react";
-// import { registerUser } from "../../features/chatFeature/chatActions";
-// import { useDispatch, useSelector } from "react-redux";
-
-// export const AuthContext = createContext();
-// const backendURL =
-//   process.env.NODE_ENV !== "production"
-//     ? "http://localhost:8080"
-//     : "https://gekoda-api.onrender.com";
-
-// export const AuthContextProvider = ({ children }) => {
-//   const [user, setUser] = useState(null);
-//   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
-//   const [isRegisterError, setIsRegisterError] = useState(null);
-//   const [registerInfo, setRegisterInfo] = useState({
-//     email: "",
-//     password: "",
-//   });
-//   const userInfo = useSelector((state) => state.auth.user);
-//   const User = userInfo;
-
-//   console.log(user, "user info from authContext");
-//   console.log(User, "user info from redux");
-
-//   console.log("registerInfo", registerInfo);
-
-//   useEffect(() => {
-//     const user = localStorage.getItem("User");
-//     setUser(JSON.parse(user));
-//   }, []);
-
-//   const updateRegisterInfo = useCallback((info) => {
-//     setRegisterInfo(info);
-//   }, []);
-
-//   const RegisterUser = useCallback(
-//     async (e) => {
-//       e.preventDefault();
-
-//       setIsRegisterLoading(true);
-//       setIsRegisterError(null);
-
-//       try {
-//         const response = await registerUser(
-//           `${backendURL}/api/register`,
-//           JSON.stringify(registerInfo)
-//         );
-//         setIsRegisterLoading(false);
-
-//         if (response.error) {
-//           return setIsRegisterError(response.error);
-//         }
-
-//         localStorage.setItem("User", JSON.stringify(response));
-//         setUser(response);
-//       } catch (error) {
-//         setIsRegisterLoading(false);
-//         setIsRegisterError("An unexpected error occurred. Please try again.");
-//         console.error("Registration error:", error);
-//       }
-//     },
-//     [registerInfo]
-//   );
-
-//   return (
-//     <AuthContext.Provider
-//       value={{
-//         user,
-//         registerInfo,
-//         updateRegisterInfo,
-//         RegisterUser,
-//         isRegisterLoading,
-//         isRegisterError,
-//       }}
-//     >
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };
-
 import { createContext, useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../features/chatFeature/chatActions";
@@ -93,7 +13,7 @@ const backendURL =
 
 export const AuthContextProvider = ({ children }) => {
   const dispatch = useDispatch();
-  const { token, user } = useSelector((state) => state.auth); // Get token and user from Redux state
+  const { token, user } = useSelector((state) => state.auth);
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
   const [isRegisterError, setIsRegisterError] = useState(null);
   const [registerInfo, setRegisterInfo] = useState({
@@ -169,6 +89,7 @@ export const AuthContextProvider = ({ children }) => {
         RegisterUser,
         isRegisterLoading,
         isRegisterError,
+        fetchUserData,
       }}
     >
       {children}

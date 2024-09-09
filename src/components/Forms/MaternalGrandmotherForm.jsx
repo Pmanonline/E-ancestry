@@ -176,9 +176,11 @@ const MaternalGrandmotherForm = ({ initialState = {}, isEdit = false }) => {
               <h3 className="text-2xl text-black mb-2">
                 {isEdit ? "Edit here" : "Add maternalGrandMothers details"}
               </h3>
-              <p>
-                Nam bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-                vestibulum
+              <p className="text-sm">
+                "Provide details about your maternal grandmother to enhance your
+                family tree. This will help in constructing a detailed account
+                of your mother’s side of the family, connecting you with your
+                maternal heritage
               </p>
             </div>
             <div className="flex items-center space-x-2 mb-3 w-full justify-center lg:justify-start">

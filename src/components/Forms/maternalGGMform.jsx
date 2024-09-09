@@ -174,9 +174,10 @@ const MaternalGGMform = ({ initialState = {}, isEdit = false }) => {
                   ? "Edit here"
                   : "Add maternal Great GrandMothers details"}
               </h3>
-              <p>
-                Nam bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-                vestibulum
+              <p className="text-sm">
+                Include information about your maternal great-grandmother. This
+                will help expand your family tree to capture the history and
+                heritage of your mother’s grandmother.
               </p>
             </div>
             <div className="flex items-center space-x-2 mb-3 w-full justify-center lg:justify-start">

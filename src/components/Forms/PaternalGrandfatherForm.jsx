@@ -177,9 +177,11 @@ const PaternalGrandfatherForm = ({ initialState = {}, isEdit = false }) => {
               <h3 className="text-2xl text-black mb-2">
                 {isEdit ? "Edit here" : "Add paternalGrandFather details"}
               </h3>
-              <p>
-                Nam bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-                vestibulum
+              <p className="text-sm">
+                Add information about your paternal grandfather. This is an
+                essential step in detailing your father's side of the family and
+                expanding your family tree to include your grandfather’s
+                heritage
               </p>
             </div>
             <div className="flex items-center space-x-2 mb-3 w-full justify-center lg:justify-start">

@@ -175,9 +175,10 @@ const MaternalGGFform = ({ initialState = {}, isEdit = false }) => {
                   ? "Edit here"
                   : "Add Maternal Great Grand Fathers Details"}
               </h3>
-              <p>
-                Nam bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-                vestibulum
+              <p className="text-sm">
+                Add details for your maternal great-grandfather to delve deeper
+                into your family tree. This will provide a richer history by
+                connecting you with your mother's grandfather and his lineage.
               </p>
             </div>
             <div className="flex items-center space-x-2 mb-3 w-full justify-center lg:justify-start">

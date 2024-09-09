@@ -175,9 +175,11 @@ const FatherForm = ({ initialState = {}, isEdit = false }) => {
               <h3 className="text-2xl text-black mb-2">
                 {isEdit ? "Edit here" : "Add fathers details"}
               </h3>
-              <p>
-                Nam bionvallis. Sed ut vulputate nisi. Integer in felis sed leo
-                vestibulum
+              <p className="text-sm">
+                Enter information about your father to add a vital branch to
+                your family tree. Including his details will contribute to
+                building a comprehensive family history, connecting you with
+                your paternal roots.
               </p>
             </div>
             <div className="flex items-center space-x-2 mb-3 w-full justify-center lg:justify-start">
