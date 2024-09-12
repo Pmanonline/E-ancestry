@@ -13,6 +13,7 @@ const initialState = {
   refreshToken: localStorage.getItem("refreshToken") || null,
   user: (() => {
     const userInfo = localStorage.getItem("userInfo");
+    console.log("Initial userInfo from localStorage:", userInfo);
     if (!userInfo) {
       return null;
     }
@@ -46,6 +47,7 @@ const authSlice = createSlice({
       localStorage.removeItem("userToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("userInfo");
+      console.log("logoutUser reducer called");
     },
     setCredentials(state, action) {
       const { token, refreshToken, user } = action.payload;
@@ -56,7 +58,7 @@ const authSlice = createSlice({
       localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("userInfo", JSON.stringify(user));
     },
-    resetSuccess: (state) => {
+    resetSuccess(state) {
       state.success = false;
       state.FPsuccess = false;
       state.OTPsuccess = false;
@@ -80,6 +82,7 @@ const authSlice = createSlice({
         localStorage.setItem("refreshToken", refreshToken);
         localStorage.setItem("userInfo", JSON.stringify(user));
         state.success = true;
+        console.log("User data stored:", JSON.stringify(user));
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;

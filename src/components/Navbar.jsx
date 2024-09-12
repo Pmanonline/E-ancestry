@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
+import { NavLink, Link } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
 import { FaChevronDown } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import { logoutUser } from "../features/auth/authSlice";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import {
@@ -22,13 +22,20 @@ function Navbar() {
   const menuRef = useRef(null);
   const userDropdownRef = useRef(null);
   const familyTreeDropdownRef = useRef(null);
-  const userInfo = useSelector((state) => state.auth);
-  const userId = userInfo?.user.id;
+  // const userInfo = useSelector((state) => state.auth);
+  // const { user, token } = useSelector((state) => state.auth);
+  // const userId = userInfo?.user?.id;
 
-  console.log(userInfo, "userinfo from navbar");
-  console.log(userId, "userId from navbar");
+  // console.log(userInfo, "userinfo from navbar");
+  // console.log(userId, "userId from navbar");
 
-  const { user } = useContext(AuthContext);
+  const { user, token } = useSelector((state) => state.auth);
+  const userId = user?.id;
+  useEffect(() => {
+    console.log("Component user:", user);
+    console.log("Component token:", token);
+    console.log("Component userId:", userId);
+  }, [user, token]);
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -71,6 +78,11 @@ function Navbar() {
     };
   }, []);
 
+  const handleLogout = () => {
+    console.log("Logout button clicked");
+    dispatch(logoutUser());
+  };
+
   return (
     <nav className="bg-white">
       <div className="max-w-screen-xl flex-wrap items-center justify-around mx-auto p-4">
@@ -107,42 +119,58 @@ function Navbar() {
 
           <ul className="text-black flex flex-wrap font-medium p-4 mt-4 rounded-lg gap-5 rtl:space-x-reverse mid:flex-col md:mt-0 bg-NavClr md:rounded-xl md:p-5">
             <li>
-              <Link
+              <NavLink
                 to="/"
-                className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
-                aria-current="page"
-                onClick={closeMenu}
+                className={({ isActive }) =>
+                  ` block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent ${
+                    isActive ? "text-green   " : "text-black"
+                  }`
+                }
+                end
               >
                 Home
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
-                to="/about"
-                className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
-                onClick={closeMenu}
+              <NavLink
+                to="/About"
+                className={({ isActive }) =>
+                  ` block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent ${
+                    isActive ? "text-green   " : "text-black"
+                  }`
+                }
+                end
               >
                 About
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to="/partners"
-                className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
-                onClick={closeMenu}
+                className={({ isActive }) =>
+                  ` block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent ${
+                    isActive ? "text-green   " : "text-black"
+                  }`
+                }
+                end
               >
                 Our Partners
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to="/name-meanings"
-                className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
-                onClick={closeMenu}
+                className={({ isActive }) =>
+                  ` block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent ${
+                    isActive ? "text-green   " : "text-black"
+                  }`
+                }
+                end
               >
                 Name Meanings
-              </Link>
+              </NavLink>
             </li>
+
             <li className="relative group" ref={familyTreeDropdownRef}>
               <button
                 type="button"
@@ -155,43 +183,62 @@ function Navbar() {
               {isFamilyTreeOpen && (
                 <ul className="absolute  z-50 bg-NavClr border rounded-lg mt-2 py-2 px-6">
                   <li>
-                    <Link
+                    <NavLink
                       to="/my-family-tree"
-                      className="block px-4 py-2 text-black hover:text-green whitespace-nowrap"
+                      className={({ isActive }) =>
+                        `block px-4 py-2 text-black hover:text-green whitespace-nowrap  ${
+                          isActive ? "text-green   " : "text-black"
+                        }`
+                      }
                       onClick={closeMenu}
                     >
                       My Family Tree
-                    </Link>
+                    </NavLink>
                   </li>
+
                   <li>
-                    <Link
-                      to="/search-a-tree"
-                      className="block px-4 py-2 text-black hover:text-green whitespace-nowrap"
+                    <NavLink
                       onClick={closeMenu}
+                      to="/search-a-tree"
+                      className={({ isActive }) =>
+                        ` block px-4 py-2 text-black hover:text-green whitespace-nowrap" ${
+                          isActive ? "text-green   " : "text-black"
+                        }`
+                      }
+                      end
                     >
                       Search a Tree
-                    </Link>
+                    </NavLink>
                   </li>
                 </ul>
               )}
             </li>
+
             <li>
-              <Link
+              <NavLink
                 to="/genealogy"
-                className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
-                onClick={closeMenu}
+                className={({ isActive }) =>
+                  ` block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent ${
+                    isActive ? "text-green   " : "text-black"
+                  }`
+                }
+                end
               >
                 Genealogy
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
-                to="/historicalPeople"
-                className="block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent"
-                onClick={closeMenu}
+              <NavLink
+                to="/genealogy"
+                className={({ isActive }) =>
+                  ` block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent ${
+                    isActive ? "text-green   " : "text-black"
+                  }`
+                }
+                end
               >
                 Historical People
-              </Link>
+              </NavLink>
             </li>
             <li>
               <Link
@@ -206,14 +253,15 @@ function Navbar() {
           </ul>
           <div className="flex items-center mt-4 md:mt-0">
             <div className="text-center flex">
-              {userInfo ? (
+              {user ? (
                 <>
                   <button
-                    onClick={() => dispatch(logoutUser())}
+                    onClick={handleLogout}
                     className="block px-4 py-2 text-black rounded hover:text-green md:dark:hover:bg-transparent text-lg"
                   >
                     Logout
                   </button>
+
                   <div className="relative" ref={userDropdownRef}>
                     <button
                       onClick={toggleUserFile}
@@ -247,8 +295,8 @@ function Navbar() {
                       >
                         <div className="px-4 py-3 text-sm text-black">
                           <div className="font-medium truncate">
-                            {userInfo && userInfo?.user.email
-                              ? userInfo?.user.email
+                            {user && user?.email
+                              ? user?.email
                               : "User email not available"}
                           </div>
                         </div>

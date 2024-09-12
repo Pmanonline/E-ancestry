@@ -7,19 +7,36 @@ const backendURL =
     ? "http://localhost:8080"
     : "https://gekoda-api.onrender.com";
 
-// Define the async thunk for sending an invite
 export const sendInvite = createAsyncThunk(
   "invite/sendInvite",
-  async ({ inviteType, recipient, name }, thunkAPI) => {
+  async ({ inviteType, recipient, name, relationshipType }, thunkAPI) => {
     try {
-      const response = await axios.post(`${backendURL}/api/send-invite`, {
-        inviteType,
-        recipient,
-        name,
-      });
+      const token = localStorage.getItem("userToken");
+
+      if (!token) {
+        throw new Error("No token found.");
+      }
+
+      const response = await axios.post(
+        `${backendURL}/api/send-invite`,
+        {
+          inviteType,
+          recipient,
+          name,
+          relationshipType, // Added relationshipType here
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Correctly place headers here
+          },
+        }
+      );
+
       return response.data; // Returning data on success
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data); // Returning error on failure
+      return thunkAPI.rejectWithValue(
+        error.response?.data || { message: "An error occurred" }
+      ); // Handling error
     }
   }
 );
@@ -54,6 +71,25 @@ export const fetchVisits = createAsyncThunk(
       return rejectWithValue(
         error.response?.data || { message: error.message }
       );
+    }
+  }
+);
+
+export const fetchUserInvites = createAsyncThunk(
+  "invites/fetchUserInvites",
+  async (userId, thunkAPI) => {
+    try {
+      const response = await fetch(
+        `${backendURL}/api/getUsersInvites/${userId}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch invites");
+      }
+      const data = await response.json();
+      console.log(data, "Api response: " + JSON.stringify(data));
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );

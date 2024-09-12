@@ -19,6 +19,41 @@ import { fetchAllDetails } from "../features/UserFeature/UserAction";
 import { FiZoomOut } from "react-icons/fi";
 import { FiZoomIn } from "react-icons/fi";
 import { MdOutlineZoomInMap } from "react-icons/md";
+import { fetchUserInvites } from "../features/UserFeature/inviteAction";
+import { GrTreeOption } from "react-icons/gr";
+import { IoClose } from "react-icons/io5";
+import { AiTwotoneDelete } from "react-icons/ai";
+import { FaUserCircle, FaTrash } from "react-icons/fa";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Avatar,
+  IconButton,
+  Typography,
+  Button,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from "@mui/material";
+import { FaEllipsisV } from "react-icons/fa"; // Replacing MoreVertIcon and DeleteIcon
+import { styled } from "@mui/material/styles";
+const LargeAvatar = styled(Avatar)(({ theme }) => ({
+  width: theme.spacing(14), // Increase size as it will be on top
+  height: theme.spacing(14),
+  margin: "0 auto", // Center the image horizontally
+}));
+
+const backendURL =
+  process.env.NODE_ENV !== "production"
+    ? "http://localhost:8080"
+    : "https://gekoda-api.onrender.com";
+// import { deleteInvite } from "../redux/actions/inviteActions";
 
 Modal.setAppElement("#root");
 
@@ -32,6 +67,11 @@ export const FamilyTreeStructure = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const treeContentRef = useRef(null);
   const startPos = useRef({ x: 0, y: 0 });
+  const invites = useSelector((state) => state.invite.invites);
+  const loading = useSelector((state) => state.invite.loading);
+  const error = useSelector((state) => state.invite.error);
+
+  console.error(invites, "USERS INVITES");
 
   const {
     person: personData,
@@ -46,34 +86,6 @@ export const FamilyTreeStructure = () => {
     MGGF: MGGFData,
     MGGM: MGGMData,
   } = useSelector((state) => state.person);
-
-  useEffect(() => {
-    console.log(
-      personData,
-      fatherData,
-      motherData,
-      MGFData,
-      MGMData,
-      PGFData,
-      PGMData,
-      PGGFData,
-      PGGMData,
-      MGGFData,
-      MGGMData
-    );
-  }, [
-    personData,
-    fatherData,
-    motherData,
-    MGFData,
-    MGMData,
-    PGFData,
-    PGMData,
-    PGGFData,
-    PGGMData,
-    MGGFData,
-    MGGMData,
-  ]);
 
   const personCard =
     personData && Object.keys(personData).length > 0
@@ -115,6 +127,7 @@ export const FamilyTreeStructure = () => {
   useEffect(() => {
     if (userId) {
       dispatch(fetchAllDetails(userId));
+      dispatch(fetchUserInvites(userId));
     }
   }, [dispatch, userId]);
 
@@ -456,7 +469,168 @@ export const FamilyTreeStructure = () => {
             </div>
           </div>
         </div>
+        {/* Related person Card */}
+        <div className="">
+          <div
+            ref={treeContentRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            style={{
+              transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+              transition: dragging ? "none" : "transform 0.1s ease-in-out",
+            }}
+            className="flex flex-col cursor-grab items-center"
+          >
+            <div className="family-tree-container">
+              <div className="invites-section">
+                {loading ? (
+                  <p>Loading...</p>
+                ) : error ? (
+                  <p>Error loading invites</p>
+                ) : (
+                  <div className="flex flex-wrap gap-4">
+                    {invites.map((invite) => (
+                      <InviteCard
+                        key={invite._id} // Use invite._id as the key
+                        invite={invite}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
 };
+
+export const InviteCard = ({ invite }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
+  const handleDeleteOpen = () => {
+    handleMenuClose();
+    setDeleteOpen(true);
+  };
+  const handleDeleteClose = () => setDeleteOpen(false);
+
+  const handleDelete = () => {
+    onDelete(invite.id);
+    handleDeleteClose();
+  };
+
+  const invitee = invite.invitee || {};
+
+  return (
+    <>
+      <Card className="border border-4xl" sx={{ maxWidth: 345, m: 2 }}>
+        <CardHeader
+          avatar={
+            <LargeAvatar
+              src={
+                invitee.image
+                  ? `${backendURL}/${invitee.image}?${new Date().getTime()}`
+                  : undefined
+              }
+              alt={`${invitee.firstName} ${invitee.lastName}`}
+            >
+              {!invitee.image &&
+                `${invitee.firstName[0]}${invitee.lastName[0]}`}
+            </LargeAvatar>
+          }
+          action={
+            <IconButton aria-label="settings" onClick={handleMenuOpen}>
+              <FaEllipsisV />
+            </IconButton>
+          }
+          title={`${invitee.firstName} ${invitee.lastName}`}
+          subheader={invite.relationshipType}
+        />
+
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleDeleteOpen}>
+            <FaTrash fontSize="small" style={{ marginRight: "8px" }} />
+            Delete Invite
+          </MenuItem>
+        </Menu>
+        <CardContent></CardContent>
+        <CardActions>
+          <Button
+            size="small"
+            variant="contained"
+            fullWidth
+            onClick={() => {
+              console.log("Navigate to profile");
+            }}
+          >
+            View Profile
+          </Button>
+        </CardActions>
+
+        <Dialog open={deleteOpen} onClose={handleDeleteClose}>
+          <DialogTitle>
+            Are you sure you want to delete this invite?
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              This action cannot be undone. You will remove the invite for{" "}
+              {invitee.firstName} {invitee.lastName}.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleDelete} color="error">
+              Confirm Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Card>
+    </>
+  );
+};
+
+// <div className="">
+//   <div
+//     ref={treeContentRef}
+//     onMouseDown={handleMouseDown}
+//     onMouseMove={handleMouseMove}
+//     onMouseUp={handleMouseUp}
+//     onMouseLeave={handleMouseUp}
+//     style={{
+//       transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+//       transition: dragging ? "none" : "transform 0.1s ease-in-out",
+//     }}
+//     className="flex flex-col cursor-grab items-center"
+//   >
+//     <div className="family-tree-container">
+//       <div className="invites-section">
+//         {loading ? (
+//           <p>Loading...</p>
+//         ) : error ? (
+//           <p>Error loading invites</p>
+//         ) : (
+//           <div className="flex flex-wrap gap-4">
+//             {invites.map((invite) => (
+//               <InviteCard
+//                 key={invite._id} // Use invite._id as the key
+//                 invite={invite}
+//               />
+//             ))}
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   </div>
+// </div>;
