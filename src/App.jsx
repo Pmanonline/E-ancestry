@@ -19,7 +19,7 @@ import Modal from "./components/tools/sessionModal";
 // Authentication Pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Forgotpassword from "@/pages/Forgotpassword";
+import Forgotpassword from "./pages/Forgotpassword";
 import VerifyOTP from "./pages/VerifyOTP";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/profilePage";
