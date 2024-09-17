@@ -31,7 +31,7 @@ export default function LayoutNAv() {
               href="/layout/Invites"
               className="hover:text-green Nlg:text-xs hover:underline px-3 py-2 rounded-md transition ease-in-out duration-200 transform hover:scale-105"
             >
-              Invites
+              Invite
             </a>
             <a
               href={`/layout/viewers/${userId}`}

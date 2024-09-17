@@ -1,114 +1,221 @@
-const userId = userInfo?.user.id;
+ import React, { useState, useRef, useEffect } from "react";
+ import { useSelector } from "react-redux";
+ import { useParams, useNavigate } from "react-router-dom";
+ import { useDispatch } from "react-redux";
+ import { fetchAllDetails } from "../features/UserFeature/UserAction";
+ import { fetchUserInvites } from "../features/UserFeature/inviteAction";
+ import { FiZoomOut, FiZoomIn } from "react-icons/fi";
+ import { MdOutlineZoomInMap } from "react-icons/md";
+ import { FaEllipsisV, FaTrash } from "react-icons/fa";
+ import {
+   Card,
+   CardHeader,
+   CardContent,
+   CardActions,
+   Avatar,
+   IconButton,
+   Typography,
+   Button,
+   Menu,
+   MenuItem,
+   Dialog,
+   DialogTitle,
+   DialogContent,
+   DialogContentText,
+   DialogActions,
+ } from "@mui/material";
 
-{
-  /* <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {currentResults.map((result) => (
-                  <li
-                    key={result._id}
-                    className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-600 dark:border-gray-700 flex flex-col"
-                    style={{ flex: "1 1 30%" }}
-                  >
-                    <a href="#">
-                      <img
-                        className="rounded-t-lg w-full h-[10rem] object-cover rounded-xl mb-4"
-                        src={`${backendURL}/${result.image}`}
-                        alt="images"
-                      />
-                    </a>
-                    <div className="p-3 flex flex-col space-y-2">
-                      <p className="font-normal text-gray-700 dark:text-gray-400">
-                        Full name:
-                        <span className="text-white ml-2">
-                          {result.firstName} {result.lastName}
-                        </span>
-                      </p>
-                      {result.gender && (
-                        <p className="font-normal text-gray-700 dark:text-gray-400">
-                          Gender:
-                          <span className="text-white ml-2">
-                            {result.gender}
-                          </span>
-                        </p>
-                      )}
-                      <p className="font-normal text-gray-700 dark:text-gray-400">
-                        Date of Birth:
-                        <span className="text-white ml-2">
-                          {new Date(result.DOB).toLocaleDateString()}
-                        </span>
-                      </p>
-                      {result.placesLived && (
-                        <p className="font-normal text-gray-700 dark:text-gray-400">
-                          Place Lived:
-                          <span className="text-white ml-2">
-                            {result.placesLived}
-                          </span>
-                        </p>
-                      )}
+ export const FamilyTreeStructure = () => {
+   const invites = useSelector((state) => state.invite.invites);
+   const loading = useSelector((state) => state.invite.loading);
+   const error = useSelector((state) => state.invite.error);
+   const { userId } = useParams();
+   const dispatch = useDispatch();
+   const [scale, setScale] = useState(1);
+   const [dragging, setDragging] = useState(false);
+   const [position, setPosition] = useState({ x: 0, y: 0 });
+   const treeContentRef = useRef(null);
+   const startPos = useRef({ x: 0, y: 0 });
 
-                      <p className="font-normal text-gray-700 dark:text-gray-400">
-                        {result.role === "main" ? (
-                          <span className="text-white ">
-                            Family Tree Creator
-                          </span>
-                        ) : (
-                          <span className="text-white ">{result.role}</span>
-                        )}
-                      </p>
+   useEffect(() => {
+     if (userId) {
+       dispatch(fetchAllDetails(userId));
+       dispatch(fetchUserInvites(userId));
+     }
+   }, [dispatch, userId]);
 
-                      {result.Lstatus === "Deceased" && (
-                        <span className="text-white">
-                          <span className="block mb-2">{result.Lstatus}</span>
-                          {new Date(result.DOB).getFullYear()} to{" "}
-                          {result.yearDeceased
-                            ? new Date(result.yearDeceased).getFullYear()
-                            : "Unknown year"}
-                        </span>
-                      )}
+   // ... (keep all the existing functions like handleMouseDown, handleZoomIn, etc.)
 
-                      {result.role !== "main" && (
-                        <p className="font-normal text-gray-700 dark:text-gray-400">
-                          <span className="italic">Related to:</span>
-                          <span className="text-white ml-2">
-                            {result.userName}
-                          </span>
-                        </p>
-                      )}
+   return (
+     <>
+       {/* ... (keep all the existing zoom controls and family tree structure) */}
 
-                      {LoggedId !== result.userId && (
-                        <a
-                          onClick={() => handleResultClick(result.userId)}
-                          className="inline-flex items-center px-3 py-2 text-sm font-medium text-white border-2 border-green bg-green rounded-lg focus:ring-4 focus:outline-none cursor-pointer transition ease-in-out duration-200 transform hover:scale-105"
-                        >
-                          Go to
-                          {result.role !== "main" ? (
-                            <>
-                              <span className="font-medium mx-1">
-                                {result.userName}
-                              </span>
-                              's Profile
-                            </>
-                          ) : (
-                            " Profile"
-                          )}
-                          <svg
-                            className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 14 10"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M1 5h12m0 0L9 1m4 4L9 9"
-                            />
-                          </svg>
-                        </a>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul> */
-}
+       {/* My Relations Tree */}
+       <div className="mt-20">
+         <div
+           ref={treeContentRef}
+           onMouseDown={handleMouseDown}
+           onMouseMove={handleMouseMove}
+           onMouseUp={handleMouseUp}
+           onMouseLeave={handleMouseUp}
+           style={{
+             transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+             transition: dragging ? "none" : "transform 0.1s ease-in-out",
+           }}
+           className="flex flex-col cursor-grab items-center"
+         >
+           <div className="family-tree-container">
+             <div className="invites-section">
+               <h2 className="text-2xl font-bold text-center mb-24">
+                 Other Relations
+               </h2>
+               {loading ? (
+                 <p>Loading...</p>
+               ) : error ? (
+                 <p>
+                   Unable to load relations at this time. Please try again
+                   later.
+                 </p>
+               ) : invites && invites.length > 0 ? (
+                 <div className="flex justify-center">
+                   {invites.map((invite, index) => (
+                     <div key={invite._id || index} className="mx-4 relative">
+                       <InviteCard invite={invite} />
+                       {/* Vertical line */}
+                       <div className="absolute top-0 left-1/2 w-px h-8 bg-gray-300 -translate-x-1/2 -translate-y-full"></div>
+                       {/* Horizontal line */}
+                       {index > 0 && (
+                         <div className="absolute top-0 left-0 w-full h-px bg-gray-300 -translate-y-8"></div>
+                       )}
+                     </div>
+                   ))}
+                 </div>
+               ) : (
+                 <p>No relations found.</p>
+               )}
+             </div>
+           </div>
+         </div>
+       </div>
+     </>
+   );
+ };
+
+ const InviteCard = ({ invite }) => {
+   const [anchorEl, setAnchorEl] = useState(null);
+   const [deleteOpen, setDeleteOpen] = useState(false);
+   const navigate = useNavigate();
+
+   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+   const handleMenuClose = () => setAnchorEl(null);
+   const handleDeleteOpen = () => {
+     handleMenuClose();
+     setDeleteOpen(true);
+   };
+   const handleDeleteClose = () => setDeleteOpen(false);
+
+   const handleDelete = () => {
+     console.log("Delete invite", invite.id);
+     handleDeleteClose();
+   };
+
+   const invitee = invite?.invitee || {};
+
+   const handleViewProfile = () => {
+     if (invitee._id) {
+       navigate(`/familyTree-feeds/${invitee._id}`);
+     } else {
+       console.error("User ID is not available");
+     }
+   };
+
+   if (!invitee || !invitee.firstName) {
+     return null; // Don't render the card if invitee data is missing
+   }
+
+   return (
+     <Card sx={{ width: 180, m: 1 }}>
+       <CardHeader
+         avatar={
+           <Typography
+             variant="h6"
+             sx={{
+               width: 40,
+               height: 40,
+               borderRadius: "50%",
+               bgcolor: "primary.main",
+               color: "white",
+               display: "flex",
+               alignItems: "center",
+               justifyContent: "center",
+             }}
+           >
+             {`${invitee.firstName[0]}${
+               invitee.lastName ? invitee.lastName[0] : ""
+             }`}
+           </Typography>
+         }
+         action={
+           <IconButton
+             aria-label="settings"
+             onClick={handleMenuOpen}
+             size="small"
+           >
+             <FaEllipsisV />
+           </IconButton>
+         }
+         title={
+           <Typography variant="subtitle2">{`${invitee.firstName} ${
+             invitee.lastName || ""
+           }`}</Typography>
+         }
+         subheader={
+           <Typography variant="caption">
+             {invite.relationshipType || "Relation"}
+           </Typography>
+         }
+         sx={{ p: 1 }}
+       />
+
+       <CardActions sx={{ justifyContent: "center", p: 1 }}>
+         <Button
+           size="small"
+           variant="outlined"
+           fullWidth
+           onClick={handleViewProfile}
+         >
+           View Profile
+         </Button>
+       </CardActions>
+
+       <Menu
+         anchorEl={anchorEl}
+         open={Boolean(anchorEl)}
+         onClose={handleMenuClose}
+       >
+         <MenuItem onClick={handleDeleteOpen}>
+           <FaTrash fontSize="small" style={{ marginRight: "8px" }} />
+           Delete Invite
+         </MenuItem>
+       </Menu>
+
+       <Dialog open={deleteOpen} onClose={handleDeleteClose}>
+         <DialogTitle>Confirm Delete</DialogTitle>
+         <DialogContent>
+           <DialogContentText>
+             Are you sure you want to delete the invite for {invitee.firstName}{" "}
+             {invitee.lastName || ""}?
+           </DialogContentText>
+         </DialogContent>
+         <DialogActions>
+           <Button onClick={handleDeleteClose}>Cancel</Button>
+           <Button onClick={handleDelete} color="error">
+             Delete
+           </Button>
+         </DialogActions>
+       </Dialog>
+     </Card>
+   );
+ };
+
+ export default FamilyTreeStructure;

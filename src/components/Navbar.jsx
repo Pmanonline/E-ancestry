@@ -229,7 +229,7 @@ function Navbar() {
             </li>
             <li>
               <NavLink
-                to="/genealogy"
+                to="/historicalPeople"
                 className={({ isActive }) =>
                   ` block py-2 px-3 md:p-0 text-black rounded hover:text-green md:dark:hover:bg-transparent ${
                     isActive ? "text-green   " : "text-black"
@@ -351,7 +351,7 @@ function Navbar() {
                     Login
                   </Link>
                   <Link
-                    to="/signup"
+                    to="/register"
                     className="text-black bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                   >
                     Sign Up

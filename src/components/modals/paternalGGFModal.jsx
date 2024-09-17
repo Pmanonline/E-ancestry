@@ -144,7 +144,6 @@ export const PGGFModal = React.forwardRef(({ userId }, ref3) => {
 
   useEffect(() => {
     if (Dsuccess) {
-      // toast.success("Deleted!!");
       dispatch(fetchAllDetails(userId));
       dispatch(resetDeleteState());
     }

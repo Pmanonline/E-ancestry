@@ -104,8 +104,8 @@ const Invites = () => {
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <Label htmlFor="name" className="text-sm font-medium text-gray-700">
-              Recipient's Name
+            <Label htmlFor="name" className="text-sm font-medium text-black">
+              <span className="text-gray-700"> Recipient's Name</span>
             </Label>
             <TextInput
               id="name"
@@ -123,7 +123,7 @@ const Invites = () => {
               htmlFor="recipient"
               className="text-sm font-medium text-gray-700"
             >
-              Recipient's Email
+              <span className="text-gray-700"> Recipient's Email</span>
             </Label>
             <TextInput
               id="recipient"
@@ -141,7 +141,7 @@ const Invites = () => {
               htmlFor="relationshipType"
               className="text-sm font-medium text-gray-700"
             >
-              Relationship Type
+              <span className="text-gray-700"> Relationship Type</span>
             </Label>
             <Select
               id="relationshipType"

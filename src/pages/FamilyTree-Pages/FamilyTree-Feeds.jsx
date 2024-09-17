@@ -70,12 +70,13 @@ function ChildFeed(chat) {
     dispatch(getAllProfiles());
   }, [dispatch]);
 
-  // If profile data is available, use its name for filtering profiles
+  // // If profile data is available, use its name for filtering profiles
+
   const relatedProfiles = profiles.filter(
     (p) =>
       (p.firstName === profile?.firstName ||
         p.lastName === profile?.lastName) &&
-      p._id !== userId // Exclude the logged-in user
+      p._id !== userId // Exclude the user whose id matches the id from params
   );
 
   const { allStates, religions, tribes } = useSelector((state) => state.state);
@@ -389,13 +390,17 @@ function ChildFeed(chat) {
       {/* familyDetails?  */}
 
       <div className="lg:grid grid-cols-10 my-6">
-        <div className=" col-span-4">
+        {/* <div className=" col-span-4">
           <FamilyDetails />
+        </div> */}
+        <div className="col-span-4">
+          {profile?.images && profile.images.length > 0 && <FamilyDetails />}
         </div>
+
         <div className="flex mx-3 flex-col justify-start items-start col-span-6 ">
           <div className="">
             {/* childrensCard */}
-            <div className="flex flex-wrap space-x-2 Nlg:my-3 gap-2 mb-9">
+            {/* <div className="flex flex-wrap space-x-2 Nlg:my-3 gap-2 mb-9">
               <button className="text-black  bg-[#d9f8de] text-sm  p-2 rounded-sm">
                 child1
               </button>
@@ -411,7 +416,7 @@ function ChildFeed(chat) {
               <button className="text-black  bg-[#d9f8de] text-sm  p-2 rounded-sm">
                 Chid5
               </button>
-            </div>
+            </div> */}
 
             {profile.religion && (
               <>
@@ -469,13 +474,14 @@ function ChildFeed(chat) {
                     <img
                       src={
                         profile.image
-                          ? `${backendURL}/${profile.image}`
-                          : noProfile
+                          ? `${backendURL}/${profile.image}` // If profile image is available
+                          : noProfile // Placeholder image if no profile image
                       }
                       alt="profile"
                       className="w-full h-[15rem] object-cover"
                     />
                   </div>
+
                   {/* Name */}
                   <div className="px-4 mb-3">
                     <h3 className="font-sans text-lg font-bold mod:text-sm py-2">
@@ -483,6 +489,7 @@ function ChildFeed(chat) {
                       {profile.middlename}
                     </h3>
                   </div>
+
                   {/* Gender and Position */}
                   <div className="flex justify-between px-4 pb-3">
                     <h3 className="font-sans text-base mod:text-sm font-normal">
@@ -663,70 +670,6 @@ export function ChatModal({ isOpen, onClose }) {
         </div>
       </div>
     </div>
-    // <div className="p-5 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    //   <div className="bg-white rounded-lg shadow-lg w-full max-w-lg h-[80vh] max-h-[90vh] relative">
-    //     <div className="flex justify-between items-center p-4 border-b">
-    //       <IoIosLink size={24} />
-    //       <h2 className="text-sm mb-2 px-6 first-letter:uppercase">
-    //         {profile
-    //           ? `${profile.lastName} ${profile.firstName} ${profile.middlename}'s Connections`
-    //           : "Connections"}
-    //       </h2>
-    //       <button
-    //         className="text-gray-600 hover:text-gray-900"
-    //         onClick={onClose}
-    //       >
-    //         <IoIosClose
-    //           className="hover:text-red-400 transition ease-in-out duration-200 transform hover:scale-110"
-    //           size={28}
-    //         />
-    //       </button>
-    //     </div>
-
-    //     <div className="max-w-2xl mx-auto p-4">
-    //       {status === "loading" && (
-    //         <div className="text-center py-4 text-gray-600">
-    //           Loading connections...
-    //         </div>
-    //       )}
-    //       {error && (
-    //         <div className="text-center py-4 text-red-600">Error: {error}</div>
-    //       )}
-    //       {connections.length === 0 && !status && !error && (
-    //         <p className="text-gray-600 text-center">No connections yet.</p>
-    //       )}
-    //       {connections.map((connection) => (
-    //         <div
-    //           key={connection._id}
-    //           className="md:max-w-[30rem] flex items-center justify-between py-2 px-3 border border-gray-200 rounded-lg mb-2 bg-white shadow-sm"
-    //         >
-    //           {connection.userId1.image ? (
-    //             <img
-    //               src={`${backendURL}/${connection.userId1.image}`}
-    //               alt={`${connection.userId1.firstName} ${connection.userId1.lastName}`}
-    //               className="w-12 h-12 rounded-full object-cover mr-4"
-    //               onError={(e) => {
-    //                 e.target.onerror = null;
-    //                 e.target.src = "/fallback-image.png";
-    //               }}
-    //             />
-    //           ) : (
-    //             <FaUserCircle className="w-12 h-12 text-gray-400 mr-4" />
-    //           )}
-
-    //           <div className="flex-1">
-    //             <p className="first-letter:uppercase text-lg mod:text-sm font-semibold text-gray-900">
-    //               {`${connection.userId1.firstName} ${connection.userId1.lastName}`}
-    //             </p>
-    //             <p className="text-sm text-gray-500">
-    //               {connection.userId1.email || "No email provided"}
-    //             </p>
-    //           </div>
-    //         </div>
-    //       ))}
-    //     </div>
-    //   </div>
-    // </div>
   );
 }
 
