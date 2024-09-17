@@ -17,9 +17,9 @@ import ProtectedRoute from "./components/routing/ProtectedRoute";
 import Modal from "./components/tools/sessionModal";
 
 // Authentication Pages
-import Register from "/pages/Register";
-import Login from "/pages/Login";
-import Forgotpassword from "/pages/Forgotpassword";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import Forgotpassword from "./pages/Forgotpassword";
 import VerifyOTP from "./pages/VerifyOTP";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/profilePage";
@@ -30,7 +30,7 @@ import Navbar from "./components/Navbar";
 
 // Pages
 import LoginGetStarted from "/pages/LoginGetStarted";
-import Home from "/pages/Home";
+import Home from "./pages/Home";
 import NameMeaning from "./pages/NameMeaning";
 import FamilyTree from "./pages/Family-tree";
 import Genealogy from "./pages/Genealogy";
