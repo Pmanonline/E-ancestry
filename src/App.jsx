@@ -17,52 +17,52 @@ import ProtectedRoute from "./components/routing/ProtectedRoute";
 import Modal from "./components/tools/sessionModal";
 
 // Authentication Pages
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Forgotpassword from "@/pages/Forgotpassword";
-import VerifyOTP from "@/pages/VerifyOTP";
-import ResetPassword from "@/pages/ResetPassword";
-import Profile from "@/pages/profilePage";
+import VerifyOTP from "./pages/VerifyOTP";
+import ResetPassword from "./pages/ResetPassword";
+import Profile from "./pages/profilePage";
 
 // Components
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
+import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
 
 // Pages
-import Home from "@/pages/Home";
-import LoginGetStarted from "@/pages/LoginGetStarted";
-import NameMeaning from "@/pages/NameMeaning";
-import FamilyTree from "@/pages/Family-tree";
-import Genealogy from "@/pages/Genealogy";
-import { SearchTree } from "@/pages/SearchTree";
-import AboutUs from "@/pages/AboutUs";
-import NameDetails from "@/pages/NAmes";
-import GetStartedWithFamilyTree from "@/pages/GetStartedWithFamilyTree";
-import FamilyTreeFeeds from "@/pages/FamilyTree-Pages/FamilyTree-Feeds";
-import Layout from "@/pages/LAYOUTS/Pages/FamilyTreeSelf";
-import NotFound from "@/pages/NotFound";
-import SearchUsers from "@/components/tools/SearchUsers";
-import HistoricalPeople from "@/pages/HistoricalPeople";
-import AcceptInvite from "@/pages/acceptInvite";
+import LoginGetStarted from "./pages/LoginGetStarted";
+import Home from "./pages/Home";
+import NameMeaning from "./pages/NameMeaning";
+import FamilyTree from "./pages/Family-tree";
+import Genealogy from "./pages/Genealogy";
+import { SearchTree } from "./pages/SearchTree";
+import AboutUs from "./pages/AboutUs";
+import NameDetails from "./pages/NAmes";
+import GetStartedWithFamilyTree from "./pages/GetStartedWithFamilyTree";
+import FamilyTreeFeeds from "./pages/FamilyTree-Pages/FamilyTree-Feeds";
+import Layout from "./pages/LAYOUTS/Pages/FamilyTreeSelf";
+import NotFound from "./pages/NotFound";
+import SearchUsers from "./components/tools/SearchUsers";
+import HistoricalPeople from "./pages/HistoricalPeople";
+import AcceptInvite from "./pages/acceptInvite";
 
 //  all family tree forms
-import PersonalForm from "@/components/Forms/personalForm";
-import MotherForm from "@/components/Forms/MothersForm";
-import FatherForm from "@/components/Forms/FathersForm";
-import PaternalGrandmotherForm from "@/components/Forms/PaternalGrandmotherForm";
-import PaternalGrandfatherForm from "@/components/Forms/PaternalGrandfatherForm";
-import MaternalGrandmotherForm from "@/components/Forms/MaternalGrandmotherForm";
-import MaternalGrandfatherForm from "@/components/Forms/MaternalGrandfatherForm";
-import MaternalGGMform from "@/components/Forms/maternalGGMform";
-import MaternalGGFform from "@/components/Forms/maternalGGFform";
-import PaternalGGMform from "@/components/Forms/paternalGGMform";
-import PaternalGGFform from "@/components/Forms/paternalGGFform";
+import PersonalForm from "./components/Forms/personalForm";
+import MotherForm from "./components/Forms/MothersForm";
+import FatherForm from "./components/Forms/FathersForm";
+import PaternalGrandmotherForm from "./components/Forms/PaternalGrandmotherForm";
+import PaternalGrandfatherForm from "./components/Forms/PaternalGrandfatherForm";
+import MaternalGrandmotherForm from "./components/Forms/MaternalGrandmotherForm";
+import MaternalGrandfatherForm from "./components/Forms/MaternalGrandfatherForm";
+import MaternalGGMform from "./components/Forms/maternalGGMform";
+import MaternalGGFform from "./components/Forms/maternalGGFform";
+import PaternalGGMform from "./components/Forms/paternalGGMform";
+import PaternalGGFform from "./components/Forms/paternalGGFform";
 
 // Other pages in Layout
-import Viewers from "@/pages/LAYOUTS/Pages/Viewers";
-import Invites from "@/pages/LAYOUTS/Pages/Invites";
-import FindInTree from "@/pages/LAYOUTS/Pages/FindInTree";
-import { ViewTree } from "@/pages/ViewTree";
+import Viewers from "./pages/LAYOUTS/Pages/Viewers";
+import Invites from "./pages/LAYOUTS/Pages/Invites";
+import FindInTree from "./pages/LAYOUTS/Pages/FindInTree";
+import { ViewTree } from "./pages/ViewTree";
 import ChatPage from "./pages/chatPage";
 import { MyConnections } from "./pages/MyConnections";
 

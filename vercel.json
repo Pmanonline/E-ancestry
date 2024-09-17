@@ -1,5 +1,4 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite"
+  "builds": [{ "src": "src/App.jsx", "use": "@vercel/node" }],
+  "routes": [{ "src": "/", "dest": "/index.html" }]
 }
