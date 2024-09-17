@@ -29,7 +29,7 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
 // Pages
-import LoginGetStarted from "/pages/LoginGetStarted";
+import LoginGetStarted from "@/pages/LoginGetStarted";
 import Home from "@/pages/Home";
 import NameMeaning from "@/pages/NameMeaning";
 import FamilyTree from "@/pages/Family-tree";
