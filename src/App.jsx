@@ -17,9 +17,9 @@ import ProtectedRoute from "./components/routing/ProtectedRoute";
 import Modal from "./components/tools/sessionModal";
 
 // Authentication Pages
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import Forgotpassword from "./pages/Forgotpassword";
+import Register from "/pages/Register";
+import Login from "/pages/Login";
+import Forgotpassword from "/pages/Forgotpassword";
 import VerifyOTP from "./pages/VerifyOTP";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/profilePage";
