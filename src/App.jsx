@@ -13,7 +13,7 @@ import {
   useNavigate,
   Navigate,
 } from "react-router-dom";
-import ProtectedRoute from "@/components/routing/ProtectedRoute";
+import ProtectedRoute from "./components/routing/ProtectedRoute";
 import Modal from "@/components/tools/sessionModal";
 
 // Authentication Pages
