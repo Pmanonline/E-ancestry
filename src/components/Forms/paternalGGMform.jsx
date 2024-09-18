@@ -86,7 +86,6 @@ const PaternalGGMform = ({ initialState = {}, isEdit = false }) => {
           DOB: formData.DOB,
           image: formData.image,
           yearDeceased: formData.yearDeceased,
-          yearDeceased: formData.yearDeceased,
           placesLived: formData.placesLived,
         })
       );
