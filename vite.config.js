@@ -14,12 +14,4 @@ export default defineConfig({
     assetsDir: "assets",
   },
   base: "/",
-  optimizeDeps: {
-    force: true,
-    esbuildOptions: {
-      loader: {
-        ".js": "jsx",
-      },
-    },
-  },
 });
