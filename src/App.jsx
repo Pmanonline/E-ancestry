@@ -173,7 +173,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
-      {/* {showFooter && <Footer />} */}
+      {showFooter && <Footer />}
     </>
   );
 }
